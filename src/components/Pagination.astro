@@ -1,0 +1,58 @@
+---
+// Pagination.astro — windowed static pagination links (§9.2 / §11.2). Page 1
+// lives at the bare path; deeper pages at {basePath}/page/{n}. Uses
+// pageWindow() for the ellipsis window and marks the current page with
+// aria-current="page" (rendered as a span, not a self-link).
+import { pagePath, pageWindow } from '../lib/pagination';
+
+interface Props {
+    basePath: string;
+    page: number;
+    totalPages: number;
+}
+const { basePath, page, totalPages } = Astro.props;
+const window = pageWindow(page, totalPages);
+
+const linkBase =
+    'inline-flex h-10 min-w-10 items-center justify-center rounded-xl border px-3 text-sm font-semibold transition-colors';
+const idle =
+    'border-slate-200 bg-white text-slate-600 hover:border-indigo-300 hover:text-indigo-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-indigo-500 dark:hover:text-white';
+const active =
+    'border-indigo-600 bg-indigo-600 text-white shadow-sm';
+const ellipsis = 'inline-flex h-10 min-w-8 items-center justify-center px-1 text-slate-400';
+---
+
+{totalPages > 1 && (
+    <nav
+        class="mt-8 flex flex-wrap items-center justify-center gap-1.5"
+        aria-label="Pagination"
+    >
+        {page > 1 && (
+            <a href={pagePath(basePath, page - 1)} class={[linkBase, idle]}>
+                Previous
+            </a>
+        )}
+
+        {window.map((item, i) =>
+            item === 'ellipsis' ? (
+                <span class={ellipsis} key={`e-${i}`} aria-hidden="true">
+                    …
+                </span>
+            ) : item === page ? (
+                <span class={[linkBase, active]} aria-current="page" key={item}>
+                    {item}
+                </span>
+            ) : (
+                <a href={pagePath(basePath, item)} class={[linkBase, idle]} key={item}>
+                    {item}
+                </a>
+            ),
+        )}
+
+        {page < totalPages && (
+            <a href={pagePath(basePath, page + 1)} class={[linkBase, idle]}>
+                Next
+            </a>
+        )}
+    </nav>
+)}

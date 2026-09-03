@@ -1,0 +1,94 @@
+---
+// SiteFooter.astro — dark slate footer, indigo top border, brand + tagline,
+// Explore links, and the four legal/help links plainly visible on every page
+// (AdSense requirement, §10.4 / §13).
+import Brand from './Brand.astro';
+import { FOOTER_EXPLORE, FOOTER_LEGAL, SITE_NAME, TAGLINE } from '../data/site';
+const year = new Date().getFullYear();
+const brand = 'Free Kid Worksheets';
+---
+
+<footer class="border-t-4 border-indigo-600 bg-slate-900 text-slate-300">
+    <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div
+            class="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4"
+        >
+            <!-- Column 1: brand + tagline -->
+            <div class="max-w-xs">
+                <div class="[&_.brand-md]:brightness-110">
+                    <Brand size="sm" />
+                </div>
+                <p class="mt-4 text-sm leading-relaxed text-slate-400">
+                    {TAGLINE}. High-quality, printable A4 worksheets and
+                    practice question papers — always free, no signup needed.
+                </p>
+            </div>
+
+            <!-- Column 2: Explore -->
+            <nav aria-label="Explore">
+                <h3 class="font-display text-sm font-bold uppercase tracking-wider text-white">
+                    Explore
+                </h3>
+                <ul class="mt-4 space-y-2.5 text-sm">
+                    {FOOTER_EXPLORE.map((link) => (
+                        <li>
+                            <a
+                                href={link.href}
+                                class="inline-flex items-center gap-2 text-slate-400 transition-colors hover:text-white"
+                            >
+                                {link.label}
+                            </a>
+                        </li>
+                    ))}
+                </ul>
+            </nav>
+
+            <!-- Column 3: Help & Legal (plainly visible, AdSense) -->
+            <nav aria-label="Help and legal">
+                <h3 class="font-display text-sm font-bold uppercase tracking-wider text-white">
+                    Help & Legal
+                </h3>
+                <ul class="mt-4 space-y-2.5 text-sm">
+                    {FOOTER_LEGAL.map((link) => (
+                        <li>
+                            <a
+                                href={link.href}
+                                class="inline-flex items-center gap-2 text-slate-400 transition-colors hover:text-white"
+                            >
+                                {link.label}
+                            </a>
+                        </li>
+                    ))}
+                </ul>
+            </nav>
+
+            <!-- Column 4: about the library -->
+            <div class="max-w-xs text-sm leading-relaxed text-slate-400">
+                <h3 class="font-display text-sm font-bold uppercase tracking-wider text-white">
+                    The library
+                </h3>
+                <p class="mt-4">
+                    {brand} offers printable activity sheets and practice
+                    papers for early learners and primary students — tracing,
+                    alphabet, math, coloring, and writing.
+                </p>
+                <p class="mt-3">
+                    Worksheets are handmade or AI-generated. If any content
+                    matches your own work, please contact us and we will remove
+                    it promptly.
+                </p>
+            </div>
+        </div>
+
+        <div
+            class="mt-10 flex flex-col items-center justify-between gap-3 border-t border-slate-800 pt-6 text-center text-xs text-slate-500 sm:flex-row sm:text-left"
+        >
+            <p>
+                © {year} {SITE_NAME} — Made with care for curious little minds.
+            </p>
+            <p class="font-medium text-slate-500">
+                100% free · No signup · Personal & classroom use welcome
+            </p>
+        </div>
+    </div>
+</footer>

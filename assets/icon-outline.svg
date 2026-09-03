@@ -1,0 +1,64 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- White background -->
+  <rect x="0" y="0" width="512" height="512" rx="112" fill="#FFFFFF" stroke="#000000" stroke-width="6"/>
+
+  <!-- confetti dots (outline only) -->
+  <circle cx="86" cy="120" r="9" fill="none" stroke="#000000" stroke-width="4"/>
+  <circle cx="432" cy="96" r="6" fill="none" stroke="#000000" stroke-width="3.5"/>
+  <circle cx="452" cy="410" r="10" fill="none" stroke="#000000" stroke-width="4"/>
+  <circle cx="68" cy="408" r="7" fill="none" stroke="#000000" stroke-width="3.5"/>
+  <rect x="410" y="330" width="13" height="13" rx="3" fill="none" stroke="#000000" stroke-width="3" transform="rotate(18 417 337)"/>
+  <rect x="58" y="330" width="11" height="11" rx="3" fill="none" stroke="#000000" stroke-width="3" transform="rotate(-15 64 336)"/>
+
+  <!-- Back sheet (peeking, slightly rotated) -->
+  <g transform="rotate(-9 256 268)">
+    <rect x="146" y="118" width="220" height="290" rx="14" fill="#FFFFFF" stroke="#000000" stroke-width="6"/>
+  </g>
+
+  <!-- Front A4 worksheet -->
+  <g transform="rotate(4 256 268)">
+    <rect x="150" y="112" width="220" height="300" rx="16" fill="#FFFFFF" stroke="#000000" stroke-width="6"/>
+    <!-- top tab -->
+    <path d="M150,128 L150,128 A16,16 0 0 1 166,112 L354,112 A16,16 0 0 1 370,128 L370,146 L150,146 Z" fill="#FFFFFF" stroke="#000000" stroke-width="6"/>
+
+    <!-- title scribble -->
+    <rect x="176" y="168" width="90" height="12" rx="6" fill="none" stroke="#000000" stroke-width="3.5"/>
+
+    <!-- ABC row -->
+    <text x="176" y="228" font-family="Verdana, Arial, sans-serif" font-weight="700" font-size="34" fill="none" stroke="#000000" stroke-width="2.2">A</text>
+    <text x="222" y="228" font-family="Verdana, Arial, sans-serif" font-weight="700" font-size="34" fill="none" stroke="#000000" stroke-width="2.2">B</text>
+    <text x="266" y="228" font-family="Verdana, Arial, sans-serif" font-weight="700" font-size="34" fill="none" stroke="#000000" stroke-width="2.2">C</text>
+
+    <!-- dotted practice line -->
+    <line x1="176" y1="252" x2="344" y2="252" stroke="#000000" stroke-width="3" stroke-dasharray="2 8" stroke-linecap="round"/>
+
+    <!-- number row -->
+    <text x="176" y="300" font-family="Verdana, Arial, sans-serif" font-weight="700" font-size="30" fill="none" stroke="#000000" stroke-width="2.2">1</text>
+    <text x="216" y="300" font-family="Verdana, Arial, sans-serif" font-weight="700" font-size="30" fill="none" stroke="#000000" stroke-width="2.2">2</text>
+    <text x="256" y="300" font-family="Verdana, Arial, sans-serif" font-weight="700" font-size="30" fill="none" stroke="#000000" stroke-width="2.2">3</text>
+    <text x="296" y="300" font-family="Verdana, Arial, sans-serif" font-weight="700" font-size="30" fill="none" stroke="#000000" stroke-width="2.2">4</text>
+
+    <!-- dotted practice line 2 -->
+    <line x1="176" y1="322" x2="344" y2="322" stroke="#000000" stroke-width="3" stroke-dasharray="2 8" stroke-linecap="round"/>
+
+    <!-- star sticker -->
+    <g transform="translate(316,352)">
+      <path d="M0,-16 L4.5,-5 16,-4 7,3.5 10,15 0,8 -10,15 -7,3.5 -16,-4 -4.5,-5 Z" fill="#FFFFFF" stroke="#000000" stroke-width="3.5" stroke-linejoin="round"/>
+    </g>
+  </g>
+
+  <!-- Crayon -->
+  <g transform="translate(118,300) rotate(-38)">
+    <rect x="0" y="0" width="26" height="98" rx="9" fill="#FFFFFF" stroke="#000000" stroke-width="5"/>
+    <line x1="0" y1="20" x2="26" y2="20" stroke="#000000" stroke-width="4"/>
+    <path d="M0,98 L26,98 L13,120 Z" fill="#FFFFFF" stroke="#000000" stroke-width="5" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Pencil -->
+  <g transform="translate(330,84) rotate(52)">
+    <rect x="0" y="0" width="20" height="140" rx="4" fill="#FFFFFF" stroke="#000000" stroke-width="5"/>
+    <line x1="0" y1="18" x2="20" y2="18" stroke="#000000" stroke-width="4"/>
+    <path d="M0,140 L20,140 L10,168 Z" fill="#FFFFFF" stroke="#000000" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M7,140 L13,140 L10,158 Z" fill="#000000" stroke="#000000" stroke-width="2" stroke-linejoin="round"/>
+  </g>
+</svg>

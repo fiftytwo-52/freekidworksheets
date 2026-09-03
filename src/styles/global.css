@@ -1,0 +1,331 @@
+/* ============================================================================
+   Free Kid Worksheets — global stylesheet
+   Tailwind v4 entry point + project design system (MASTER-INSTRUCTION §2).
+   Dark mode is driven by `data-theme` on <html> (set pre-paint in Base.astro).
+   ========================================================================== */
+
+@import "tailwindcss";
+
+/* Dark-mode variant bound to the data-theme attribute (not .dark class). */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+@theme {
+    /* Baloo 2 is loaded via Google Fonts in the <head> (§2.3). */
+    --font-display: "Baloo 2", "Trebuchet MS", system-ui, sans-serif;
+}
+
+/* ---------------------------------------------------------------------------
+   Base
+   ------------------------------------------------------------------------- */
+html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+html[data-theme="dark"] {
+    color-scheme: dark;
+}
+
+html[data-theme="light"] {
+    color-scheme: light;
+}
+
+body {
+    background-color: var(--color-slate-50);
+    color: var(--color-slate-800);
+}
+
+html[data-theme="dark"] body {
+    background-color: #0f172a;
+    /* slate-900 */
+    color: var(--color-slate-200);
+}
+
+::selection {
+    background-color: var(--color-indigo-200);
+    color: var(--color-indigo-950);
+}
+
+html[data-theme="dark"] ::selection {
+    background-color: var(--color-indigo-700);
+    color: #fff;
+}
+
+:focus-visible {
+    outline: 3px solid var(--color-amber-400);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* Headings use Baloo 2 everywhere (utility `font-display` is provided by @theme). */
+h1,
+h2,
+h3,
+h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+}
+
+/* ---------------------------------------------------------------------------
+   Brand wordmark — each letter in a colored rounded tile, gentle fixed wave
+   (§2.1). Tile color cycle is applied per-letter via inline background-color.
+   ------------------------------------------------------------------------- */
+.site-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.brand-tiles {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+}
+
+/* Gentle up/down wave across tiles (fixed, no animation). */
+.brand-tiles>span:nth-child(2n) {
+    transform: translateY(-0.06em);
+}
+
+.brand-tiles>span:nth-child(3n) {
+    transform: translateY(0.06em);
+}
+
+.brand-tiles>span:nth-child(5n) {
+    transform: translateY(-0.03em);
+}
+
+.brand-tile {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--brand-tile, 1.15rem);
+    height: var(--brand-tile, 1.15rem);
+    border-radius: 0.24em;
+    color: #fff;
+    font-family: var(--font-display);
+    font-weight: 800;
+    line-height: 1;
+    font-size: calc(var(--brand-tile, 1.15rem) * 0.6);
+    box-shadow: inset 0 -0.18em 0 rgba(0, 0, 0, 0.08);
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* Scale tiers: header uses md, footer uses sm. */
+.brand-md {
+    --brand-tile: clamp(0.95rem, 4.4vw, 1.45rem);
+}
+
+.brand-sm {
+    --brand-tile: 1.05rem;
+}
+
+/* ---------------------------------------------------------------------------
+   Theme toggle — sun/moon icons swap based on data-theme (§10.5).
+   ------------------------------------------------------------------------- */
+html[data-theme="light"] .theme-icon-sun,
+html[data-theme="dark"] .theme-icon-moon {
+    display: block;
+}
+
+html[data-theme="light"] .theme-icon-moon,
+html[data-theme="dark"] .theme-icon-sun {
+    display: none;
+}
+
+/* Before the head script runs, default to showing both? Show moon first. */
+.theme-icon-sun {
+    display: none;
+}
+
+/* ---------------------------------------------------------------------------
+   Mobile nav drawer (§10.3) — #mobile-menu carries `hidden` and lg:hidden, so
+   it never shows on desktop. On small screens it appears when html.nav-open is
+   set (hamburger toggled by scripts/theme.ts via [data-nav-toggle]).
+   ------------------------------------------------------------------------- */
+@media (max-width: 1023px) {
+    html.nav-open #mobile-menu {
+        display: block;
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   Filter panel mobile accordion (§11.2) — the panel carries `hidden md:block`;
+   scripts/theme.ts toggles .filter-open from the mobile toggle button.
+   ------------------------------------------------------------------------- */
+@media (max-width: 767px) {
+    #filter-panel.filter-open {
+        display: block;
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   Ad slots (§14) — clearly-labeled placeholders; real units are wired post-dev.
+   ------------------------------------------------------------------------- */
+.ad-slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    text-align: center;
+    border: 1px dashed var(--color-slate-300);
+    border-radius: 0.75rem;
+    background:
+        linear-gradient(135deg, rgba(99, 102, 241, 0.06), rgba(251, 191, 36, 0.05)),
+        var(--color-white);
+    color: var(--color-slate-400);
+}
+
+html[data-theme="dark"] .ad-slot {
+    border-color: var(--color-slate-700);
+    background:
+        linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(251, 191, 36, 0.05)),
+        var(--color-slate-800);
+    color: var(--color-slate-500);
+}
+
+.ad-label {
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.ad-box {
+    border: 1px solid var(--color-slate-200);
+    border-radius: 0.5rem;
+    display: grid;
+    place-items: center;
+    background: repeating-linear-gradient(45deg,
+            rgba(100, 116, 139, 0.04),
+            rgba(100, 116, 139, 0.04) 8px,
+            rgba(100, 116, 139, 0) 8px,
+            rgba(100, 116, 139, 0) 16px);
+}
+
+html[data-theme="dark"] .ad-box {
+    border-color: var(--color-slate-700);
+}
+
+/* Edge sidebar slots (worksheet detail only) — hidden below xl (§14). */
+.ad-sidebar {
+    width: 160px;
+}
+
+/* Sticky mobile footer ad bar. */
+.ad-sticky {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 40;
+    border-top: 1px solid var(--color-slate-200);
+    background: rgba(255, 255, 255, 0.95);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+}
+
+html[data-theme="dark"] .ad-sticky {
+    border-top-color: var(--color-slate-700);
+    background: rgba(15, 23, 42, 0.95);
+}
+
+/* ---------------------------------------------------------------------------
+   Popup ad (§14) — fixed overlay; ARIA hidden toggled by scripts/popup.ts.
+   ------------------------------------------------------------------------- */
+.popup-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    background: rgba(15, 23, 42, 0.6);
+}
+
+.popup-backdrop[hidden] {
+    display: none;
+}
+
+.popup-panel {
+    max-width: 92vw;
+    animation: popup-in 0.18s ease-out;
+}
+
+@keyframes popup-in {
+    from {
+        opacity: 0;
+        transform: scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   Worksheet cards / links (§11.2)
+   ------------------------------------------------------------------------- */
+.card-lift {
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease,
+        border-color 0.15s ease;
+}
+
+.card-lift:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px -12px rgba(15, 23, 42, 0.25);
+}
+
+/* ---------------------------------------------------------------------------
+   Print (§11.3.7) — print only the worksheet image, full-size, A4.
+   Add class "print-landscape" to <html> for landscape worksheets.
+   ------------------------------------------------------------------------- */
+@media print {
+    @page {
+        size: A4 portrait;
+        margin: 0;
+    }
+
+    html.print-landscape {
+        size: A4 landscape;
+    }
+
+    body {
+        background: #fff !important;
+        color: #000 !important;
+    }
+
+    body * {
+        visibility: hidden;
+    }
+
+    #print-worksheet,
+    #print-worksheet * {
+        visibility: visible;
+    }
+
+    #print-worksheet {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    #print-worksheet img {
+        width: 100% !important;
+        height: auto !important;
+        max-height: none !important;
+        object-fit: contain;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+}

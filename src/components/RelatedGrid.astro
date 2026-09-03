@@ -1,0 +1,26 @@
+---
+// RelatedGrid.astro — up to 4 same-category siblings shown on the worksheet
+// detail page (§11.3.7). Cards reuse WorksheetCard, which already shows the
+// age-group sub-line.
+import type { CollectionEntry } from 'astro:content';
+import WorksheetCard from './WorksheetCard.astro';
+
+interface Props {
+    items: Array<CollectionEntry<'worksheets'>>;
+    title?: string;
+}
+const { items, title = 'Related worksheets' } = Astro.props;
+---
+
+{items.length > 0 && (
+    <section class="mt-10" aria-label={title}>
+        <h2 class="font-display text-2xl font-extrabold text-slate-900 dark:text-white">
+            {title}
+        </h2>
+        <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {items.map((entry) => (
+                <WorksheetCard entry={entry} />
+            ))}
+        </div>
+    </section>
+)}
