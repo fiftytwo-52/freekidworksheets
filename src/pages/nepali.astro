@@ -1,0 +1,144 @@
+---
+// nepali.astro — dedicated Nepali worksheets page
+import Base from '../layouts/Base.astro';
+import Faq from '../components/Faq.astro';
+import FilterPanel from '../components/FilterPanel.astro';
+import Icon from '../components/Icon.astro';
+import WorksheetCard from '../components/WorksheetCard.astro';
+import { getNepaliWorksheets } from '../lib/content';
+import { faqJsonLd, websiteJsonLd } from '../lib/seo';
+
+// Build-time data for Nepali feed
+const nepaliWorksheets = await getNepaliWorksheets();
+
+const DESCRIPTION =
+    'निःशुल्क नेपाली कार्यपत्रहरू — Free printable Nepali worksheets for kids. Practice Nepali Ka Kha Ga (क ख ग), Nepali Numbers (१ देखि १०), word matching, and handwriting tracing.';
+
+const EYEBROW =
+    'font-mono text-[11px] font-medium uppercase tracking-widest text-mute dark:text-neutral-500';
+const PILL_PRIMARY =
+    'inline-flex items-center gap-1.5 rounded-full bg-pink-500 px-6 py-2.5 text-sm font-bold text-white transition-transform hover:scale-105 hover:bg-pink-600 shadow-sm dark:bg-pink-600';
+const PILL_SECONDARY =
+    'inline-flex items-center gap-1.5 rounded-full border-2 border-yellow-300 bg-yellow-50 px-4 py-2 text-sm font-bold text-yellow-900 transition-transform hover:scale-105 hover:bg-yellow-100 dark:border-yellow-600 dark:bg-yellow-900/40 dark:text-yellow-200';
+---
+
+<Base
+    pageTitle="Nepali Worksheets for Kids - नेपाली कार्यपत्रहरू"
+    description={DESCRIPTION}
+    path="/nepali"
+    jsonLd={[websiteJsonLd(), faqJsonLd()]}
+>
+    <!-- 1. Hero — ultra-compact, colorful, kid-friendly Nepali Hero -->
+    <section class="hero-colorful border-b-4 border-b-yellow-400 bg-emerald-50 dark:bg-emerald-950/40">
+        <div class="mx-auto w-full max-w-5xl px-4 py-4 text-center sm:px-6 sm:py-6 lg:px-8">
+            <h1 class="mx-auto max-w-3xl text-3xl font-extrabold tracking-tight text-emerald-600 sm:text-4xl dark:text-emerald-400 drop-shadow-sm">
+                नेपाली कार्यपत्रहरू (Nepali Worksheets)
+            </h1>
+            <p class="mx-auto mt-1 max-w-xl text-base font-medium text-emerald-900 sm:text-lg dark:text-emerald-200">
+                निःशुल्क डाउनलोड र प्रिन्ट गर्नुहोस् — क ख ग, गन्ती, र शब्द अभ्यास!
+            </p>
+
+            <!-- Hero search -->
+            <form action="/search" method="get" role="search" class="mx-auto mt-4 flex max-w-xl items-center gap-2">
+                <label for="hero-search" class="sr-only">Search Nepali worksheets</label>
+                <span class="relative flex-1">
+                    <Icon name="search" class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-emerald-500" />
+                    <input
+                        id="hero-search"
+                        type="search"
+                        name="q"
+                        placeholder="खोज्नुहोस् / Search Nepali worksheets (e.g., Ka Kha, 2001)…"
+                        class="h-11 w-full rounded-full border-2 border-emerald-200 bg-white pl-11 pr-4 text-sm font-medium text-neutral-800 placeholder:text-neutral-400 focus:border-yellow-400 focus:outline-none focus:ring-4 focus:ring-yellow-400/20 dark:border-emerald-800 dark:bg-neutral-900 dark:text-neutral-100"
+                    />
+                </span>
+                <button type="submit" class="inline-flex h-11 shrink-0 items-center gap-1.5 rounded-full bg-pink-500 px-5 text-sm font-bold text-white transition-transform hover:scale-105 hover:bg-pink-600 shadow-md">
+                    खोज्नुहोस्
+                </button>
+            </form>
+
+            <!-- Pill Filters -->
+            <div class="mx-auto mt-4 flex flex-wrap justify-center gap-1.5">
+                {['Nepali', 'Tracing', 'Alphabet', 'Numbers', 'Matching', 'Colouring'].map(tag => (
+                    <a href={`/search?q=${encodeURIComponent(tag)}`} class="rounded-full border-2 border-yellow-300 bg-yellow-100 px-3 py-1 text-xs font-bold text-yellow-800 transition-transform hover:-translate-y-0.5 hover:bg-yellow-200 hover:shadow-sm dark:border-yellow-600 dark:bg-yellow-900/50 dark:text-yellow-200">
+                        {tag}
+                    </a>
+                ))}
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. Nepali Worksheets Feed -->
+    <section
+        class="w-full max-w-none px-4 py-12 sm:px-6 lg:px-8"
+        aria-labelledby="nepali-heading"
+    >
+        <div class="flex flex-wrap items-end justify-between gap-4">
+            <div>
+                <p class={EYEBROW}>Nepali Learning Materials</p>
+                <h2
+                    id="nepali-heading"
+                    class="mt-2 text-2xl font-bold tracking-tight text-neutral-900 sm:text-3xl dark:text-neutral-100"
+                >
+                    सबै नेपाली कार्यपत्रहरू (All Nepali Worksheets)
+                </h2>
+            </div>
+            <a href="/worksheets" class={PILL_SECONDARY}>
+                सबै कार्यपत्र हेर्नुहोस् (All Worksheets)
+                <Icon name="arrow-right" class="h-4 w-4" />
+            </a>
+        </div>
+
+        {
+            nepaliWorksheets.length > 0 ? (
+                <div data-filter-region class="mt-6">
+                    <FilterPanel empty="कुनै कार्यपत्र भेटिएन (No worksheets found)." />
+                    <div
+                        class="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
+                        data-card-grid
+                    >
+                        {nepaliWorksheets.map((entry) => (
+                            <WorksheetCard entry={entry} />
+                        ))}
+                    </div>
+                </div>
+            ) : (
+                <p class="mt-6 rounded-2xl border-2 border-dashed border-emerald-200 bg-emerald-50/50 px-6 py-12 text-center font-medium text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-200">
+                    थप नेपाली कार्यपत्रहरू चाँडै आउँदैछन्! More Nepali worksheets are coming soon!
+                </p>
+            )
+        }
+    </section>
+
+    <!-- 3. Free Banner -->
+    <section class="w-full max-w-none px-4 pb-4 sm:px-6 lg:px-8">
+        <div
+            class="rounded-3xl border-2 border-yellow-200 bg-amber-50 px-6 py-10 text-center dark:border-yellow-900/50 dark:bg-neutral-900"
+        >
+            <p class="font-mono text-[11px] font-bold uppercase tracking-widest text-amber-700 dark:text-yellow-400">१००% निःशुल्क (Always Free)</p>
+            <h2
+                class="mt-2 text-2xl font-extrabold tracking-tight text-neutral-900 sm:text-3xl dark:text-neutral-100"
+            >
+                नेपाली भाषा सिकाइ — सजिलै प्रिन्ट गर्नुहोस्
+            </h2>
+            <p
+                class="mx-auto mt-3 max-w-xl text-base font-medium leading-relaxed text-neutral-700 dark:text-neutral-300"
+            >
+                नेपाली बालबालिका तथा विदेशमा रहेका नेपाली परिवारका लागि क ख ग, गन्ती र शब्द अभ्यासका उच्च गुणस्तरका कार्यपत्रहरू निःशुल्क उपलब्ध छन्।
+            </p>
+            <a href="/worksheets" class={`${PILL_PRIMARY} mt-6`}>
+                सबै कार्यपत्रहरू हेर्नुहोस्
+                <Icon name="arrow-right" class="h-4 w-4" />
+            </a>
+        </div>
+    </section>
+
+    <!-- 4. FAQ -->
+    <section class="w-full max-w-none px-4 pb-16 sm:px-6 lg:px-8">
+        <Faq />
+    </section>
+
+</Base>
+
+<script>
+    import '../scripts/browse-filters';
+</script>

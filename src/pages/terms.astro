@@ -1,0 +1,67 @@
+---
+// /terms — free personal/classroom use, content disclaimer, IP removal
+// request path (§11.5).
+import StaticPage from '../components/StaticPage.astro';
+import { CONTACT_EMAIL, SITE_NAME } from '../data/site';
+---
+<StaticPage
+    pageTitle="Terms of Service"
+    description="Terms for using freekidworksheet.com — free personal and classroom use, content disclaimer, and how to request content removal."
+    path="/terms"
+    eyebrow="Legal"
+    heading="Terms and Disclaimer"
+    lede={`Simple terms: everything on ${SITE_NAME} is free to print and use at home or in the classroom.`}
+>
+    <p>
+        By using {SITE_NAME} you agree to the terms below. They're short on
+        purpose.
+    </p>
+
+    <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">Free use</h2>
+    <p>
+        All worksheets and question papers on this site are 100% free for
+        personal and classroom use. You may download and print as many copies
+        as you need for your own children or students.
+    </p>
+
+    <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">What you may not do (but I don't really mind)</h2>
+    <p>
+        Selling my materials or presenting them as your own commercial product
+        is not suggested. However, to be completely honest, if you do sell them,
+        I don't really care. I just made this site so I can download worksheets
+        without any problem for myself and other teachers at my school. If you'd
+        like to share a worksheet, linking to its page on this site rather than
+        re-uploading the file is always appreciated.
+    </p>
+
+    <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">Content disclaimer</h2>
+    <p>
+        My worksheets are practice materials intended to support — not
+        replace — teaching and supervision. Content is provided "as is."
+        While I care about accuracy and quality, I can't guarantee a
+        worksheet is error-free or suited to every child's level. Always
+        review materials before handing them to young learners.
+    </p>
+
+    <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">Intellectual property and removal requests</h2>
+    <p>
+        I respect intellectual property and create my materials to be
+        original. If you believe any content on this site infringes your
+        rights, contact me with the page URL and a short description of the
+        concern — I'll review and remove it promptly if needed.
+    </p>
+
+    <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">Contact</h2>
+    <p>
+        {CONTACT_EMAIL ? (
+            <a
+                href={`mailto:${CONTACT_EMAIL}`}
+                class="font-medium text-accent underline underline-offset-4 transition-colors hover:text-ink dark:hover:text-neutral-100"
+            >
+                {CONTACT_EMAIL}
+            </a>
+        ) : (
+            'My contact address is listed on the contact page (being finalized).'
+        )}
+    </p>
+</StaticPage>

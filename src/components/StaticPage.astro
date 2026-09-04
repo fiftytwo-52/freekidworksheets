@@ -1,0 +1,37 @@
+---
+// StaticPage.astro — shared shell for legal/info pages (§11.5): mono
+// eyebrow, h1, optional lede, and a prose slot. Keeps the four legal pages
+// visually consistent with the Geist system.
+import Base from '../layouts/Base.astro';
+
+interface Props {
+    pageTitle: string;
+    description: string;
+    path: string;
+    eyebrow?: string;
+    heading: string;
+    lede?: string;
+}
+const { pageTitle, description, path, eyebrow = 'freekidworksheet', heading, lede } =
+    Astro.props;
+---
+<Base pageTitle={pageTitle} description={description} path={path}>
+    <div class="mx-auto w-full max-w-3xl px-4 pt-10 pb-16 sm:px-6 lg:px-8">
+        <p class="font-mono text-[11px] font-medium uppercase tracking-widest text-mute dark:text-neutral-500">
+            {eyebrow}
+        </p>
+        <h1 class="mt-2 text-3xl font-semibold tracking-tight text-ink sm:text-4xl dark:text-neutral-100">
+            {heading}
+        </h1>
+        {lede && (
+            <p class="mt-3 text-base leading-relaxed text-body dark:text-neutral-400">
+                {lede}
+            </p>
+        )}
+        <div
+            class="legal-prose mt-8 space-y-6 text-[15px] leading-relaxed text-body dark:text-neutral-300"
+        >
+            <slot />
+        </div>
+    </div>
+</Base>

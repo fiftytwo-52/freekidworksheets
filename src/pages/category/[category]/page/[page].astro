@@ -1,0 +1,25 @@
+---
+// /category/{category}/page/{n} — static pagination for category listings
+// (§9.2). Page 1 lives at the bare /category/{category} path, so this route
+// emits only n ≥ 2, one entry per (category, page) pair (§9.3).
+import CategoryPage from '../../../../components/CategoryPage.astro';
+import { getCategories, getByCategory } from '../../../../lib/content';
+import { PER_PAGE } from '../../../../data/site';
+
+export async function getStaticPaths() {
+    const categories = await getCategories();
+    const paths: Array<{ params: { category: string; page: string } }> = [];
+    for (const category of categories) {
+        const items = await getByCategory(category);
+        const totalPages = Math.max(1, Math.ceil(items.length / PER_PAGE));
+        for (let page = 2; page <= totalPages; page++) {
+            paths.push({ params: { category, page: String(page) } });
+        }
+    }
+    return paths;
+}
+
+const { category, page } = Astro.params;
+---
+
+<CategoryPage category={category!} page={Number(page)} />

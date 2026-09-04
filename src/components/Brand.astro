@@ -1,10 +1,7 @@
 ---
-// Brand.astro — the FreeKidWorksheets wordmark: each letter inside its own
-// rounded colored tile, arranged in a gentle fixed up/down wave, beside a
-// small brand mark (smiling-pencil glyph). Tile colors cycle yellow → coral →
-// blue → green → pink → purple → teal → orange across letters (§2.1).
-import { BRAND_NAME, TILE_COLORS } from '../data/site';
-
+// Brand.astro — the FreeKidWorksheets wordmark (DESIGN.md §2.1, on the
+// MASTER-INSTRUCTION §10.2 brand). Uses the custom app icon in assets
+// beside the "FreeKidWorksheets" wordmark in Geist 600.
 interface Props {
     /** Size tier: 'md' (header) or 'sm' (footer). */
     size?: 'md' | 'sm';
@@ -13,47 +10,41 @@ interface Props {
 }
 const { size = 'md', class: className = '' } = Astro.props;
 
-// NOTE: BRAND_NAME ("FreeKidWorksheets") contains no hyphens or spaces, so
-// every character maps to a tile colored from the cycle. (The §2.1 "neutral
-// tile for hyphens" rule would only matter for a spaced wordmark variant.)
-const letters = BRAND_NAME.split('');
-const brandMarkPath =
-    'm14.5 4.5 5 5L8 21H4v-4z M12.5 6.5 17.5 11.5 M6 17.5c.6 1.6 2.2 2.5 4 2.5';
+const mark = size === 'md' ? 'h-8 w-8' : 'h-7 w-7';
+const word = size === 'md' ? 'text-[17px]' : 'text-[15px]';
 ---
 
 <a
     href="/"
-    class:list={['site-brand', className]}
+    class:list={['site-brand flex items-center gap-2.5', className]}
     aria-label="Free Kid Worksheets — home"
 >
-    <!-- Brand mark: smiling pencil glyph in an indigo rounded square (§2.1). -->
+    <!-- Mark: custom app icon from assets -->
     <span
-        class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-indigo-600 text-white shadow-sm"
+        class:list={[
+            'grid shrink-0 place-items-center overflow-hidden rounded-lg transition-transform hover:scale-105',
+            mark,
+        ]}
         aria-hidden="true"
     >
-        <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.8"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="h-5 w-5"
-        >
-            <path d={brandMarkPath}></path>
-        </svg>
+        <img
+            src="/assets/icon-pink.svg"
+            alt=""
+            width="32"
+            height="32"
+            class="h-full w-full object-contain"
+            loading="eager"
+            decoding="async"
+        />
     </span>
 
-    <!-- Tiled wordmark; the gentle wave comes from CSS nth-child offsets. -->
-    <span class:list={['brand-tiles', size === 'md' ? 'brand-md' : 'brand-sm']}>
-        {letters.map((ch, i) => (
-            <span
-                class="brand-tile"
-                style={{ backgroundColor: TILE_COLORS[i % TILE_COLORS.length] }}
-                aria-hidden="true"
-            >
-                {ch}
-            </span>
-        ))}
+    <!-- Wordmark: lowercase "freekidworksheets" -->
+    <span
+        class:list={[
+            'whitespace-nowrap font-bold lowercase leading-none tracking-tight',
+            word,
+        ]}
+    >
+        <span class="text-ink dark:text-neutral-100">freekid</span><span class="text-pink-500 dark:text-pink-400">worksheets</span>
     </span>
 </a>

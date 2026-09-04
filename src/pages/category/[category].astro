@@ -1,0 +1,18 @@
+---
+// /category/{category} — page 1 of each category listing (§9.2 / §11.2).
+// The route param matches the canonical category name exactly, so the
+// `category === param` re-query in CategoryPage works (§9.3).
+import CategoryPage from '../../components/CategoryPage.astro';
+import { getCategories } from '../../lib/content';
+
+export async function getStaticPaths() {
+    const categories = await getCategories();
+    return categories.map((category) => ({
+        params: { category },
+    }));
+}
+
+const { category } = Astro.params;
+---
+
+<CategoryPage category={category!} page={1} />

@@ -1,0 +1,40 @@
+---
+// 500.astro — branded server/platform error page with the same site shell.
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+---
+<Base
+    pageTitle="Something went wrong"
+    description="Something went wrong while loading this page. Return to freekidworksheet.com or try again shortly."
+    path="/500"
+>
+    <div class="mx-auto flex w-full max-w-3xl flex-1 flex-col items-center px-4 py-24 text-center sm:px-6 lg:px-8">
+        <p class="font-mono text-[11px] font-medium uppercase tracking-widest text-mute dark:text-neutral-500">
+            Error 500
+        </p>
+        <h1 class="mt-3 text-4xl font-semibold tracking-tight text-ink sm:text-5xl dark:text-neutral-100">
+            Something went wrong
+        </h1>
+        <p class="mt-4 max-w-md text-base leading-relaxed text-body dark:text-neutral-400">
+            This page could not load right now. Please try again, search the worksheet library,
+            or head back to the home page.
+        </p>
+
+        <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <a
+                href="/worksheets"
+                class="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-neutral-800 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-200"
+            >
+                <Icon name="search" class="h-4 w-4" />
+                Browse worksheets
+            </a>
+            <a
+                href="/"
+                class="inline-flex items-center gap-2 rounded-full border border-hairline bg-elevated px-4 py-2 text-sm font-medium text-ink transition-colors hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:hover:bg-neutral-800"
+            >
+                <Icon name="arrow-left" class="h-4 w-4" />
+                Back to home
+            </a>
+        </div>
+    </div>
+</Base>

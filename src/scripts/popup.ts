@@ -60,3 +60,7 @@ function init() {
 }
 
 document.addEventListener('DOMContentLoaded', init);
+
+// Module scope so top-level declarations do not collide with other global
+// scripts bundled into the same program scope by Astro's type-checker.
+export { };

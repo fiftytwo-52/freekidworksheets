@@ -9,18 +9,27 @@ export type Worksheet = CollectionEntry<'worksheets'>;
 export function cardData(entry: Worksheet): Record<string, string> {
     return {
         title: entry.data.title,
+        code: entry.data.code,
         category: entry.data.category,
         age: entry.data.ageGroup,
-        kind: entry.data.kind,
+        colorType: entry.data.colorType,
         created: entry.data.date.toISOString(),
-        slug: entry.id,
+        slug: entry.slug,
     };
 }
 
-/** Serialize the attributes to an HTML string for use in templates. */
-export function cardDataAttrs(entry: Worksheet): string {
-    return Object.entries(cardData(entry))
-        .map(([k, v]) => `data-${k}="${v.replace(/"/g, '"')}"`)
-        .join(' ');
+/**
+ * data-* attribute map ready to spread onto a card element ({...attrs}),
+ * matching what scripts/browse-filters.ts reads from the DOM (§11.2).
+ */
+export function cardDataProps(entry: Worksheet): Record<string, string> {
+    return {
+        'data-title': entry.data.title,
+        'data-code': entry.data.code,
+        'data-category': entry.data.category,
+        'data-age': entry.data.ageGroup,
+        'data-color-type': entry.data.colorType,
+        'data-created': entry.data.date.toISOString(),
+        'data-slug': entry.slug,
+    };
 }
-

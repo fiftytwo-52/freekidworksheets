@@ -2,7 +2,8 @@
 // Pagination.astro — windowed static pagination links (§9.2 / §11.2). Page 1
 // lives at the bare path; deeper pages at {basePath}/page/{n}. Uses
 // pageWindow() for the ellipsis window and marks the current page with
-// aria-current="page" (rendered as a span, not a self-link).
+// aria-current="page" (rendered as a span, not a self-link). Geist style:
+// 6px-square numbered items + pill prev/next (DESIGN.md §3 "Buttons").
 import { pagePath, pageWindow } from '../lib/pagination';
 
 interface Props {
@@ -13,13 +14,16 @@ interface Props {
 const { basePath, page, totalPages } = Astro.props;
 const window = pageWindow(page, totalPages);
 
-const linkBase =
-    'inline-flex h-10 min-w-10 items-center justify-center rounded-xl border px-3 text-sm font-semibold transition-colors';
+const pageItem =
+    'inline-flex h-9 min-w-9 items-center justify-center rounded-md border px-2 text-sm font-medium transition-colors';
 const idle =
-    'border-slate-200 bg-white text-slate-600 hover:border-indigo-300 hover:text-indigo-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-indigo-500 dark:hover:text-white';
+    'border-hairline bg-elevated text-body hover:border-neutral-300 hover:text-ink dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400 dark:hover:border-neutral-700 dark:hover:text-neutral-100';
 const active =
-    'border-indigo-600 bg-indigo-600 text-white shadow-sm';
-const ellipsis = 'inline-flex h-10 min-w-8 items-center justify-center px-1 text-slate-400';
+    'border-ink bg-ink text-white dark:border-neutral-100 dark:bg-neutral-100 dark:text-neutral-900';
+const ellipsis =
+    'inline-flex h-9 min-w-8 items-center justify-center px-1 text-faint dark:text-neutral-600';
+const navItem =
+    'inline-flex h-9 items-center justify-center gap-1 rounded-full border px-4 text-sm font-medium transition-colors';
 ---
 
 {totalPages > 1 && (
@@ -28,30 +32,42 @@ const ellipsis = 'inline-flex h-10 min-w-8 items-center justify-center px-1 text
         aria-label="Pagination"
     >
         {page > 1 && (
-            <a href={pagePath(basePath, page - 1)} class={[linkBase, idle]}>
-                Previous
+            <a
+                href={pagePath(basePath, page - 1)}
+                class:list={[navItem, idle]}
+                rel="prev"
+            >
+                <span aria-hidden="true">←</span> Previous
             </a>
         )}
 
-        {window.map((item, i) =>
+        {window.map((item) =>
             item === 'ellipsis' ? (
-                <span class={ellipsis} key={`e-${i}`} aria-hidden="true">
+                <span class={ellipsis} aria-hidden="true">
                     …
                 </span>
             ) : item === page ? (
-                <span class={[linkBase, active]} aria-current="page" key={item}>
+                <span class:list={[pageItem, active]} aria-current="page">
                     {item}
                 </span>
             ) : (
-                <a href={pagePath(basePath, item)} class={[linkBase, idle]} key={item}>
+                <a
+                    href={pagePath(basePath, item)}
+                    class:list={[pageItem, idle]}
+                    aria-label={`Go to page ${item}`}
+                >
                     {item}
                 </a>
             ),
         )}
 
         {page < totalPages && (
-            <a href={pagePath(basePath, page + 1)} class={[linkBase, idle]}>
-                Next
+            <a
+                href={pagePath(basePath, page + 1)}
+                class:list={[navItem, idle]}
+                rel="next"
+            >
+                Next <span aria-hidden="true">→</span>
             </a>
         )}
     </nav>

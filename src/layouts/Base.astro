@@ -7,7 +7,7 @@
 import '../styles/global.css';
 import SiteNav from '../components/SiteNav.astro';
 import SiteFooter from '../components/SiteFooter.astro';
-import { ADSENSE_PUBLISHER_ID, GA_ID, SITE_NAME } from '../data/site';
+import { ADSENSE_PUBLISHER_ID, DEFAULT_KEYWORDS_STRING, GA_ID, SITE_NAME } from '../data/site';
 import { absoluteUrl, escapeJsonLd, makeTitle } from '../lib/seo';
 
 interface Props {
@@ -17,26 +17,26 @@ interface Props {
     description: string;
     /** Canonical path WITHOUT trailing slash, e.g. "/", "/worksheets/page/2". */
     path: string;
+    /** Optional comma-separated meta keywords. Falls back to default SEO keywords. */
+    keywords?: string;
     /** For /search — robots noindex,follow (§11.4). */
     noindex?: boolean;
     /** og:image path (default: /assets/worksheets-icon.png). */
     ogImage?: string;
-    /** Optional raw JSON-LD object(s) to serialize into <script> tags. */
+    /** Optional raw JSON-LD object(s) to serialize into script tags. */
     jsonLd?: Record<string, unknown> | Array<Record<string, unknown>>;
     /** When a worksheet image is landscape (print CSS). */
     printLandscape?: boolean;
-    /** Show the 728×90 leaderboard below the nav (home/lib/detail only). */
-    showLeaderboard?: boolean;
 }
 const {
     pageTitle,
     description,
     path,
+    keywords = DEFAULT_KEYWORDS_STRING,
     noindex = false,
     ogImage = '/assets/worksheets-icon.png',
     jsonLd,
     printLandscape = false,
-    showLeaderboard = false,
 } = Astro.props;
 
 const canonical = absoluteUrl(path);
@@ -65,6 +65,7 @@ const adsenseScript = ADSENSE_PUBLISHER_ID
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>{title}</title>
         <meta name="description" content={description} />
+        {keywords && <meta name="keywords" content={keywords} />}
         <link rel="canonical" href={canonical} />
 
         <!-- Open Graph (§13.1) -->
@@ -78,45 +79,36 @@ const adsenseScript = ADSENSE_PUBLISHER_ID
 
         {noindex && <meta name="robots" content="noindex,follow" />}
 
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <link rel="icon" type="image/png" href="/assets/worksheets-icon.png" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
+        <link rel="icon" type="image/png" href="/assets/worksheets-icon.png?v=2" />
+        <link rel="apple-touch-icon" href="/assets/worksheets-icon.png?v=2" />
 
-        <!-- Google Fonts: Baloo 2 (600/700/800) (§2.3) -->
+        <!-- Google Fonts: Geist Sans + Geist Mono (DESIGN.md typography) -->
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
-            href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,400;0,700;1,400&family=Fredoka:wght@400..700&family=Geist+Mono:wght@400..700&display=swap"
             rel="stylesheet"
         />
 
         <!-- Inline head-theme script: apply saved/system theme pre-paint -->
-        <script set:html={headTheme}></script>
+        <script is:inline set:html={headTheme}></script>
 
         {gaScript && <Fragment set:html={gaScript} />}
         {adsenseScript && <Fragment set:html={adsenseScript} />}
 
         {ldBlocks.map((block) => (
             <script
+                is:inline
                 type="application/ld+json"
                 set:html={escapeJsonLd(JSON.stringify(block))}
             ></script>
         ))}
     </head>
     <body
-        class="flex min-h-screen flex-col bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-200"
+        class="flex min-h-screen flex-col bg-canvas text-ink dark:bg-[#0a0a0a] dark:text-neutral-100"
     >
         <SiteNav path={path} />
-
-        {showLeaderboard && (
-            <div class="no-print mx-auto mt-4 w-full max-w-7xl px-4">
-                <div class="ad-slot h-24 w-full sm:h-20">
-                    <span class="ad-label">Advertisement</span>
-                    <span class="text-xs">
-                        728×90 leaderboard · ad network goes live post-dev
-                    </span>
-                </div>
-            </div>
-        )}
 
         <main class="flex-1">
             <slot />
@@ -126,5 +118,11 @@ const adsenseScript = ADSENSE_PUBLISHER_ID
 
         <!-- Body-level after-footer hooks: sticky footer ad + popup (§14) -->
         <slot name="after-footer" />
+
+        <script>
+            // Global behavior on every page: theme toggle, mobile nav drawer,
+            // and the mobile filter-panel accordion (§12.1).
+            import '../scripts/theme';
+        </script>
     </body>
 </html>

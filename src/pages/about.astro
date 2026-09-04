@@ -1,0 +1,53 @@
+---
+// /about — what the site is, who it's for, how worksheets are made (§11.5).
+import StaticPage from '../components/StaticPage.astro';
+import { SITE_NAME } from '../data/site';
+---
+<StaticPage
+    pageTitle="About"
+    description="Learn what freekidworksheet.com is, who it's for, and how my free printable worksheets and question papers are made."
+    path="/about"
+    eyebrow="About"
+    heading={`About ${SITE_NAME}`}
+    lede="Free printable worksheets and question papers for kids — made to be printed, not scrolled."
+>
+    <p>
+        {SITE_NAME} is a small, independent library of free printable learning
+        materials for young learners. I single-handedly built this site because I
+        needed a place to easily download worksheets without any hassle. Every resource
+        is a single A4 page you can download as an image and print at home or in the
+        classroom — no accounts, no paywalls, no watermarks.
+    </p>
+
+    <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">Who it's for</h2>
+    <p>
+        I'm a teacher myself. While I don't teach these early classes directly, I
+        make these worksheets for other teachers at my school. I'm tired of finding and
+        signing up to websites just to download worksheets, so I built this site so
+        I can download them without any problems. If you like any worksheet, use them;
+        otherwise ignore them.
+    </p>
+    <p>
+        I'm sharing them freely for parents helping their children practice at home,
+        fellow teachers looking for quick classroom activities, and anyone who wants
+        simple, direct printables. The worksheets are grouped by subject category and
+        age group so you can find what you need in a few clicks.
+    </p>
+
+    <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">How worksheets are made</h2>
+    <p>
+        Each worksheet is designed as a clean, print-first A4 page. I publish
+        the page as a high-quality image (JPG, PNG, or WebP) so it works on
+        any printer and any device without special software. New pages are
+        added regularly — browse the library or check the newest additions on
+        the home page.
+    </p>
+
+    <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">Why free?</h2>
+    <p>
+        I believe practice materials for kids shouldn't sit behind signups
+        and subscriptions. Printing is 100% free. The site is supported by unobtrusive
+        advertising, which lets me keep every worksheet completely free for personal
+        and classroom use.
+    </p>
+</StaticPage>

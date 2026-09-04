@@ -1,0 +1,79 @@
+---
+// /privacy-policy — no accounts, no personal data collected; cookies only
+// for analytics when GA is enabled (§11.5). Kept accurate to this build.
+import StaticPage from '../components/StaticPage.astro';
+import { CONTACT_EMAIL, GA_ID, SITE_NAME } from '../data/site';
+---
+<StaticPage
+    pageTitle="Privacy Policy"
+    description="freekidworksheet.com collects no personal data and uses no accounts. Learn exactly what this site does and does not track."
+    path="/privacy-policy"
+    eyebrow="Legal"
+    heading="Privacy Policy"
+    lede="Short version: I don't collect personal data, I don't have accounts, and this site works fine with cookies disabled."
+>
+    <p>
+        This policy explains what information (if any) {SITE_NAME} collects
+        when you visit, and how it's used. I've kept it short and honest
+        because the answer is simple.
+    </p>
+
+    <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">No accounts, no personal data</h2>
+    <p>
+        {SITE_NAME} has no user accounts, no newsletters, and no forms that
+        ask for your name, email, or any other personal information. I do
+        not collect or store personal data from visitors.
+    </p>
+
+    <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">Cookies</h2>
+    <p>
+        I set one small piece of browser storage yourself: your light/dark
+        theme preference, saved in your browser's localStorage. It never
+        leaves your device.
+    </p>
+    {GA_ID ? (
+        <p>
+            When Google Analytics is enabled, it may set cookies to measure
+            aggregate site usage (pages viewed, approximate region, device
+            type). This data is anonymized and used only to understand which
+            worksheets are most useful.
+        </p>
+    ) : (
+        <p>
+            Analytics is currently disabled on this site, so no analytics
+            cookies are set at all.
+        </p>
+    )}
+
+    <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">Advertising</h2>
+    <p>
+        This site may display ads served by third-party networks such as
+        Google AdSense. These networks may use cookies to serve ads based on
+        your prior visits to this or other websites. You can opt out of
+        personalized advertising via Google's Ads Settings, and most browsers
+        also let you block third-party cookies entirely.
+    </p>
+
+    <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">Your choices</h2>
+    <p>
+        You can browse, search, download, and print every worksheet on this
+        site without accepting any cookie beyond your theme preference.
+        Blocking cookies does not lock any content.
+    </p>
+
+    <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">Contact</h2>
+    <p>
+        Questions about this policy? Reach me at
+        {CONTACT_EMAIL ? (
+            <a
+                href={`mailto:${CONTACT_EMAIL}`}
+                class="font-medium text-accent underline underline-offset-4 transition-colors hover:text-ink dark:hover:text-neutral-100"
+            >
+                {CONTACT_EMAIL}
+            </a>
+        ) : (
+            'the contact address listed on my contact page (being finalized)'
+        )}
+        .
+    </p>
+</StaticPage>

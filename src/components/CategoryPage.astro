@@ -1,0 +1,45 @@
+---
+// CategoryPage.astro — shared renderer for /category/{category} (§11.2):
+// all worksheets in one category, 20/page. Page 1 lives at the bare path (§9.2).
+import Base from '../layouts/Base.astro';
+import BrowseLayout from './BrowseLayout.astro';
+import { getByCategory, paginate } from '../lib/content';
+
+interface Props {
+    category: string;
+    page: number;
+}
+const { category, page } = Astro.props;
+
+const { items, totalPages } = paginate(await getByCategory(category), page);
+
+const basePath = `/category/${category}`;
+const path = page === 1 ? basePath : `${basePath}/page/${page}`;
+const pageTitle =
+    page === 1 ? `${category} worksheets` : `${category} worksheets — page ${page}`;
+const catLower = category.toLowerCase();
+const description =
+    `Free printable ${catLower} worksheets for kids — ` +
+    `download and print A4 activity sheets for young learners.` +
+    (page === 1 ? '' : ` Page ${page} of ${totalPages}.`);
+
+const pageKeywords = `${catLower} for kids worksheet, ${catLower} kids worksheet, kids worksheet, kids worksheet pdf, kids worksheets free, kids worksheets printable, ${catLower} worksheets`;
+---
+
+<Base pageTitle={pageTitle} description={description} path={path} keywords={pageKeywords}>
+    <BrowseLayout
+        kicker="Browse by category"
+        title={category}
+        blurb={`Every free printable ${category.toLowerCase()} resource in the library — filter by age group, then download and print.`}
+        empty={`No ${category.toLowerCase()} worksheets match your filters.`}
+        {items}
+        basePath={basePath}
+        page={page}
+        {totalPages}
+    />
+</Base>
+
+<script>
+    // Category behavior: client-side filter + sort over the card grid (§12.2).
+    import '../scripts/browse-filters';
+</script>

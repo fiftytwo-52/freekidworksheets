@@ -1,0 +1,42 @@
+---
+// /contact — clean placeholder with a mailto link driven by CONTACT_EMAIL
+// (§11.5). Real contact details are filled in post-dev.
+import StaticPage from '../components/StaticPage.astro';
+import { CONTACT_EMAIL } from '../data/site';
+---
+<StaticPage
+    pageTitle="Contact"
+    description="Get in touch with freekidworksheet.com — questions, feedback, and content requests are always welcome."
+    path="/contact"
+    eyebrow="Contact"
+    heading="Get in touch"
+    lede="Questions, feedback, or a worksheet topic you'd love to see? I'd love to hear from you."
+>
+    <p>
+        The fastest way to reach me is by email. I read every message and
+        usually reply within a few days.
+    </p>
+
+    {CONTACT_EMAIL ? (
+        <p>
+            <a
+                href={`mailto:${CONTACT_EMAIL}`}
+                class="font-medium text-accent underline underline-offset-4 transition-colors hover:text-ink dark:hover:text-neutral-100"
+            >
+                {CONTACT_EMAIL}
+            </a>
+        </p>
+    ) : (
+        <p class="rounded-lg border border-dashed border-hairline p-4 text-sm text-mute dark:border-neutral-700 dark:text-neutral-500">
+            My contact email is being finalized — full contact details are
+            coming soon. In the meantime, thank you for your patience.
+        </p>
+    )}
+
+    <p>
+        For content requests, tell me the subject and the age group you have
+        in mind — the more specific, the better. For any copyright or content
+        concern, please include the page URL and I'll look into it right
+        away.
+    </p>
+</StaticPage>

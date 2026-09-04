@@ -20,3 +20,16 @@ Thumbs.db
 !.vscode/extensions.json
 .idea/
 *.swp
+
+# project rules
+RULES.md
+
+# local worksheet planning, prompts, instructions, and upload staging
+Addnewsheet/
+Newsheet/
+samplesheets/
+
+# local worksheet-generation and design scratch files
+**/*prompt*.txt
+**/*instruction*.txt
+**/*instructions*.txt

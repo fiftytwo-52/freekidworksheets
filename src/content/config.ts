@@ -10,13 +10,15 @@ export const collections = {
             z
                 .object({
                     title: z.string().min(3),
+                    code: z.string().regex(/^\d{4,5}$/),
                     category: z.string(),
                     ageGroup: z.string(),
-                    kind: z.enum(['worksheet', 'question']),
                     date: z.coerce.date(),
                     description: z.string().min(60).max(4000),
                     image: image(),
                     tags: z.array(z.string()).default([]),
+                    language: z.enum(['en', 'ne']).default('en'),
+                    colorType: z.enum(['black-and-white', 'colorful']).default('black-and-white'),
                 })
                 .refine((d) => d.description.trim().length >= 60, {
                     message: 'description must be at least 60 characters of real copy',

@@ -1,0 +1,44 @@
+---
+// LibraryPage.astro — shared renderer for /worksheets (§11.2).
+// Fetches + paginates its own data so the thin route files only pass the page number.
+import Base from '../layouts/Base.astro';
+import BrowseLayout from './BrowseLayout.astro';
+import { BROWSE_PAGES } from '../data/site';
+import { getAllWorksheets, paginate } from '../lib/content';
+
+interface Props {
+    /** 1-based page number (page 1 = the bare path, §9.2). */
+    page: number;
+}
+const { page } = Astro.props;
+
+const config = BROWSE_PAGES.worksheets;
+const { items, totalPages } = paginate(await getAllWorksheets(), page);
+
+// Page 1 lives at the bare path so there are no duplicate URLs (§9.2).
+const path = page === 1 ? config.path : `${config.path}/page/${page}`;
+const pageTitle =
+    page === 1 ? config.title : `${config.title} — page ${page}`;
+const description =
+    page === 1
+        ? config.blurb
+        : `${config.blurb} Page ${page} of ${totalPages}.`;
+---
+
+<Base pageTitle={pageTitle} description={description} path={path}>
+    <BrowseLayout
+        kicker={config.kicker}
+        title={config.title}
+        blurb={config.blurb}
+        empty={config.empty}
+        {items}
+        basePath={config.path}
+        page={page}
+        {totalPages}
+    />
+</Base>
+
+<script>
+    // Library behavior: client-side filter + sort over the card grid (§12.2).
+    import '../scripts/browse-filters';
+</script>

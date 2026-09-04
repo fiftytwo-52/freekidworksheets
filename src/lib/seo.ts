@@ -1,5 +1,5 @@
 import type { CollectionEntry } from 'astro:content';
-import { FAQS, SITE_URL, TITLE_SUFFIX } from '../data/site';
+import { DEFAULT_KEYWORDS_STRING, FAQS, SEO_KEYWORDS, SITE_URL, TITLE_SUFFIX } from '../data/site';
 
 /** Absolute URL for canonical/OG/sitemap use. */
 export function absoluteUrl(path: string): string {
@@ -71,7 +71,15 @@ export function learningResourceJsonLd(
     url: string,
 ) {
     const data = entry.data;
-    const kind = data.kind === 'question' ? 'question paper' : 'worksheet';
+    const worksheetKeywords = [
+        ...data.tags,
+        data.category,
+        'kids worksheet',
+        'kids worksheets free',
+        'kids worksheets printable',
+        'kids worksheet pdf',
+    ];
+
     return {
         '@context': 'https://schema.org',
         '@type': 'LearningResource',
@@ -81,11 +89,12 @@ export function learningResourceJsonLd(
         image: absoluteUrl(data.image.src),
         isAccessibleForFree: true,
         educationalLevel: `ages ${data.ageGroup}`,
-        learningResourceType: kind,
+        learningResourceType: 'worksheet',
+        keywords: worksheetKeywords.join(', '),
         teaches:
             data.tags.length > 0 ? data.tags : ['early learning', data.category],
         datePublished: data.date.toISOString().slice(0, 10),
         provider: providerOrganization,
-        inLanguage: 'en',
+        inLanguage: data.language === 'ne' ? 'ne' : 'en',
     };
 }

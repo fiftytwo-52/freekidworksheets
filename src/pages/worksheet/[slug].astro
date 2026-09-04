@@ -1,0 +1,171 @@
+---
+// /worksheet/[slug] — worksheet detail page (§11.3).
+// h1 + meta line, large A4 image (print target #print-worksheet),
+// description, download/print actions, related grid, LearningResource JSON-LD.
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import RelatedGrid from '../../components/RelatedGrid.astro';
+import Icon from '../../components/Icon.astro';
+import { getRelated } from '../../lib/content';
+import { absoluteUrl, excerpt, learningResourceJsonLd } from '../../lib/seo';
+
+export async function getStaticPaths() {
+    const entries = await getCollection('worksheets');
+    return entries.map((entry) => ({ params: { slug: entry.slug }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { title, category, ageGroup, code, description, image, tags = [] } = entry.data;
+const path = `/worksheet/${entry.slug}`;
+const related = await getRelated(entry.slug);
+const isLandscape = image.width > image.height;
+
+const metaDescription =
+    excerpt(description) ||
+    `${title} — free printable worksheet for ${ageGroup}.`;
+
+const pageKeywords = Array.from(
+    new Set([
+        ...tags,
+        category,
+        `${category.toLowerCase()} for kids worksheet`,
+        `${category.toLowerCase()} kids worksheet`,
+        'kids worksheet',
+        'kids worksheet pdf',
+        'kids worksheets free',
+        'kids worksheets printable',
+    ])
+).join(', ');
+---
+
+<Base
+    pageTitle={title}
+    description={metaDescription}
+    path={path}
+    keywords={pageKeywords}
+    ogImage={image.src}
+    printLandscape={isLandscape}
+    jsonLd={learningResourceJsonLd(entry, absoluteUrl(path))}
+>
+    <div
+        class="no-print mx-auto w-full max-w-4xl px-4 pt-8 sm:px-6 lg:px-8"
+    >
+        <!-- Breadcrumb -->
+        <nav
+            aria-label="Breadcrumb"
+            class="text-xs font-semibold text-neutral-500 dark:text-neutral-400"
+        >
+            <ol class="flex flex-wrap items-center gap-2">
+                <li><a href="/" class="hover:text-pink-500 hover:underline">Home</a></li>
+                <li aria-hidden="true" class="text-neutral-300 dark:text-neutral-600">/</li>
+                <li>
+                    <a href="/worksheets" class="hover:text-pink-500 hover:underline">
+                        Worksheets
+                    </a>
+                </li>
+                <li aria-hidden="true" class="text-neutral-300 dark:text-neutral-600">/</li>
+                <li>
+                    <a
+                        href={`/category/${encodeURIComponent(category)}`}
+                        class="hover:text-pink-500 hover:underline"
+                    >
+                        {category}
+                    </a>
+                </li>
+                <li aria-hidden="true" class="text-neutral-300 dark:text-neutral-600">/</li>
+                <li
+                    aria-current="page"
+                    class="truncate font-bold text-neutral-900 dark:text-neutral-100"
+                >
+                    {title}
+                </li>
+            </ol>
+        </nav>
+
+        <!-- Header: Title + Meta -->
+        <header class="mt-4">
+            <h1
+                class="text-3xl font-extrabold tracking-tight text-neutral-900 sm:text-4xl dark:text-white"
+            >
+                {title}
+            </h1>
+            <div
+                class="mt-3 flex flex-wrap items-center gap-2 text-xs font-bold"
+            >
+                <span class="rounded-full bg-pink-100 px-3 py-1 text-pink-700 dark:bg-pink-900/40 dark:text-pink-300">
+                    {category}
+                </span>
+                <span class="rounded-full bg-cyan-100 px-3 py-1 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-300">
+                    Ages {ageGroup}
+                </span>
+                {code && (
+                    <span class="rounded-full bg-yellow-100 px-3 py-1 font-mono text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300">
+                        Code: #{code}
+                    </span>
+                )}
+                <span class="rounded-full bg-emerald-100 px-3 py-1 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300">
+                    100% Free
+                </span>
+            </div>
+        </header>
+
+        <!-- Action bar above worksheet preview -->
+        <div class="mt-6 flex flex-wrap items-center gap-3">
+            <a
+                href={image.src}
+                download={`${entry.slug}.png`}
+                class="inline-flex items-center gap-2 rounded-full bg-pink-500 px-6 py-3 text-sm font-bold text-white shadow-md transition-all hover:scale-105 hover:bg-pink-600 active:scale-95"
+            >
+                <Icon name="download" class="h-4 w-4" />
+                Download Worksheet
+            </a>
+            <button
+                type="button"
+                onclick="window.print()"
+                class="inline-flex items-center gap-2 rounded-full border-2 border-yellow-400 bg-yellow-100 px-6 py-2.5 text-sm font-bold text-yellow-900 shadow-sm transition-all hover:scale-105 hover:bg-yellow-200 dark:bg-yellow-900/40 dark:text-yellow-200"
+            >
+                <Icon name="print" class="h-4 w-4" />
+                Print Worksheet
+            </button>
+        </div>
+    </div>
+
+    <!-- Worksheet A4 Preview (Print target #print-worksheet) -->
+    <section class="mx-auto w-full max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
+        <div
+            id="print-worksheet"
+            class="overflow-hidden rounded-2xl border-2 border-cyan-100 bg-white p-4 shadow-md dark:border-neutral-800 dark:bg-neutral-900 sm:p-8"
+        >
+            <Image
+                src={image}
+                alt={title}
+                class="mx-auto h-auto w-full max-w-2xl rounded-lg object-contain"
+                loading="eager"
+                decoding="async"
+            />
+        </div>
+    </section>
+
+    <!-- Description & Learning Context -->
+    <section class="no-print mx-auto w-full max-w-4xl px-4 py-4 sm:px-6 lg:px-8">
+        <div class="rounded-2xl border-2 border-amber-100 bg-amber-50/60 p-6 dark:border-neutral-800 dark:bg-neutral-900/60 sm:p-8">
+            <h2 class="text-xs font-extrabold uppercase tracking-wider text-amber-700 dark:text-amber-400">
+                About this worksheet
+            </h2>
+            <p class="mt-3 text-base font-medium leading-relaxed text-neutral-700 dark:text-neutral-300">
+                {description}
+            </p>
+        </div>
+    </section>
+
+    <!-- Related Worksheets -->
+    {related.length > 0 && (
+        <section class="no-print mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+            <RelatedGrid
+                title="Related Worksheets"
+                items={related}
+            />
+        </section>
+    )}
+</Base>

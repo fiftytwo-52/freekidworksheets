@@ -4,7 +4,7 @@
 // Expected DOM (one [data-filter-region] per page):
 //   [data-card-grid]      → the grid of [data-*] WorksheetCards
 //   [data-filter-input]   → search text field
-//   [data-filter-select]  → selects named category|age|kind|sort
+//   [data-filter-select]  → selects named category|age|sort
 //   [data-result-count]   → "N results" live count
 //   [data-empty-state]    → hidden empty-state message
 //
@@ -13,9 +13,10 @@
 
 interface CardData {
     title: string;
+    code: string;
     category: string;
     age: string;
-    kind: string;
+    colorType: string;
     created: string;
     slug: string;
     el: HTMLElement;
@@ -39,9 +40,10 @@ function readCards(grid: HTMLElement): CardData[] {
     return Array.from(grid.querySelectorAll<HTMLElement>('[data-title]')).map(
         (el) => ({
             title: el.getAttribute('data-title') ?? '',
+            code: el.getAttribute('data-code') ?? '',
             category: el.getAttribute('data-category') ?? '',
             age: el.getAttribute('data-age') ?? '',
-            kind: el.getAttribute('data-kind') ?? '',
+            colorType: el.getAttribute('data-color-type') ?? '',
             created: el.getAttribute('data-created') ?? '',
             slug: el.getAttribute('data-slug') ?? '',
             el,
@@ -103,20 +105,21 @@ function initRegion(region: HTMLElement) {
         const q = (searchInput?.value ?? '').trim().toLowerCase();
         const cat = sel('category')?.value ?? '';
         const age = sel('age')?.value ?? '';
-        const kind = sel('kind')?.value ?? '';
+        const colorType = sel('color-type')?.value ?? '';
         const sortBy = sel('sort')?.value ?? 'latest';
 
         const shown: CardData[] = [];
         const hidden: CardData[] = [];
         for (const c of cards) {
+            const inCode = c.code.toLowerCase().includes(q);
             const inTitle = c.title.toLowerCase().includes(q);
             const inCategory = c.category.toLowerCase().includes(q);
-            const matchesText = !q || inTitle || inCategory;
+            const matchesText = !q || inCode || inTitle || inCategory;
             const matches =
                 matchesText &&
                 (!cat || c.category === cat) &&
                 (!age || c.age === age) &&
-                (!kind || c.kind === kind);
+                (!colorType || c.colorType === colorType);
             (matches ? shown : hidden).push(c);
         }
 
@@ -124,6 +127,12 @@ function initRegion(region: HTMLElement) {
             shown.sort((a, b) =>
                 a.title.localeCompare(b.title, undefined, { sensitivity: 'base' }),
             );
+        } else if (sortBy === 'grade') {
+            shown.sort((a, b) => {
+                const cmp = ageCompare(a.age, b.age);
+                if (cmp !== 0) return cmp;
+                return b.created.localeCompare(a.created);
+            });
         } else {
             shown.sort((a, b) => b.created.localeCompare(a.created));
         }
@@ -155,3 +164,5 @@ document.addEventListener('DOMContentLoaded', () => {
         .querySelectorAll<HTMLElement>('[data-filter-region]')
         .forEach(initRegion);
 });
+
+export { };

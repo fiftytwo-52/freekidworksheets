@@ -1,0 +1,19 @@
+---
+// /worksheets/page/{n} — static pagination for the worksheet library (§9.2).
+// Page 1 lives at the bare /worksheets path, so this route only emits n ≥ 2.
+import LibraryPage from '../../../components/LibraryPage.astro';
+import { getAllWorksheets } from '../../../lib/content';
+import { PER_PAGE } from '../../../data/site';
+
+export async function getStaticPaths() {
+    const items = await getAllWorksheets();
+    const totalPages = Math.max(1, Math.ceil(items.length / PER_PAGE));
+    return Array.from({ length: Math.max(0, totalPages - 1) }, (_, i) => ({
+        params: { page: String(i + 2) },
+    }));
+}
+
+const { page } = Astro.params;
+---
+
+<LibraryPage page={Number(page)} />

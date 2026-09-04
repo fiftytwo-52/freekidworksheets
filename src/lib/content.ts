@@ -2,7 +2,6 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 import { AGE_GROUPS, PER_PAGE } from '../data/site';
 
 export type Worksheet = CollectionEntry<'worksheets'>;
-export type WorksheetKind = 'worksheet' | 'question';
 
 /** Newest-first with a stable slug tiebreak (§8.2). */
 export function byNewest(a: Worksheet, b: Worksheet): number {
@@ -12,23 +11,25 @@ export function byNewest(a: Worksheet, b: Worksheet): number {
     return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
 }
 
-/** Every worksheet/question paper, sorted newest-first. */
+/** Every worksheet, sorted newest-first. */
 export async function getAllWorksheets(): Promise<Worksheet[]> {
     const all = await getCollection('worksheets');
     return [...all].sort(byNewest);
 }
 
-/** Only `worksheet` items or only `question` items, newest-first. */
-export async function getWorksheets(kind: WorksheetKind): Promise<Worksheet[]> {
+/** English worksheets (default feed), sorted newest-first. */
+export async function getEnglishWorksheets(): Promise<Worksheet[]> {
     const all = await getAllWorksheets();
-    return all.filter((w) => w.data.kind === kind);
+    return all.filter((w) => w.data.language !== 'ne');
 }
 
-export async function getQuestionPapers(): Promise<Worksheet[]> {
-    return getWorksheets('question');
+/** Nepali worksheets feed, sorted newest-first. */
+export async function getNepaliWorksheets(): Promise<Worksheet[]> {
+    const all = await getAllWorksheets();
+    return all.filter((w) => w.data.language === 'ne');
 }
 
-/** All items in one category (any kind), newest-first. */
+/** All items in one category, newest-first. */
 export async function getByCategory(category: string): Promise<Worksheet[]> {
     const all = await getAllWorksheets();
     return all.filter((w) => w.data.category === category);

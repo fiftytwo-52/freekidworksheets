@@ -1,0 +1,91 @@
+---
+// /search — client-side search over the build-time search-index.json
+// (§11.4). The page renders the shell; site-search.ts reads ?q=, fetches
+// the index, filters by title / description / category / ageGroup, and
+// injects escaped result cards. noindex,follow via Base.
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { POPULAR_TOPICS } from '../data/site';
+
+const DESCRIPTION =
+    'Search every free printable worksheet and activity sheet — filter by title, code, subject, or topic.';
+---
+<Base
+    pageTitle="Search worksheets"
+    description={DESCRIPTION}
+    path="/search"
+    noindex
+>
+    <div class="mx-auto w-full max-w-7xl px-4 pt-8 pb-12 sm:px-6 lg:px-8">
+        <div class="rounded-2xl border-2 border-yellow-300 bg-yellow-50 p-6 dark:border-yellow-700 dark:bg-yellow-950/30 sm:p-8">
+            <p class="font-mono text-xs font-bold uppercase tracking-widest text-pink-600 dark:text-pink-400">
+                Explore The Library
+            </p>
+            <h1 class="mt-2 text-3xl font-extrabold tracking-tight text-neutral-900 sm:text-4xl dark:text-white">
+                Find a Worksheet
+            </h1>
+            <p class="mt-2 max-w-xl text-sm font-medium leading-relaxed text-neutral-700 dark:text-neutral-300">
+                {DESCRIPTION}
+            </p>
+
+            <!-- Search form — GET so ?q= is shareable; site-search.ts reads it. -->
+            <form action="/search" method="get" class="mt-6 flex max-w-xl gap-2" role="search">
+                <div class="relative flex-1">
+                    <span
+                        class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400"
+                    >
+                        <Icon name="search" class="h-4 w-4" />
+                    </span>
+                    <input
+                        type="search"
+                        name="q"
+                        placeholder="Search by topic, keyword, or code (e.g., 1001)…"
+                        aria-label="Search worksheets"
+                        autocomplete="off"
+                        class="h-12 w-full rounded-full border-2 border-yellow-200 bg-white pl-11 pr-4 text-sm font-medium text-neutral-900 placeholder:text-neutral-400 focus:border-pink-500 focus:outline-none focus:ring-4 focus:ring-pink-500/20 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white"
+                    />
+                </div>
+                <button
+                    type="submit"
+                    class="inline-flex h-12 items-center gap-2 rounded-full bg-pink-500 px-6 text-sm font-bold text-white shadow-sm transition-all hover:scale-105 hover:bg-pink-600 active:scale-95"
+                >
+                    Search
+                </button>
+            </form>
+        </div>
+
+        <!-- Quick filter pills on search page -->
+        <div class="mt-6 flex flex-wrap items-center gap-2">
+            <span class="text-xs font-bold text-neutral-500">Popular:</span>
+            {POPULAR_TOPICS.map((topic) => (
+                <a
+                    href={`/search?q=${encodeURIComponent(topic.query)}`}
+                    class="rounded-full border border-yellow-300 bg-yellow-100 px-3 py-1 text-xs font-bold text-yellow-800 transition-transform hover:scale-105 hover:bg-yellow-200 dark:border-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-200"
+                >
+                    {topic.label}
+                </a>
+            ))}
+        </div>
+
+        <!-- Results shell — filled in by site-search.ts -->
+        <div id="search-app" class="mt-8">
+            <p
+                class="font-mono text-xs font-bold uppercase tracking-widest text-neutral-500"
+                data-search-count
+                role="status"
+                aria-live="polite"
+            >
+                Loading…
+            </p>
+            <div data-search-grid class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"></div>
+            <p data-search-empty hidden class="mt-6 rounded-2xl border-2 border-dashed border-neutral-300 p-8 text-center text-sm font-medium text-neutral-500 dark:border-neutral-700">
+                No worksheets match your search. Try searching for "tracing", "coloring", "math", or a search code like "1001".
+            </p>
+        </div>
+    </div>
+</Base>
+
+<script>
+    // Search behavior: fetch search-index.json and filter client-side (§12.3).
+    import '../scripts/site-search';
+</script>
