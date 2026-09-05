@@ -46,6 +46,19 @@ export const SEO_KEYWORDS = [
     'free preschool worksheets age 4 5',
     'setembro amarelo atividades para imprimir',
     'atividades para imprimir',
+    'nepali worksheets with answers pdf',
+    'nepali worksheets pdf free download',
+    'nepali worksheets pdf',
+    'nepali worksheets with answers',
+    'nepali worksheets pdf download',
+    'nepali worksheet for nursery',
+    'nepali worksheet for class 1',
+    'nepali worksheet for ukg',
+    'nepali worksheet for nursery pdf free download',
+    'nepali handwriting practice pdf free download',
+    'nepali worksheet for class 2',
+    'lkg nepali worksheet',
+    'nepali worksheet for lkg with answers',
 ] as const;
 
 export const DEFAULT_KEYWORDS_STRING = SEO_KEYWORDS.join(', ');
