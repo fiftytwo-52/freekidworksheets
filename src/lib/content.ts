@@ -53,17 +53,50 @@ export async function getAgeGroups(): Promise<string[]> {
     return AGE_GROUPS.filter((g) => present.has(g));
 }
 
-/** Up to `limit` same-category siblings, newest-first, excluding self. */
+/**
+ * Up to `limit` related worksheets for the detail page, excluding self.
+ *
+ * Language rules (user requirement):
+ * - English worksheet → only English suggestions, ever.
+ * - Nepali worksheet → Nepali suggestions first; English may backfill the
+ *   remaining slots when there aren't enough Nepali worksheets.
+ *
+ * Ranking within the allowed pool (highest first):
+ *   +100 same-language  (hard requirement for English pages)
+ *   +10  same-category
+ *   +5   same-age-group
+ * `others` is already newest-first and Array#sort is stable, so equal
+ * scores stay newest-first.
+ */
 export async function getRelated(
     slug: string,
     limit = 4,
 ): Promise<Worksheet[]> {
     const all = await getAllWorksheets();
-    const entry = all.find((w) => w.id === slug);
+    const entry = all.find((w) => w.slug === slug);
     if (!entry) return [];
-    return all
-        .filter((w) => w.id !== slug && w.data.category === entry.data.category)
-        .slice(0, limit);
+
+    const isNepali = entry.data.language === 'ne';
+    const others = all.filter((w) => w.slug !== slug);
+
+    const scored = others
+        .map((w) => {
+            const sameLang = isNepali
+                ? w.data.language === 'ne'
+                : w.data.language !== 'ne';
+            let score = 0;
+            if (sameLang) score += 100;
+            if (w.data.category === entry.data.category) score += 10;
+            if (w.data.ageGroup === entry.data.ageGroup) score += 5;
+            return { w, score };
+        })
+        // English pages: drop every non-English suggestion entirely.
+        .filter((s) => isNepali || s.score >= 100);
+
+    return scored
+        .sort((a, b) => b.score - a.score)
+        .slice(0, limit)
+        .map((s) => s.w);
 }
 
 export interface Paginated<T> {

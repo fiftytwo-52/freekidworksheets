@@ -207,9 +207,25 @@ html[data-theme="dark"] .ad-slot {
     color: var(--color-neutral-500);
 }
 
+@font-face {
+    font-family: "MatrixType";
+    src: url("/fonts/matrixtype-regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "MatrixType Display";
+    src: url("/fonts/matrixtype-display-bold.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+}
+
 .dot-matrix-word {
     color: transparent;
-    font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+    font-family: "MatrixType Display", "MatrixType", monospace;
     font-size: clamp(2.5rem, 9vw, 6.5rem);
     font-weight: 900;
     letter-spacing: 0.14em;

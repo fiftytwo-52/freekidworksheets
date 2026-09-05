@@ -1,0 +1,30 @@
+{
+    "name": "FreeKidWorksheets — Free Printable Worksheets for Kids",
+    "short_name": "FreeKidWorksheets",
+    "description": "Free printable worksheets for kids — tracing, alphabet, math, coloring, and writing practice for young learners.",
+    "start_url": "/",
+    "scope": "/",
+    "display": "standalone",
+    "background_color": "#fafafa",
+    "theme_color": "#ff416c",
+    "icons": [
+        {
+            "src": "/assets/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/assets/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/assets/icon-maskable-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ]
+}

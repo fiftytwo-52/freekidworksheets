@@ -1,5 +1,5 @@
 import type { CollectionEntry } from 'astro:content';
-import { DEFAULT_KEYWORDS_STRING, FAQS, SEO_KEYWORDS, SITE_URL, TITLE_SUFFIX } from '../data/site';
+import { FAQS, SITE_URL, TITLE_SUFFIX } from '../data/site';
 
 /** Absolute URL for canonical/OG/sitemap use. */
 export function absoluteUrl(path: string): string {
@@ -39,7 +39,7 @@ export function websiteJsonLd() {
         '@context': 'https://schema.org',
         '@type': 'WebSite',
         name: 'Free Kid Worksheets',
-        alternateName: 'freekidworksheet.com',
+        alternateName: 'freekidworksheets.com',
         url: SITE_URL,
         potentialAction: {
             '@type': 'SearchAction',

@@ -305,7 +305,7 @@ async function checkSearchIndex(slugs) {
 
 // ---------------------------------------------------------------------------
 async function main() {
-    console.log('freekidworksheet.com — post-build verification (§16.2)\n');
+    console.log('freekidworksheets.com — post-build verification (§16.2)\n');
 
     const { slugs } = await checkContent();
     await checkDist(slugs);

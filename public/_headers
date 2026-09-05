@@ -1,12 +1,3 @@
-# Cloudflare Pages headers — security + crawl guidance.
-# Deployment is POST-DEVELOPMENT (postdev.md); this file ships ready.
-# NOTE: a "noindex" header for the temporary *.pages.dev domain is applied at deploy
-# time in the Cloudflare Pages dashboard / via a separate env-specific header file,
-# because _headers cannot be conditioned per host.
-
-/*
-  X-Content-Type-Options: nosniff
-  X-Frame-Options: SAMEORIGIN
-  Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: camera=(), microphone=(), geolocation=()
-  X-XSS-Protection: 0
+https://freekidworksheet.pages.dev/*
+  X-Robots-Tag: noindex
+  

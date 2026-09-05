@@ -86,6 +86,8 @@ function initRegion(region: HTMLElement) {
     const selects = Array.from(
         region.querySelectorAll<HTMLSelectElement>('[data-filter-select]'),
     );
+    const resetButton =
+        region.querySelector<HTMLButtonElement>('[data-filter-reset]');
     const sel = (name: string) =>
         selects.find((s) => s.getAttribute('data-filter-select') === name);
     const countEl = region.querySelector<HTMLElement>('[data-result-count]');
@@ -155,6 +157,13 @@ function initRegion(region: HTMLElement) {
     // Wire up events.
     searchInput?.addEventListener('input', apply);
     selects.forEach((s) => s.addEventListener('change', apply));
+    resetButton?.addEventListener('click', () => {
+        if (searchInput) searchInput.value = '';
+        selects.forEach((select) => {
+            select.value = select.getAttribute('data-filter-select') === 'sort' ? 'latest' : '';
+        });
+        apply();
+    });
 
     apply(); // initial state (counts + sort applied on load)
 }

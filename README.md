@@ -1,4 +1,4 @@
-# freekidworksheet.com
+# freekidworksheets.com
 
 A free printable worksheet library for kids — a fully static multi-page site built with **Astro 5** and **Tailwind CSS v4**, styled with a Geist-inspired design system (ink on canvas, hairline borders, mono eyebrows, mesh-gradient hero).
 
@@ -125,8 +125,8 @@ All optional and empty-safe — the site builds and verifies without them:
 | `GA_ID`                 | Google Analytics tag in `<head>`        |
 | `CONTACT_EMAIL`         | Mailto links on contact/privacy/terms   |
 
-Deployment (domain, Cloudflare Pages, Search Console, AdSense) is
-deliberately deferred — see `postdev.md` for the full launch procedure.
+Deployment (Cloudflare Pages, Search Console, AdSense) is documented in
+`Newsheet/postdev.md`; the production canonical domain is `https://freekidworksheets.com`.
 
 ## Design system
 

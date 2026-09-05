@@ -1,10 +1,10 @@
 // Central site constants (MASTER-INSTRUCTION §11 / Appendix A).
 // Values here are shared by every page, component, and build-time file.
 
-export const SITE_NAME = 'freekidworksheet.com';
+export const SITE_NAME = 'freekidworksheets.com';
 export const BRAND_NAME = 'FreeKidWorksheets';
 export const TAGLINE = 'Free printable worksheets for kids';
-export const TITLE_SUFFIX = '- freekidworksheet.com';
+export const TITLE_SUFFIX = '- freekidworksheets.com';
 
 /** High-value SEO keywords & search terms. */
 export const SEO_KEYWORDS = [
@@ -78,7 +78,7 @@ export const FAQS = [
             'Yes — every kids worksheet on Free Kid Worksheets is 100% free forever. There is no catch, no registration, and no download limits. You can find kids worksheets free download and printable activity pages ready to download directly as high-resolution printable images for home or classroom learning.',
     },
     {
-        question: 'What subjects and learning topics are available on freekidworksheet.com?',
+        question: 'What subjects and learning topics are available on freekidworksheets.com?',
         answer:
             'My library covers a wide selection of early education themes: english for kids worksheet, maths kids worksheet, shapes for kids worksheet, body parts for kids worksheet, weather for kids worksheet, drawing for kids worksheet, all about me kids worksheet, and emotions for kids worksheet or feelings for kids worksheet.',
     },
