@@ -22,6 +22,7 @@ interface Props {
     basePath: string;
     page: number;
     totalPages: number;
+    showLanguage?: boolean;
 }
 const {
     kicker,
@@ -32,6 +33,7 @@ const {
     basePath,
     page,
     totalPages,
+    showLanguage = false,
 } = Astro.props;
 ---
 
@@ -83,7 +85,7 @@ const {
     </header>
 
     <div data-filter-region>
-        <FilterPanel empty={empty} />
+        <FilterPanel empty={empty} {showLanguage} />
 
         <div
             class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"

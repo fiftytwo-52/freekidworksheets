@@ -1,0 +1,73 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+
+const DESCRIPTION =
+    'Free Portuguese worksheets for kids are coming soon. Discover printable learning activities in English and Nepali while we prepare our Portuguese collection.';
+---
+
+<Base
+    pageTitle="Portuguese Worksheets for Kids — Coming Soon"
+    description={DESCRIPTION}
+    path="/portuguese"
+>
+    <main class="relative isolate overflow-hidden border-b-4 border-b-yellow-400 bg-emerald-50 dark:bg-emerald-950/30">
+        <div class="pointer-events-none absolute -left-24 top-12 h-56 w-56 rounded-full bg-yellow-300/40 blur-3xl dark:bg-yellow-500/10"></div>
+        <div class="pointer-events-none absolute -right-16 bottom-0 h-72 w-72 rounded-full bg-pink-300/35 blur-3xl dark:bg-pink-500/10"></div>
+
+        <section class="relative mx-auto flex min-h-[68vh] w-full max-w-5xl items-center justify-center px-4 py-16 text-center sm:px-6 lg:px-8">
+            <div class="max-w-3xl">
+                <div class="mx-auto flex h-20 w-20 rotate-[-4deg] items-center justify-center rounded-3xl border-4 border-yellow-300 bg-yellow-100 text-pink-500 shadow-lg dark:border-yellow-600 dark:bg-yellow-900/40 dark:text-pink-300" aria-hidden="true">
+                    <Icon name="pencil" class="h-9 w-9" />
+                </div>
+
+                <p class="mt-8 font-mono text-[11px] font-bold uppercase tracking-[0.24em] text-emerald-700 dark:text-emerald-300">
+                    Portuguese learning corner
+                </p>
+                <h1 class="mt-3 text-4xl font-extrabold tracking-tight text-pink-500 sm:text-6xl dark:text-pink-400">
+                    Portuguese worksheets are coming soon!
+                </h1>
+                <p class="mx-auto mt-5 max-w-2xl text-lg font-medium leading-relaxed text-emerald-950 dark:text-emerald-100">
+                    Atividades em português chegando em breve!
+                </p>
+                <p class="mx-auto mt-3 max-w-2xl text-base leading-relaxed text-body dark:text-neutral-300">
+                    We are preparing a cheerful collection of free, printable Portuguese activities for young learners. Until then, explore the worksheets already available in our growing library.
+                </p>
+
+                <div class="mt-9 flex flex-wrap items-center justify-center gap-3">
+                    <a
+                        href="/worksheets"
+                        class="inline-flex items-center gap-2 rounded-full bg-pink-500 px-6 py-3 text-sm font-bold text-white shadow-md transition hover:-translate-y-0.5 hover:bg-pink-600 hover:shadow-lg"
+                    >
+                        <Icon name="grid" class="h-4 w-4" />
+                        Browse all worksheets
+                    </a>
+                    <a
+                        href="/nepali"
+                        class="inline-flex items-center gap-2 rounded-full border-2 border-emerald-300 bg-white px-5 py-2.5 text-sm font-bold text-emerald-800 transition hover:-translate-y-0.5 hover:bg-emerald-50 dark:border-emerald-700 dark:bg-neutral-900 dark:text-emerald-200 dark:hover:bg-emerald-950/50"
+                    >
+                        Explore Nepali worksheets
+                    </a>
+                </div>
+
+                <div class="mx-auto mt-12 grid max-w-2xl grid-cols-1 gap-3 text-left sm:grid-cols-3">
+                    <div class="rounded-2xl border-2 border-pink-200 bg-white/80 p-4 dark:border-pink-900/60 dark:bg-neutral-900/70">
+                        <p class="text-2xl">🎨</p>
+                        <p class="mt-2 text-sm font-bold text-neutral-900 dark:text-neutral-100">Fun activities</p>
+                        <p class="mt-1 text-xs leading-relaxed text-body dark:text-neutral-400">Made for curious young learners.</p>
+                    </div>
+                    <div class="rounded-2xl border-2 border-yellow-200 bg-white/80 p-4 dark:border-yellow-900/60 dark:bg-neutral-900/70">
+                        <p class="text-2xl">🖨️</p>
+                        <p class="mt-2 text-sm font-bold text-neutral-900 dark:text-neutral-100">Easy to print</p>
+                        <p class="mt-1 text-xs leading-relaxed text-body dark:text-neutral-400">Free resources for home or class.</p>
+                    </div>
+                    <div class="rounded-2xl border-2 border-cyan-200 bg-white/80 p-4 dark:border-cyan-900/60 dark:bg-neutral-900/70">
+                        <p class="text-2xl">🌱</p>
+                        <p class="mt-2 text-sm font-bold text-neutral-900 dark:text-neutral-100">Growing collection</p>
+                        <p class="mt-1 text-xs leading-relaxed text-body dark:text-neutral-400">New learning sheets added regularly.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</Base>

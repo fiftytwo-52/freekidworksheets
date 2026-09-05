@@ -8,16 +8,6 @@ export const TITLE_SUFFIX = '- freekidworksheets.com';
 
 /** High-value SEO keywords & search terms. */
 export const SEO_KEYWORDS = [
-    'kids worksheet',
-    'kids worksheet pdf',
-    'kids worksheets free',
-    'kids worksheets printable',
-    'kids worksheet english',
-    'kids worksheets kindergarten',
-    'kids worksheet for nursery',
-    'kids worksheets free download',
-    'kids worksheets nursery pdf free download',
-    'kids worksheet maths',
     'body parts for kids worksheet',
     'shapes for kids worksheet',
     'nursery kids worksheet',
@@ -28,6 +18,34 @@ export const SEO_KEYWORDS = [
     'drawing for kids worksheet',
     'weather for kids worksheet',
     'feelings for kids worksheet',
+    'kids worksheet',
+    'kids worksheet pdf',
+    'kids worksheets free',
+    'kids worksheets printable',
+    'kids worksheet english',
+    'kids worksheets kindergarten',
+    'kids worksheet for nursery',
+    'kids worksheets free download',
+    'kids worksheets nursery pdf free download',
+    'kids worksheet maths',
+    'kid worksheets',
+    'free kid worksheets',
+    'diary of a wimpy kid worksheets pdf',
+    'diary of a wimpy kid worksheets',
+    'kids fun worksheets',
+    'free printable kid worksheets',
+    'printable kid worksheets',
+    'little kid worksheets',
+    'wimpy kid worksheets',
+    'therapist aid kid worksheets',
+    'free kid worksheets grade 2',
+    'free kid worksheets pdf',
+    'free printable worksheets pdf',
+    'free kid worksheets 2nd grade',
+    'free kid worksheets math',
+    'free preschool worksheets age 4 5',
+    'setembro amarelo atividades para imprimir',
+    'atividades para imprimir',
 ] as const;
 
 export const DEFAULT_KEYWORDS_STRING = SEO_KEYWORDS.join(', ');
@@ -121,6 +139,7 @@ export const NAV_LINKS = [
     { href: '/', label: 'Home', icon: 'home' },
     { href: '/worksheets', label: 'Worksheets', icon: 'grid' },
     { href: '/nepali', label: 'Nepali', icon: 'grid' },
+    { href: '/portuguese', label: 'Portuguese', icon: 'grid' },
     { href: '/about', label: 'About', icon: 'info' },
     { href: '/contact', label: 'Contact', icon: 'mail' },
 ] as const;
@@ -128,6 +147,7 @@ export const NAV_LINKS = [
 export const FOOTER_EXPLORE = [
     { href: '/', label: 'Home (English)' },
     { href: '/nepali', label: 'Nepali Worksheets' },
+    { href: '/portuguese', label: 'Portuguese Worksheets' },
     { href: '/worksheets', label: 'Worksheets Library' },
     { href: '/search', label: 'Search the library' },
 ] as const;

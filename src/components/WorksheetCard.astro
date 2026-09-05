@@ -9,7 +9,7 @@ interface Props {
 }
 const { entry } = Astro.props;
 const { title, category, ageGroup, code, language } = entry.data;
-const isNepali = language === 'ne';
+const languageLabel = language === 'ne' ? 'नेपाली' : language === 'pt' ? 'Português' : null;
 const detailHref = `/worksheet/${entry.slug}`;
 const attrs = cardDataProps(entry);
 ---
@@ -40,11 +40,11 @@ const attrs = cardDataProps(entry);
         >
             Free
         </span>
-        {isNepali && (
+        {languageLabel && (
             <span
                 class="absolute left-16 top-3.5 rounded-full bg-emerald-500 px-2 py-0.5 font-mono text-[10px] font-bold text-white shadow-xs"
             >
-                नेपाली
+                {languageLabel}
             </span>
         )}
         {code && (

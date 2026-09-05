@@ -10,8 +10,13 @@ import Icon from './Icon.astro';
 interface Props {
     /** Message shown when a filter matches nothing. */
     empty?: string;
+    /** Show the cross-language selector on the complete worksheets library. */
+    showLanguage?: boolean;
 }
-const { empty = 'No worksheets match your filters.' } = Astro.props;
+const {
+    empty = 'No worksheets match your filters.',
+    showLanguage = false,
+} = Astro.props;
 
 const FIELD_LABEL =
     'mb-1 block font-mono text-[10px] font-medium uppercase tracking-widest text-mute dark:text-neutral-500';
@@ -40,7 +45,10 @@ const FIELD_BOX =
 
     <div id="filter-panel" data-filter-panel class="hidden md:block">
         <form
-            class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-4"
+            class:list={[
+                'mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-4',
+                showLanguage && 'md:grid-cols-5',
+            ]}
             role="search"
         >
             <label class="block">
@@ -56,6 +64,18 @@ const FIELD_BOX =
                     <option value="">All ages</option>
                 </select>
             </label>
+
+            {showLanguage && (
+                <label class="block">
+                    <span class={FIELD_LABEL}>Language</span>
+                    <select data-filter-select="language" class={FIELD_BOX}>
+                        <option value="">All languages</option>
+                        <option value="en">English</option>
+                        <option value="ne">Nepali</option>
+                        <option value="pt">Portuguese</option>
+                    </select>
+                </label>
+            )}
 
             <label class="block">
                 <span class={FIELD_LABEL}>Color Type</span>

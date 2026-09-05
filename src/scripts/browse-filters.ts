@@ -16,6 +16,7 @@ interface CardData {
     code: string;
     category: string;
     age: string;
+    language: string;
     colorType: string;
     created: string;
     slug: string;
@@ -43,6 +44,7 @@ function readCards(grid: HTMLElement): CardData[] {
             code: el.getAttribute('data-code') ?? '',
             category: el.getAttribute('data-category') ?? '',
             age: el.getAttribute('data-age') ?? '',
+            language: el.getAttribute('data-language') ?? 'en',
             colorType: el.getAttribute('data-color-type') ?? '',
             created: el.getAttribute('data-created') ?? '',
             slug: el.getAttribute('data-slug') ?? '',
@@ -107,6 +109,7 @@ function initRegion(region: HTMLElement) {
         const q = (searchInput?.value ?? '').trim().toLowerCase();
         const cat = sel('category')?.value ?? '';
         const age = sel('age')?.value ?? '';
+        const language = sel('language')?.value ?? '';
         const colorType = sel('color-type')?.value ?? '';
         const sortBy = sel('sort')?.value ?? 'latest';
 
@@ -121,6 +124,7 @@ function initRegion(region: HTMLElement) {
                 matchesText &&
                 (!cat || c.category === cat) &&
                 (!age || c.age === age) &&
+                (!language || c.language === language) &&
                 (!colorType || c.colorType === colorType);
             (matches ? shown : hidden).push(c);
         }

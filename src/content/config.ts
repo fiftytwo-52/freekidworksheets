@@ -17,7 +17,7 @@ export const collections = {
                     description: z.string().min(60).max(4000),
                     image: image(),
                     tags: z.array(z.string()).default([]),
-                    language: z.enum(['en', 'ne']).default('en'),
+                    language: z.enum(['en', 'ne', 'pt']).default('en'),
                     colorType: z.enum(['black-and-white', 'colorful']).default('black-and-white'),
                 })
                 .refine((d) => d.description.trim().length >= 60, {
