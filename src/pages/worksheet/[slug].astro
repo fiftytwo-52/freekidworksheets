@@ -2,7 +2,6 @@
 // /worksheet/[slug] — worksheet detail page (§11.3).
 // h1 + meta line, large A4 image (print target #print-worksheet),
 // description, download/print actions, related grid, LearningResource JSON-LD.
-import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import RelatedGrid from '../../components/RelatedGrid.astro';
@@ -19,7 +18,7 @@ const { entry } = Astro.props;
 const { title, category, ageGroup, code, description, image, tags = [] } = entry.data;
 const path = `/worksheet/${entry.slug}`;
 const related = await getRelated(entry.slug);
-const isLandscape = image.width > image.height;
+const isLandscape = false;
 
 const metaDescription =
     excerpt(description) ||
@@ -44,7 +43,7 @@ const pageKeywords = Array.from(
     description={metaDescription}
     path={path}
     keywords={pageKeywords}
-    ogImage={image.src}
+    ogImage={image}
     printLandscape={isLandscape}
     jsonLd={learningResourceJsonLd(entry, absoluteUrl(path))}
 >
@@ -113,7 +112,7 @@ const pageKeywords = Array.from(
         <!-- Action bar above worksheet preview -->
         <div class="mt-6 flex flex-wrap items-center gap-3">
             <a
-                href={image.src}
+                href={image}
                 download={`${entry.slug}.png`}
                 class="inline-flex items-center gap-2 rounded-full bg-pink-500 px-6 py-3 text-sm font-bold text-white shadow-md transition-all hover:scale-105 hover:bg-pink-600 active:scale-95"
             >
@@ -137,7 +136,7 @@ const pageKeywords = Array.from(
             id="print-worksheet"
             class="overflow-hidden rounded-2xl border-2 border-cyan-100 bg-white p-4 shadow-md dark:border-neutral-800 dark:bg-neutral-900 sm:p-8"
         >
-            <Image
+            <img
                 src={image}
                 alt={title}
                 class="mx-auto h-auto w-full max-w-2xl rounded-lg object-contain"

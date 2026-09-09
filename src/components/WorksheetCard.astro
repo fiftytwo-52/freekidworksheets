@@ -4,7 +4,6 @@
 // nothing else"). No title/category text is rendered; the data-* attributes
 // are kept so scripts/browse-filters.ts can still filter/sort the grid, and
 // the title stays available to screen readers via the link's aria-label.
-import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import { cardDataProps } from '../lib/filter';
 
@@ -27,11 +26,9 @@ const attrs = cardDataProps(entry);
         aria-label={title}
     >
         <div class="relative aspect-[3/4] w-full bg-neutral-50 p-1.5 dark:bg-neutral-800/50">
-            <Image
+            <img
                 src={entry.data.image}
                 alt=""
-                widths={[320, 480, 640]}
-                sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
                 loading="lazy"
                 decoding="async"
                 class="h-full w-full rounded-lg object-contain transition-transform duration-300 group-hover:scale-[1.02]"

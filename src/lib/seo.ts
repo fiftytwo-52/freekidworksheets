@@ -86,7 +86,7 @@ export function learningResourceJsonLd(
         name: data.title,
         description: data.description,
         url,
-        image: absoluteUrl(data.image.src),
+        image: absoluteUrl(data.image),
         isAccessibleForFree: true,
         educationalLevel: `ages ${data.ageGroup}`,
         learningResourceType: 'worksheet',

@@ -6,7 +6,7 @@ import { defineCollection, z } from 'astro:content';
 export const collections = {
     worksheets: defineCollection({
         type: 'content',
-        schema: ({ image }) =>
+        schema: () =>
             z
                 .object({
                     title: z.string().min(3),
@@ -15,7 +15,7 @@ export const collections = {
                     ageGroup: z.string(),
                     date: z.coerce.date(),
                     description: z.string().min(60).max(4000),
-                    image: image(),
+                    image: z.string(),
                     tags: z.array(z.string()).default([]),
                     language: z.enum(['en', 'ne', 'es', 'pt']).default('en'),
                     colorType: z.enum(['black-and-white', 'colorful']).default('black-and-white'),
