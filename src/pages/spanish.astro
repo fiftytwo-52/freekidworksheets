@@ -31,31 +31,30 @@ const PILL_SECONDARY =
 >
     <!-- 1. Hero — same wide 2-column layout as the English home, light blue tone -->
     <section class="border-b border-neutral-200/80 bg-gradient-to-br from-sky-200 via-blue-100 to-cyan-100 dark:border-neutral-800 dark:from-sky-950/70 dark:via-blue-950/60 dark:to-neutral-900">
-        <div class="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
-            <div class="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-12">
+        <div class="mx-auto w-full max-w-7xl px-4 py-5 sm:px-6 sm:py-14 lg:px-8">
+            <div class="grid grid-cols-1 items-center gap-5 lg:grid-cols-12 lg:gap-12">
                 <!-- Left column: Headline, intro text, & primary actions -->
                 <div class="text-left lg:col-span-7">
-                    <h1 class="text-3xl font-extrabold tracking-tight text-neutral-900 sm:text-4xl lg:text-5xl dark:text-white">
+                    <h1 class="text-2xl font-extrabold tracking-tight text-neutral-900 sm:text-4xl lg:text-5xl dark:text-white">
                         Fichas en Español <span class="text-sky-500">para Niños</span> (Spanish Worksheets)
                     </h1>
                     <p class="mt-3 hidden max-w-xl text-base font-normal leading-relaxed text-neutral-600 sm:block sm:text-lg dark:text-neutral-300">
                         Grafomotricidad, trazos, dibujos para colorear — ¡gratis para descargar e imprimir!
                     </p>
-                    <div class="mt-6 flex flex-wrap items-center gap-3">
+                    <div class="mt-3 flex flex-wrap items-center gap-2.5">
                         <a
                             href="/worksheets/spanish"
-                            class="inline-flex items-center gap-2 rounded-full bg-pink-500 px-6 py-2.5 text-sm font-bold text-white shadow-sm transition hover:scale-105 hover:bg-pink-600 active:scale-95"
+                            class="inline-flex items-center gap-1.5 rounded-full bg-pink-500 px-4 py-2 text-xs font-bold text-white shadow-sm transition hover:scale-105 hover:bg-pink-600 active:scale-95 sm:px-6 sm:py-2.5 sm:text-sm"
                         >
                             Ver todas las fichas
-                            <Icon name="arrow-right" class="h-4 w-4" />
+                            <Icon name="arrow-right" class="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                         </a>
                         {spanishWorksheets.length > 0 && (
-                            <p class="inline-flex items-center gap-2 rounded-full border border-white/60 bg-white/70 px-4 py-2 text-sm font-semibold text-neutral-700 shadow-sm backdrop-blur-sm dark:border-neutral-700 dark:bg-neutral-900/70 dark:text-neutral-200">
-                                <Icon name="grid" class="h-4 w-4 text-sky-500" />
-                                <span>
-                                    <strong class="font-extrabold text-neutral-900 dark:text-white">{spanishWorksheets.length}+</strong>
-                                    fichas disponibles
-                                </span>
+                            <p class="inline-flex items-center gap-1.5 rounded-full border border-white/60 bg-white/70 px-2.5 py-1.5 text-xs font-semibold text-neutral-700 shadow-sm backdrop-blur-sm sm:px-4 sm:py-2 sm:text-sm dark:border-neutral-700 dark:bg-neutral-900/70 dark:text-neutral-200">
+                                <Icon name="grid" class="h-3.5 w-3.5 text-sky-500" />
+                                <strong class="font-extrabold text-neutral-900 dark:text-white">{spanishWorksheets.length}+</strong>
+                                <span class="hidden sm:inline"> fichas disponibles</span>
+                                <span class="sm:hidden">fichas</span>
                             </p>
                         )}
                     </div>
@@ -114,7 +113,7 @@ const PILL_SECONDARY =
 
     <!-- 2. Spanish Worksheets Feed -->
     <section
-        class="w-full max-w-none px-4 py-12 sm:px-6 lg:px-8"
+        class="w-full max-w-none px-4 py-7 sm:px-6 sm:py-12 lg:px-8"
         aria-labelledby="spanish-heading"
     >
         <div class="flex flex-wrap items-end justify-between gap-4">
