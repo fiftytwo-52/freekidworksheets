@@ -23,8 +23,6 @@ const EYEBROW =
     'font-mono text-[11px] font-medium uppercase tracking-widest text-mute dark:text-neutral-500';
 const PILL_PRIMARY =
     'inline-flex items-center gap-1.5 rounded-full bg-pink-500 px-6 py-2.5 text-sm font-bold text-white transition-transform hover:scale-105 hover:bg-pink-600 shadow-sm dark:bg-pink-600';
-const PILL_SECONDARY =
-    'inline-flex items-center gap-1.5 rounded-full border-2 border-yellow-300 bg-yellow-50 px-4 py-2 text-sm font-bold text-yellow-900 transition-transform hover:scale-105 hover:bg-yellow-100 dark:border-yellow-600 dark:bg-yellow-900/40 dark:text-yellow-200';
 ---
 
 <Base
@@ -118,19 +116,22 @@ const PILL_SECONDARY =
         class="w-full max-w-none px-4 py-7 sm:px-6 sm:py-12 lg:px-8"
         aria-labelledby="featured-heading"
     >
-        <div class="flex flex-wrap items-end justify-between gap-4">
-            <div>
+        <div class="flex items-center justify-between gap-3">
+            <div class="min-w-0">
                 <p class={EYEBROW}>Worksheet Collection</p>
                 <h2
                     id="featured-heading"
-                    class="mt-2 text-2xl font-bold tracking-tight text-neutral-900 sm:text-3xl dark:text-neutral-100"
+                    class="mt-1 text-lg font-bold tracking-tight text-neutral-900 sm:text-2xl lg:text-3xl dark:text-neutral-100"
                 >
                     Featured Worksheets
                 </h2>
             </div>
-            <a href="/worksheets" class={PILL_SECONDARY}>
+            <a
+                href="/worksheets"
+                class="inline-flex shrink-0 items-center gap-1.5 rounded-full border-2 border-yellow-300 bg-yellow-50 px-3 py-1.5 text-xs font-bold text-yellow-900 transition-transform hover:scale-105 hover:bg-yellow-100 hover:text-yellow-800 dark:border-yellow-600 dark:bg-yellow-900/40 dark:text-yellow-200 sm:px-4 sm:py-2 sm:text-sm"
+            >
                 View all worksheets
-                <Icon name="arrow-right" class="h-4 w-4" />
+                <Icon name="arrow-right" class="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </a>
         </div>
 
