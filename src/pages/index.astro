@@ -179,33 +179,7 @@ const PILL_PRIMARY =
         </div>
     </section>
 
-    <!-- 4. Popular Worksheet Categories & Learning Topics -->
-    <section class="w-full max-w-none px-4 py-8 sm:px-6 lg:px-8" aria-labelledby="topics-heading">
-        <div class="rounded-3xl border-2 border-cyan-100 bg-cyan-50/40 p-6 sm:p-8 dark:border-cyan-900/40 dark:bg-neutral-900">
-            <div class="text-center sm:text-left">
-                <p class={EYEBROW}>Quick Discovery</p>
-                <h2 id="topics-heading" class="mt-1 text-2xl font-extrabold tracking-tight text-neutral-900 sm:text-3xl dark:text-neutral-100">
-                    Explore Popular Topics & Free Worksheets
-                </h2>
-                <p class="mt-2 text-sm text-neutral-600 dark:text-neutral-300">
-                    Find high-quality printable worksheets and activity sheets across core foundational subjects, early childhood topics, and creative activities.
-                </p>
-            </div>
-            <div class="mt-6 flex flex-wrap gap-2.5">
-                {POPULAR_TOPICS.map((topic) => (
-                    <a
-                        href={`/search?q=${encodeURIComponent(topic.query)}`}
-                        class="inline-flex items-center gap-1.5 rounded-2xl border border-neutral-200 bg-white px-4 py-2.5 text-xs font-bold text-neutral-800 shadow-sm transition hover:border-pink-300 hover:bg-pink-50 hover:text-pink-600 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:border-pink-500/50 dark:hover:bg-neutral-700/50 dark:hover:text-pink-300"
-                    >
-                        <span class="h-2 w-2 rounded-full bg-pink-500"></span>
-                        {topic.label}
-                    </a>
-                ))}
-            </div>
-        </div>
-    </section>
-
-    <!-- 5. FAQ -->
+    <!-- 4. FAQ -->
     <section class="w-full max-w-none px-4 pb-16 sm:px-6 lg:px-8">
         <Faq />
     </section>
