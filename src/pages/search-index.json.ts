@@ -14,7 +14,7 @@ export const GET: APIRoute = async () => {
         ageGroup: entry.data.ageGroup,
         date: entry.data.date.toISOString().slice(0, 10),
         description: entry.data.description,
-        image: entry.data.image,
+        image: entry.data.image.src,
         tags: entry.data.tags ?? [],
         language: entry.data.language ?? 'en',
     }));
