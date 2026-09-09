@@ -4,4 +4,11 @@
 # since _headers can only match paths, not hostnames.
 https://freekidworksheets.pages.dev/*
   X-Robots-Tag: noindex
+
+# Revalidate HTML on the production domain so every Pages deployment is
+# visible immediately (the zone-level Cache Rule otherwise pins cached HTML
+# for 7 days with s-maxage=604800). Hashed static assets are unaffected in
+# practice — their URLs are unique per build and revalidation is cheap.
+https://freekidworksheets.com/*
+  Cache-Control: no-cache
   
