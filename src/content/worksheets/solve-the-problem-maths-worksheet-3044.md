@@ -1,5 +1,5 @@
 ---
-title: "Solve the problem Maths Worksheet"
+title: "Solve the Problem Maths Worksheet #2 — Black and White"
 code: "3044"
 category: "Math"
 ageGroup: "7-8"

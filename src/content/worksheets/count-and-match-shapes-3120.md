@@ -1,5 +1,5 @@
 ---
-title: "Count and match shapes"
+title: "Count and Match Shapes — Ages 5-6"
 code: "3120"
 category: "Math"
 ageGroup: "5-6"
