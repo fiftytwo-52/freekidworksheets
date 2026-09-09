@@ -63,17 +63,17 @@ import { CONTACT_EMAIL, GA_ID, SITE_NAME } from '../data/site';
 
     <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">Contact</h2>
     <p>
-        Questions about this policy? Reach me at
+        Questions about this policy?
         {CONTACT_EMAIL ? (
             <a
                 href={`mailto:${CONTACT_EMAIL}`}
                 class="font-medium text-accent underline underline-offset-4 transition-colors hover:text-ink dark:hover:text-neutral-100"
             >
-                {CONTACT_EMAIL}
+                Click here
             </a>
         ) : (
             'the contact address listed on my contact page (being finalized)'
         )}
-        .
+        to email me.
     </p>
 </StaticPage>

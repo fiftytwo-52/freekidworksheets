@@ -6,12 +6,14 @@ import FilterPanel from '../components/FilterPanel.astro';
 import Icon from '../components/Icon.astro';
 import WorksheetCard from '../components/WorksheetCard.astro';
 import { POPULAR_TOPICS } from '../data/site';
-import { getEnglishWorksheets } from '../lib/content';
+import { getEnglishWorksheets, getAllWorksheets } from '../lib/content';
 import { faqJsonLd, websiteJsonLd } from '../lib/seo';
 
 // Build-time data for English feed
 const all = await getEnglishWorksheets();
-const featured = all.slice(0, 8); // 8 latest english worksheets
+const featured = all.slice(0, 16); // 16 latest english worksheets = 4 rows of 4 cards; more via /worksheets pagination
+// Whole-library total (all languages) for the hero "N+ Worksheets available" stat.
+const totalWorksheets = (await getAllWorksheets()).length;
 
 
 const DESCRIPTION =
@@ -40,7 +42,7 @@ const PILL_SECONDARY =
                     <h1 class="text-3xl font-extrabold tracking-tight text-neutral-900 sm:text-4xl lg:text-5xl dark:text-white">
                         Fun Learning Sheets <span class="text-pink-500">for Kids</span>
                     </h1>
-                    <p class="mt-3 max-w-xl text-base font-normal leading-relaxed text-neutral-600 sm:text-lg dark:text-neutral-300">
+                    <p class="mt-3 hidden max-w-xl text-base font-normal leading-relaxed text-neutral-600 sm:block sm:text-lg dark:text-neutral-300">
                         Find printable worksheets for preschool through primary grades, from alphabet tracing and math to coloring and vocabulary.
                     </p>
                     <div class="mt-6 flex flex-wrap items-center gap-3">
@@ -51,17 +53,24 @@ const PILL_SECONDARY =
                             Browse All Worksheets
                             <Icon name="arrow-right" class="h-4 w-4" />
                         </a>
+                        <p class="inline-flex items-center gap-2 rounded-full border border-white/60 bg-white/70 px-4 py-2 text-sm font-semibold text-neutral-700 shadow-sm backdrop-blur-sm dark:border-neutral-700 dark:bg-neutral-900/70 dark:text-neutral-200">
+                            <Icon name="grid" class="h-4 w-4 text-pink-500" />
+                            <span>
+                                <strong class="font-extrabold text-neutral-900 dark:text-white">{totalWorksheets}+</strong>
+                                Worksheets available
+                            </span>
+                        </p>
                     </div>
                 </div>
 
                 <!-- Right column: Interactive search & quick popular topics card -->
                 <div class="lg:col-span-5">
-                    <div class="rounded-3xl border border-neutral-200/80 bg-white/90 p-5 shadow-sm backdrop-blur-sm sm:p-6 dark:border-neutral-800 dark:bg-neutral-900/90">
-                        <h2 class="flex items-center gap-2 text-sm font-bold text-neutral-900 dark:text-neutral-100">
+                    <div class="rounded-3xl border border-neutral-200/80 bg-white/90 p-3 shadow-sm backdrop-blur-sm sm:p-6 dark:border-neutral-800 dark:bg-neutral-900/90">
+                        <h2 class="hidden items-center gap-2 text-sm font-bold text-neutral-900 sm:flex dark:text-neutral-100">
                             <Icon name="search" class="h-4 w-4 text-pink-500" />
                             Search Worksheets
                         </h2>
-                        <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+                        <p class="mt-1 hidden text-xs text-neutral-500 sm:block dark:text-neutral-400">
                             Find activities by title, topic, subject, or 4-digit code.
                         </p>
 
@@ -84,7 +93,7 @@ const PILL_SECONDARY =
                         </form>
 
                         <!-- Popular Topic Chips -->
-                        <div class="mt-4 border-t border-neutral-100 pt-3 dark:border-neutral-800">
+                        <div class="mt-4 hidden border-t border-neutral-100 pt-3 sm:block dark:border-neutral-800">
                             <p class="mb-2 text-[11px] font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
                                 Popular Topics
                             </p>
@@ -129,9 +138,9 @@ const PILL_SECONDARY =
         {
             featured.length > 0 ? (
                 <div data-filter-region class="mt-6">
-                    <FilterPanel empty="No worksheets match your filters." />
+                    <FilterPanel empty="No worksheets match your filters." lang="en" />
                     <div
-                        class="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
+                        class="mt-6 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4"
                         data-card-grid
                     >
                         {featured.map((entry) => (

@@ -7,7 +7,7 @@
 // highlighted from the current path.
 import Brand from './Brand.astro';
 import Icon from './Icon.astro';
-import { NAV_LINKS } from '../data/site';
+import { LANGUAGE_LINKS, NAV_LINKS } from '../data/site';
 
 interface Props {
     /** Current path, to highlight the active link ('' = home). */
@@ -20,6 +20,43 @@ function isActive(linkHref: string): boolean {
         ? currentPath === '/' || currentPath === ''
         : currentPath === linkHref || currentPath.startsWith(`${linkHref}/`);
 }
+
+/** Label of the language whose page (or a child of it) is currently open. */
+function currentLanguageLabel(): string {
+    const match = LANGUAGE_LINKS.find((l) => isActive(l.href));
+    return match ? match.label : 'English';
+}
+
+/** Two-letter initials for each language, in LANGUAGE_LINKS order. */
+const LANGUAGE_INITIALS = ['EN', 'NP', 'ES'] as const;
+
+function currentLanguageInitials(): string {
+    const index = LANGUAGE_LINKS.findIndex((l) => isActive(l.href));
+    return LANGUAGE_INITIALS[index] ?? 'EN';
+}
+
+/**
+ * The Worksheets nav link points at the library matching the current language
+ * version (user requirement): browsing the Nepali version opens the Nepali-only
+ * library, the Spanish version the Spanish-only library, everything else the
+ * English library. Covers the language homes and their library pages.
+ */
+function libraryHref(): string {
+    if (
+        currentPath.startsWith('/nepali') ||
+        currentPath.startsWith('/worksheets/nepali')
+    ) {
+        return '/worksheets/nepali';
+    }
+    if (
+        currentPath.startsWith('/spanish') ||
+        currentPath.startsWith('/worksheets/spanish')
+    ) {
+        return '/worksheets/spanish';
+    }
+    return '/worksheets';
+}
+const LIBRARY_HREF = libraryHref();
 
 const DESKTOP_LINK =
     'flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium transition-colors';
@@ -55,11 +92,12 @@ const ICON_BUTTON =
         <div class="hidden items-center gap-1 lg:flex">
             <ul class="flex items-center gap-1">
                 {NAV_LINKS.map((link) => {
-                    const active = isActive(link.href);
+                    const href = link.href === '/worksheets' ? LIBRARY_HREF : link.href;
+                    const active = isActive(href);
                     return (
                         <li>
                             <a
-                                href={link.href}
+                                href={href}
                                 data-nav-link
                                 aria-current={active ? 'page' : undefined}
                                 class:list={[
@@ -80,6 +118,44 @@ const ICON_BUTTON =
                     );
                 })}
             </ul>
+
+            <!-- Language switcher dropdown -->
+            <details class="group relative" data-language-switcher>
+                <summary
+                    class="flex cursor-pointer list-none items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium text-body transition-colors hover:bg-neutral-100 hover:text-ink dark:text-neutral-300 dark:hover:bg-neutral-900 dark:hover:text-neutral-100 [&::-webkit-details-marker]:hidden"
+                    aria-label="Switch language"
+                    title="Switch language"
+                >
+                    <Icon name="globe" class="h-4 w-4 text-mute dark:text-neutral-500" />
+                    <span class="font-mono text-[11px] font-bold tracking-wider text-accent">{currentLanguageInitials()}</span>
+                    <span>{currentLanguageLabel()}</span>
+                    <Icon name="chevron-down" class="h-3.5 w-3.5 text-mute transition-transform group-open:rotate-180 dark:text-neutral-500" />
+                </summary>
+                <ul class="absolute right-0 top-full z-50 mt-2 w-40 overflow-hidden rounded-xl border border-hairline bg-elevated py-1 shadow-lg dark:border-neutral-800 dark:bg-neutral-900">
+                    {LANGUAGE_LINKS.map((lang) => {
+                        const active = isActive(lang.href);
+                        return (
+                            <li>
+                                <a
+                                        href={lang.href}
+                                        data-language-link
+                                        aria-current={active ? 'page' : undefined}
+                                        class:list={[
+                                            'flex items-center justify-between px-4 py-2 text-sm font-medium transition-colors',
+                                        active
+                                            ? 'bg-neutral-100 text-ink dark:bg-neutral-800 dark:text-neutral-100'
+                                            : 'text-body hover:bg-neutral-100 hover:text-ink dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-neutral-100',
+                                    ]}
+                                >
+                                    {lang.label}
+                                    {active && <Icon name="star" class="h-3.5 w-3.5 text-accent" />}
+                                </a>
+                            </li>
+                        );
+                    })}
+                </ul>
+            </details>
+
             <div class="mx-1 h-5 w-px bg-hairline dark:bg-neutral-800"></div>
             <button
                 type="button"
@@ -93,8 +169,44 @@ const ICON_BUTTON =
             </button>
         </div>
 
-        <!-- Mobile action row: theme toggle + hamburger -->
+        <!-- Mobile action row: language switcher + theme toggle + hamburger -->
         <div class="flex items-center gap-2 lg:hidden">
+            <details class="relative" data-language-switcher>
+                <summary
+                    class="inline-flex h-9 cursor-pointer list-none items-center gap-1.5 rounded-md border border-hairline bg-elevated px-2.5 text-mute transition-colors hover:bg-neutral-100 hover:text-ink dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 [&::-webkit-details-marker]:hidden"
+                    aria-label="Switch language"
+                    title="Switch language"
+                >
+                    <Icon name="globe" class="h-[18px] w-[18px]" />
+                    <span class="font-mono text-[11px] font-bold tracking-wider text-neutral-600 dark:text-neutral-300">{currentLanguageInitials()}</span>
+                </summary>
+                <ul class="absolute right-0 top-full z-50 mt-2 w-36 overflow-hidden rounded-xl border border-hairline bg-elevated py-1 shadow-lg dark:border-neutral-800 dark:bg-neutral-900">
+                    {LANGUAGE_LINKS.map((lang, langIndex) => {
+                        const active = isActive(lang.href);
+                        return (
+                            <li>
+                                <a
+                                    href={lang.href}
+                                    data-language-link
+                                    aria-current={active ? 'page' : undefined}
+                                    class:list={[
+                                        'flex items-center justify-between px-4 py-2 text-sm font-medium transition-colors',
+                                        active
+                                            ? 'bg-neutral-100 text-ink dark:bg-neutral-800 dark:text-neutral-100'
+                                            : 'text-body hover:bg-neutral-100 hover:text-ink dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-neutral-100',
+                                    ]}
+                                >
+                                    <span class="flex items-center gap-2">
+                                        <span class="rounded bg-neutral-100 px-1.5 py-0.5 font-mono text-[10px] font-bold text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">{LANGUAGE_INITIALS[langIndex]}</span>
+                                        {lang.label}
+                                    </span>
+                                    {active && <Icon name="star" class="h-3.5 w-3.5 text-accent" />}
+                                </a>
+                            </li>
+                        );
+                    })}
+                </ul>
+            </details>
             <button
                 type="button"
                 data-theme-toggle
@@ -125,11 +237,12 @@ const ICON_BUTTON =
     >
         <ul class="flex flex-col gap-1">
             {NAV_LINKS.map((link) => {
-                const active = isActive(link.href);
+                const href = link.href === '/worksheets' ? LIBRARY_HREF : link.href;
+                const active = isActive(href);
                 return (
                     <li>
                         <a
-                            href={link.href}
+                            href={href}
                             data-nav-link
                             aria-current={active ? 'page' : undefined}
                             class:list={[
@@ -150,5 +263,35 @@ const ICON_BUTTON =
                 );
             })}
         </ul>
+
+        <!-- Language switcher (mobile) -->
+        <div class="mt-3 border-t border-hairline pt-3 dark:border-neutral-800">
+            <p class="mb-1 px-3 font-mono text-[11px] font-medium uppercase tracking-widest text-mute dark:text-neutral-500">
+                Language
+            </p>
+            <ul class="flex flex-col gap-1">
+                {LANGUAGE_LINKS.map((lang) => {
+                    const active = isActive(lang.href);
+                    return (
+                        <li>
+                            <a
+                                href={lang.href}
+                                data-language-link
+                                aria-current={active ? 'page' : undefined}
+                                class:list={[
+                                    'flex items-center justify-between px-3 py-2.5 text-sm font-medium transition-colors',
+                                    active
+                                        ? 'bg-neutral-100 text-ink dark:bg-neutral-900 dark:text-neutral-100'
+                                        : 'text-body hover:bg-neutral-100 hover:text-ink dark:text-neutral-300 dark:hover:bg-neutral-900 dark:hover:text-neutral-100',
+                                ]}
+                            >
+                                {lang.label}
+                                {active && <Icon name="star" class="h-3.5 w-3.5 text-accent" />}
+                            </a>
+                        </li>
+                    );
+                })}
+            </ul>
+        </div>
     </div>
 </header>

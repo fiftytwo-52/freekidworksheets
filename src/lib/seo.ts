@@ -95,6 +95,6 @@ export function learningResourceJsonLd(
             data.tags.length > 0 ? data.tags : ['early learning', data.category],
         datePublished: data.date.toISOString().slice(0, 10),
         provider: providerOrganization,
-        inLanguage: data.language === 'ne' ? 'ne' : 'en',
+        inLanguage: data.language,
     };
 }

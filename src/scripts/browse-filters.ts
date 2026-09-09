@@ -26,6 +26,13 @@ interface CardData {
 // Canonical age ordering so "9+" sorts last instead of first lexically.
 const AGE_ORDER = ['3-4', '5-6', '7-8', '9+', '10+', '11+', '12+'];
 
+// Result-count units per UI language (FilterPanel sets data-locale).
+const COUNT_UNITS: Record<string, [string, string]> = {
+    en: ['result', 'results'],
+    es: ['resultado', 'resultados'],
+    ne: ['नतिजा', 'नतिजाहरू'],
+};
+
 function ageCompare(a: string, b: string): number {
     const ia = AGE_ORDER.indexOf(a);
     const ib = AGE_ORDER.indexOf(b);
@@ -94,6 +101,9 @@ function initRegion(region: HTMLElement) {
         selects.find((s) => s.getAttribute('data-filter-select') === name);
     const countEl = region.querySelector<HTMLElement>('[data-result-count]');
     const emptyEl = region.querySelector<HTMLElement>('[data-empty-state]');
+    const units =
+        COUNT_UNITS[countEl?.getAttribute('data-locale') ?? 'en'] ??
+        COUNT_UNITS.en;
 
     // Derive option lists from the visible cards (kept in sync with content).
     fillSelect(
@@ -153,7 +163,7 @@ function initRegion(region: HTMLElement) {
 
         const n = shown.length;
         if (countEl) {
-            countEl.textContent = `${n} ${n === 1 ? 'result' : 'results'}`;
+            countEl.textContent = `${n} ${n === 1 ? units[0] : units[1]}`;
         }
         if (emptyEl) emptyEl.hidden = n !== 0;
     }

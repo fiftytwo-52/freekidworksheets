@@ -4,19 +4,26 @@
 // data-* attributes by scripts/browse-filters.ts, and the whole panel is
 // toggled on mobile by scripts/theme.ts ([data-filter-toggle]). No-JS note:
 // the panel simply does nothing without the script (page still lists items).
+// All labels are localized via data/ui-strings (lang prop, default English).
 // Geist styling: hairline card, mono field eyebrows, 6px inputs (DESIGN.md).
 import Icon from './Icon.astro';
+import { UI_STRINGS } from '../data/ui-strings';
 
 interface Props {
     /** Message shown when a filter matches nothing. */
     empty?: string;
     /** Show the cross-language selector on the complete worksheets library. */
     showLanguage?: boolean;
+    /** UI language for labels (default English). */
+    lang?: 'en' | 'ne' | 'es';
 }
 const {
     empty = 'No worksheets match your filters.',
     showLanguage = false,
+    lang = 'en',
 } = Astro.props;
+
+const s = UI_STRINGS[lang];
 
 const FIELD_LABEL =
     'mb-1 block font-mono text-[10px] font-medium uppercase tracking-widest text-mute dark:text-neutral-500';
@@ -26,7 +33,7 @@ const FIELD_BOX =
 
 <section
     class="rounded-lg border border-hairline bg-elevated p-4 dark:border-neutral-800 dark:bg-neutral-900"
-    aria-label="Filter and sort worksheets"
+    aria-label={s.filtersSort}
 >
     <!-- Mobile toggle (theme.ts toggles .filter-open on the panel) -->
     <button
@@ -38,7 +45,7 @@ const FIELD_BOX =
     >
         <span class="flex items-center gap-2">
             <Icon name="grid" class="h-4 w-4" />
-            Filters & sort
+            {s.filtersSort}
         </span>
         <Icon name="chevron-down" class="h-4 w-4" />
     </button>
@@ -52,16 +59,16 @@ const FIELD_BOX =
             role="search"
         >
             <label class="block">
-                <span class={FIELD_LABEL}>Category</span>
+                <span class={FIELD_LABEL}>{s.category}</span>
                 <select data-filter-select="category" class={FIELD_BOX}>
-                    <option value="">All categories</option>
+                    <option value="">{s.allCategories}</option>
                 </select>
             </label>
 
             <label class="block">
-                <span class={FIELD_LABEL}>Age group</span>
+                <span class={FIELD_LABEL}>{s.ageGroup}</span>
                 <select data-filter-select="age" class={FIELD_BOX}>
-                    <option value="">All ages</option>
+                    <option value="">{s.allAges}</option>
                 </select>
             </label>
 
@@ -72,26 +79,26 @@ const FIELD_BOX =
                         <option value="">All languages</option>
                         <option value="en">English</option>
                         <option value="ne">Nepali</option>
-                        <option value="pt">Portuguese</option>
+                        <option value="es">Spanish</option>
                     </select>
                 </label>
             )}
 
             <label class="block">
-                <span class={FIELD_LABEL}>Color Type</span>
+                <span class={FIELD_LABEL}>{s.colorType}</span>
                 <select data-filter-select="color-type" class={FIELD_BOX}>
-                    <option value="">All types</option>
-                    <option value="black-and-white">Black & White</option>
-                    <option value="colorful">Colorful</option>
+                    <option value="">{s.allTypes}</option>
+                    <option value="black-and-white">{s.blackAndWhite}</option>
+                    <option value="colorful">{s.colorful}</option>
                 </select>
             </label>
 
             <label class="block">
-                <span class={FIELD_LABEL}>Sort by</span>
+                <span class={FIELD_LABEL}>{s.sortBy}</span>
                 <select data-filter-select="sort" class={FIELD_BOX}>
-                    <option value="latest">Latest</option>
-                    <option value="az">A to Z</option>
-                    <option value="grade">Grade (Ascending)</option>
+                    <option value="latest">{s.latest}</option>
+                    <option value="az">{s.az}</option>
+                    <option value="grade">{s.gradeAsc}</option>
                 </select>
             </label>
 
@@ -100,16 +107,16 @@ const FIELD_BOX =
                     type="button"
                     data-filter-reset
                     class="inline-flex w-full items-center justify-center gap-2 rounded-md border border-hairline bg-transparent px-3 py-2 text-sm font-medium text-ink transition-colors hover:border-ink hover:bg-neutral-100 focus:outline-none focus:ring-2 focus:ring-ink/30 dark:border-neutral-700 dark:text-neutral-100 dark:hover:border-neutral-500 dark:hover:bg-neutral-800"
-                    aria-label="Reset worksheet filters"
+                    aria-label={s.resetFilters}
                 >
                     <Icon name="rotate-ccw" class="h-4 w-4" aria-hidden="true" />
-                    <span>Reset filters</span>
+                    <span>{s.resetFilters}</span>
                 </button>
             </div>
         </form>
 
         <p class="mt-3 font-mono text-[11px] uppercase tracking-wider text-mute dark:text-neutral-500">
-            <span data-result-count>0 results</span>
+            <span data-result-count data-locale={lang}>{`0 ${s.results}`}</span>
         </p>
         <p
             data-empty-state

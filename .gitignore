@@ -33,3 +33,7 @@ samplesheets/
 **/*prompt*.txt
 **/*instruction*.txt
 **/*instructions*.txt
+**/*new-sheet-rule*.md
+
+# wrangler local state / temp deploy artifacts
+.wrangler/

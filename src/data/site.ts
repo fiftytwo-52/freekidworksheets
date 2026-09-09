@@ -44,8 +44,17 @@ export const SEO_KEYWORDS = [
     'free kid worksheets 2nd grade',
     'free kid worksheets math',
     'free preschool worksheets age 4 5',
-    'setembro amarelo atividades para imprimir',
-    'atividades para imprimir',
+    'grafomotricidad',
+    'grafomotricidad 3 años',
+    'fichas grafomotricidad',
+    'dibujos colorear',
+    'dibujos para colorear',
+    'fichas grafomotricidad para imprimir',
+    'grafomotricidad para niños',
+    'dibujos para colorear niños',
+    'actividades para niños de 3 años',
+    'spanish worksheets for kids',
+    'spanish worksheets printable',
     'nepali worksheets with answers pdf',
     'nepali worksheets pdf free download',
     'nepali worksheets pdf',
@@ -135,15 +144,40 @@ export const FAQS = [
     },
 ] as const;
 
-/** BrowseLayout configs for the library pages (§11.2). */
+/**
+ * BrowseLayout configs for the language-specific worksheet libraries (§11.2).
+ * Each language version of the site links to its own library:
+ *   - English home  → /worksheets         (English worksheets only)
+ *   - Nepali home   → /worksheets/nepali  (Nepali worksheets only)
+ *   - Spanish home  → /worksheets/spanish (Spanish worksheets only)
+ */
 export const BROWSE_PAGES = {
     worksheets: {
         path: '/worksheets',
+        language: 'en',
         kicker: 'FREE PRINTABLE LIBRARY',
         title: 'Worksheets',
         blurb:
             'Browse every free printable activity worksheet in the library — tracing, alphabet, math, coloring, and writing practice for young learners.',
         empty: 'No worksheets match your filters.',
+    },
+    nepali: {
+        path: '/worksheets/nepali',
+        language: 'ne',
+        kicker: 'नेपाली कार्यपत्र पुस्तकालय',
+        title: 'नेपाली कार्यपत्रहरू (Nepali Worksheets)',
+        blurb:
+            'क ख ग ट्रेसिङ, गन्ती, शब्द मिलान र लेखन अभ्यास — सबै नेपाली कार्यपत्रहरू निःशुल्क डाउनलोड गर्नुहोस् र प्रिन्ट गर्नुहोस्।',
+        empty: 'कुनै कार्यपत्र भेटिएन (No worksheets match your filters).',
+    },
+    spanish: {
+        path: '/worksheets/spanish',
+        language: 'es',
+        kicker: 'BIBLIOTECA DE FICHAS GRATIS',
+        title: 'Fichas en Español (Spanish Worksheets)',
+        blurb:
+            'Explora todas las fichas gratis en español — grafomotricidad, trazos, primeras letras y dibujos para colorear, listas para descargar e imprimir.',
+        empty: 'No se encontraron fichas (No worksheets match your filters).',
     },
 } as const;
 
@@ -151,16 +185,21 @@ export const BROWSE_PAGES = {
 export const NAV_LINKS = [
     { href: '/', label: 'Home', icon: 'home' },
     { href: '/worksheets', label: 'Worksheets', icon: 'grid' },
-    { href: '/nepali', label: 'Nepali', icon: 'grid' },
-    { href: '/portuguese', label: 'Portuguese', icon: 'grid' },
     { href: '/about', label: 'About', icon: 'info' },
     { href: '/contact', label: 'Contact', icon: 'mail' },
+] as const;
+
+/** Language switcher entries (nav dropdown + mobile drawer). */
+export const LANGUAGE_LINKS = [
+    { href: '/', label: 'English' },
+    { href: '/nepali', label: 'नेपाली' },
+    { href: '/spanish', label: 'Español' },
 ] as const;
 
 export const FOOTER_EXPLORE = [
     { href: '/', label: 'Home (English)' },
     { href: '/nepali', label: 'Nepali Worksheets' },
-    { href: '/portuguese', label: 'Portuguese Worksheets' },
+    { href: '/spanish', label: 'Spanish Worksheets' },
     { href: '/worksheets', label: 'Worksheets Library' },
     { href: '/search', label: 'Search the library' },
 ] as const;

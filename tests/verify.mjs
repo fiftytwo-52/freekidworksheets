@@ -150,13 +150,14 @@ async function checkDist(slugs) {
 
     const expected = [
         'index.html',
-        'nepali/index.html',
-        'worksheets/index.html',
-        'search/index.html',
-        'about/index.html',
-        'contact/index.html',
-        'privacy-policy/index.html',
-        'terms/index.html',
+        'nepali.html',
+        'spanish.html',
+        'worksheets.html',
+        'search.html',
+        'about.html',
+        'contact.html',
+        'privacy-policy.html',
+        'terms.html',
         '404.html',
         '500.html',
         'search-index.json',
@@ -176,8 +177,8 @@ async function checkDist(slugs) {
     // Worksheet detail pages — one per entry.
     let detailOk = true;
     for (const slug of slugs) {
-        if (!existsSync(path.join(DIST, 'worksheet', slug, 'index.html'))) {
-            fail(`dist/worksheet/${slug}/index.html missing`);
+        if (!existsSync(path.join(DIST, 'worksheet', `${slug}.html`))) {
+            fail(`dist/worksheet/${slug}.html missing`);
             detailOk = false;
         }
     }
@@ -204,8 +205,8 @@ async function checkDist(slugs) {
 
     // Pagination: /worksheets/page/2 when > 20 worksheets.
     const worksheets = slugs.length;
-    if (worksheets > 20 && !existsSync(path.join(DIST, 'worksheets', 'page', '2', 'index.html'))) {
-        fail('dist/worksheets/page/2/index.html missing (>20 items)');
+    if (worksheets > 20 && !existsSync(path.join(DIST, 'worksheets', 'page', '2.html'))) {
+        fail('dist/worksheets/page/2.html missing (>20 items)');
     }
 }
 

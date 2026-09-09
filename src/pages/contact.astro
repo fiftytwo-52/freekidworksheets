@@ -2,6 +2,7 @@
 // /contact — clean placeholder with a mailto link driven by CONTACT_EMAIL
 // (§11.5). Real contact details are filled in post-dev.
 import StaticPage from '../components/StaticPage.astro';
+import Icon from '../components/Icon.astro';
 import { CONTACT_EMAIL } from '../data/site';
 ---
 <StaticPage
@@ -19,11 +20,14 @@ import { CONTACT_EMAIL } from '../data/site';
 
     {CONTACT_EMAIL ? (
         <p>
+            <!-- The address stays out of the visible page; the button opens the visitor's email app. -->
             <a
                 href={`mailto:${CONTACT_EMAIL}`}
-                class="font-medium text-accent underline underline-offset-4 transition-colors hover:text-ink dark:hover:text-neutral-100"
+                class="inline-flex items-center gap-2 rounded-full bg-pink-500 px-6 py-2.5 text-sm font-bold text-white shadow-sm transition-transform hover:scale-105 hover:bg-pink-600 active:scale-95 dark:bg-pink-600"
+                aria-label="Email me — opens your email app"
             >
-                {CONTACT_EMAIL}
+                <Icon name="mail" class="h-4 w-4" />
+                Click here
             </a>
         </p>
     ) : (

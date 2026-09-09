@@ -39,8 +39,17 @@ media.addEventListener('change', () => {
 document.addEventListener('click', (event) => {
     const target = event.target as Element | null;
     if (!target) return;
+
+    // 0. Language switcher dropdown — close when clicking anywhere outside it.
+    const openSwitcher = document.querySelector<HTMLDetailsElement>(
+        'details[data-language-switcher][open]',
+    );
+    if (openSwitcher && !openSwitcher.contains(target)) {
+        openSwitcher.removeAttribute('open');
+    }
+
     const trigger = target.closest<HTMLElement>(
-        '[data-theme-toggle], [data-nav-toggle], [data-nav-link], [data-filter-toggle]',
+        '[data-theme-toggle], [data-nav-toggle], [data-nav-link], [data-language-link], [data-filter-toggle]',
     );
     if (!trigger) return;
 
@@ -63,6 +72,16 @@ document.addEventListener('click', (event) => {
 
     // 3. Clicking a nav link closes the mobile drawer.
     if (trigger.hasAttribute('data-nav-link')) {
+        const btn = document.querySelector('[data-nav-toggle]');
+        if (btn) btn.setAttribute('aria-expanded', 'false');
+        document.documentElement.classList.remove('nav-open');
+        return;
+    }
+
+    // 3b. Clicking a language link closes the dropdown + the mobile drawer.
+    if (trigger.hasAttribute('data-language-link')) {
+        const switcher = trigger.closest<HTMLDetailsElement>('details[data-language-switcher]');
+        if (switcher) switcher.removeAttribute('open');
         const btn = document.querySelector('[data-nav-toggle]');
         if (btn) btn.setAttribute('aria-expanded', 'false');
         document.documentElement.classList.remove('nav-open');

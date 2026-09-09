@@ -29,10 +29,10 @@ export async function getNepaliWorksheets(): Promise<Worksheet[]> {
     return all.filter((w) => w.data.language === 'ne');
 }
 
-/** Portuguese worksheets feed, sorted newest-first. */
-export async function getPortugueseWorksheets(): Promise<Worksheet[]> {
+/** Spanish worksheets feed, sorted newest-first. */
+export async function getSpanishWorksheets(): Promise<Worksheet[]> {
     const all = await getAllWorksheets();
-    return all.filter((w) => w.data.language === 'pt');
+    return all.filter((w) => w.data.language === 'es');
 }
 
 /** All items in one category, newest-first. */
@@ -66,7 +66,7 @@ export async function getAgeGroups(): Promise<string[]> {
  * - English worksheet → only English suggestions, ever.
  * - Nepali worksheet → Nepali suggestions first; English may backfill the
  *   remaining slots when there aren't enough Nepali worksheets.
- * - Portuguese worksheet → only Portuguese suggestions, ever.
+ * - Spanish worksheet → only Spanish suggestions, ever.
  *
  * Ranking within the allowed pool (highest first):
  *   +100 same-language  (hard requirement for English pages)
@@ -84,15 +84,15 @@ export async function getRelated(
     if (!entry) return [];
 
     const isNepali = entry.data.language === 'ne';
-    const isPortuguese = entry.data.language === 'pt';
+    const isSpanish = entry.data.language === 'es';
     const others = all.filter((w) => w.slug !== slug);
 
     const scored = others
         .map((w) => {
             const sameLang = isNepali
                 ? w.data.language === 'ne'
-                : isPortuguese
-                  ? w.data.language === 'pt'
+                : isSpanish
+                  ? w.data.language === 'es'
                   : w.data.language === 'en';
             let score = 0;
             if (sameLang) score += 100;
@@ -100,7 +100,7 @@ export async function getRelated(
             if (w.data.ageGroup === entry.data.ageGroup) score += 5;
             return { w, score };
         })
-        // English and Portuguese pages: drop every other-language suggestion.
+        // English and Spanish pages: drop every other-language suggestion.
         .filter((s) => isNepali || s.score >= 100);
 
     return scored

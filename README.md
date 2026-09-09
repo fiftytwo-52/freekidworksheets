@@ -54,7 +54,7 @@ description: >-                           # unique real copy, 60–4,000 charact
   designed for nursery and preschool learners.
 image: ./4050.png                          # repository-relative JPG/PNG/WEBP path
 tags: [alphabet, tracing, letters]        # optional; feeds search and structured data
-language: en                              # en | ne
+language: en                              # en | ne | es (Spanish)
 colorType: black-and-white                # black-and-white | colorful
 ---
 ```

@@ -30,22 +30,19 @@ function cardHtml(e: IndexEntry): string {
     const img = e.image
         ? `<img src="${esc(e.image)}" alt="" loading="lazy" decoding="async" class="h-full w-full object-contain" />`
         : '';
-    const isNepali = e.language === 'ne';
+    // Minimal card, matching WorksheetCard.astro: pure thumbnail + code badge,
+    // with a hover overlay revealing title + category/age on pointer devices.
     return `
-<article class="card-lift flex flex-col overflow-hidden rounded-2xl border-2 border-yellow-200 bg-white shadow-sm transition-all hover:border-yellow-400 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900">
-  <a href="${esc(href)}" class="relative block bg-neutral-50 dark:bg-neutral-800" tabindex="-1" aria-hidden="true">
-    <div class="aspect-[4/3] w-full p-2">${img}</div>
-    <span class="absolute left-2.5 top-2.5 rounded-full bg-pink-500 px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-white shadow-xs">Free</span>
-    ${isNepali ? `<span class="absolute left-14 top-2.5 rounded-full bg-emerald-500 px-2 py-0.5 font-mono text-[10px] font-bold text-white shadow-xs">नेपाली</span>` : ''}
-    ${e.code ? `<span class="absolute right-2.5 top-2.5 rounded-full bg-neutral-900/80 backdrop-blur-xs px-2.5 py-0.5 font-mono text-[10px] font-bold text-white shadow-xs">#${esc(e.code)}</span>` : ''}
+<article class="card-lift group relative overflow-hidden rounded-xl border border-hairline bg-white shadow-xs transition-all hover:-translate-y-0.5 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900">
+  <a href="${esc(href)}" class="block" aria-label="${esc(e.title)}">
+    <div class="relative aspect-[3/4] w-full bg-neutral-50 p-1.5 dark:bg-neutral-800/50">${img}
+      <div class="pointer-events-none absolute inset-1.5 hidden flex-col justify-end rounded-lg bg-gradient-to-t from-neutral-900/90 via-neutral-900/40 to-transparent p-3 opacity-0 transition-opacity duration-200 group-hover:opacity-100 [@media(hover:hover)]:flex">
+        <h3 class="line-clamp-3 text-sm font-bold leading-snug text-white">${esc(e.title)}</h3>
+        <p class="mt-1 font-mono text-[10px] font-semibold uppercase tracking-wider text-pink-300">${esc(e.category)} \u00b7 ${esc(e.ageGroup)} yrs</p>
+      </div>
+    </div>
+    ${e.code ? `<span class="absolute right-2 top-2 rounded-md bg-neutral-900/85 px-2 py-0.5 font-mono text-[10px] font-bold text-white shadow-xs backdrop-blur-xs dark:bg-neutral-800/90">#${esc(e.code)}</span>` : ''}
   </a>
-  <div class="flex flex-1 flex-col p-4">
-    <p class="font-mono text-[11px] font-semibold uppercase tracking-wider text-cyan-700 dark:text-cyan-400">${esc(e.category)} \u00b7 ${esc(e.ageGroup)} yrs</p>
-    <h3 class="mt-1 text-base font-bold leading-snug tracking-tight text-neutral-900 dark:text-neutral-100">
-      <a href="${esc(href)}" class="hover:text-pink-500">${esc(e.title)}</a>
-    </h3>
-    <p class="mt-2 line-clamp-2 text-xs leading-relaxed text-neutral-600 dark:text-neutral-400">${esc(e.description)}</p>
-  </div>
 </article>`;
 }
 
@@ -83,7 +80,7 @@ function init() {
 
             const holder = document.createElement('div');
             holder.className =
-                'grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4';
+                'grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4';
             results.forEach((e) => {
                 holder.insertAdjacentHTML('beforeend', cardHtml(e));
             });

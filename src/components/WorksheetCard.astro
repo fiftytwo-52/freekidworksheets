@@ -1,5 +1,9 @@
 ---
-// WorksheetCard.astro — colorful, kid-friendly library/search/home card
+// WorksheetCard.astro — minimal thumbnail card: pure worksheet preview with
+// its search-code badge only (user requirement: "thumbnail and code only,
+// nothing else"). No title/category text is rendered; the data-* attributes
+// are kept so scripts/browse-filters.ts can still filter/sort the grid, and
+// the title stays available to screen readers via the link's aria-label.
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import { cardDataProps } from '../lib/filter';
@@ -8,23 +12,21 @@ interface Props {
     entry: CollectionEntry<'worksheets'>;
 }
 const { entry } = Astro.props;
-const { title, category, ageGroup, code, language } = entry.data;
-const languageLabel = language === 'ne' ? 'नेपाली' : language === 'pt' ? 'Português' : null;
+const { title, code, category, ageGroup } = entry.data;
 const detailHref = `/worksheet/${entry.slug}`;
 const attrs = cardDataProps(entry);
 ---
 
 <article
-    class="card-lift group flex flex-col overflow-hidden rounded-2xl border-2 border-yellow-200/80 bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all duration-200 hover:-translate-y-1 hover:border-yellow-400 hover:shadow-lg dark:border-neutral-800 dark:bg-neutral-900"
+    class="card-lift group relative overflow-hidden rounded-xl border border-hairline bg-white shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900"
     {...attrs}
 >
     <a
         href={detailHref}
-        class="relative block bg-neutral-50 p-2 dark:bg-neutral-800/50"
-        tabindex="-1"
-        aria-hidden="true"
+        class="block focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-500"
+        aria-label={title}
     >
-        <div class="aspect-[4/3] w-full overflow-hidden rounded-xl bg-white dark:bg-neutral-900">
+        <div class="relative aspect-[3/4] w-full bg-neutral-50 p-1.5 dark:bg-neutral-800/50">
             <Image
                 src={entry.data.image}
                 alt=""
@@ -32,48 +34,26 @@ const attrs = cardDataProps(entry);
                 sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
                 loading="lazy"
                 decoding="async"
-                class="h-full w-full object-contain p-1 transition-transform duration-300 group-hover:scale-105"
+                class="h-full w-full rounded-lg object-contain transition-transform duration-300 group-hover:scale-[1.02]"
             />
-        </div>
-        <span
-            class="absolute left-3.5 top-3.5 rounded-full bg-pink-500 px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-white shadow-xs"
-        >
-            Free
-        </span>
-        {languageLabel && (
-            <span
-                class="absolute left-16 top-3.5 rounded-full bg-emerald-500 px-2 py-0.5 font-mono text-[10px] font-bold text-white shadow-xs"
+            <!-- Hover overlay: reveals title + category/age info on pointer devices only -->
+            <div
+                class="pointer-events-none absolute inset-1.5 hidden flex-col justify-end rounded-lg bg-gradient-to-t from-neutral-900/90 via-neutral-900/40 to-transparent p-3 opacity-0 transition-opacity duration-200 group-hover:opacity-100 [@media(hover:hover)]:flex"
             >
-                {languageLabel}
-            </span>
-        )}
+                <h3 class="line-clamp-3 text-sm font-bold leading-snug text-white">
+                    {title}
+                </h3>
+                <p class="mt-1 font-mono text-[10px] font-semibold uppercase tracking-wider text-pink-300">
+                    {category} · {ageGroup} yrs
+                </p>
+            </div>
+        </div>
         {code && (
             <span
-                class="absolute right-3.5 top-3.5 rounded-full bg-neutral-900/85 backdrop-blur-xs px-2.5 py-0.5 font-mono text-[10px] font-bold text-white shadow-xs dark:bg-neutral-800/90"
+                class="absolute right-2 top-2 rounded-md bg-neutral-900/85 px-2 py-0.5 font-mono text-[10px] font-bold text-white shadow-xs backdrop-blur-xs dark:bg-neutral-800/90"
             >
                 #{code}
             </span>
         )}
     </a>
-
-    <div class="flex flex-1 flex-col p-4">
-        <p
-            class="font-mono text-[11px] font-semibold uppercase tracking-wider text-cyan-700 dark:text-cyan-400"
-        >
-            {category}
-            <span aria-hidden="true"> · </span>
-            {ageGroup} yrs
-        </p>
-
-        <h3
-            class="mt-1.5 text-base font-bold leading-snug tracking-tight text-neutral-900 transition-colors group-hover:text-pink-500 dark:text-neutral-100"
-        >
-            <a
-                href={detailHref}
-                class="focus:outline-none focus-visible:underline"
-            >
-                {title}
-            </a>
-        </h3>
-    </div>
 </article>

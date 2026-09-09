@@ -7,6 +7,8 @@ import {
     getAllWorksheets,
     getByCategory,
     getCategories,
+    getNepaliWorksheets,
+    getSpanishWorksheets,
     paginate,
 } from '../lib/content';
 
@@ -50,14 +52,28 @@ async function buildEntries(): Promise<SitemapEntry[]> {
         priority: '0.9',
     });
 
-    // Worksheets library + pagination
-    const config = BROWSE_PAGES.worksheets;
-    if (all.length > 0) {
-        const totalPages = Math.ceil(all.length / PER_PAGE);
+    // Spanish feed
+    entries.push({
+        path: '/spanish',
+        lastmod: newest ? isoDate(newest.data.date) : undefined,
+        changefreq: 'daily',
+        priority: '0.9',
+    });
+
+    // Worksheets libraries — one per language (English, Nepali, Spanish) —
+    // each with its own pagination.
+    const libraries = [
+        { config: BROWSE_PAGES.worksheets, items: all },
+        { config: BROWSE_PAGES.nepali, items: await getNepaliWorksheets() },
+        { config: BROWSE_PAGES.spanish, items: await getSpanishWorksheets() },
+    ];
+    for (const { config, items } of libraries) {
+        if (items.length === 0) continue;
+        const totalPages = Math.ceil(items.length / PER_PAGE);
         for (let page = 1; page <= totalPages; page++) {
             entries.push({
                 path: page === 1 ? config.path : `${config.path}/page/${page}`,
-                lastmod: lastmodFor(all, page),
+                lastmod: lastmodFor(items, page),
                 changefreq: 'daily',
                 priority: page === 1 ? '0.9' : '0.6',
             });
@@ -91,8 +107,8 @@ async function buildEntries(): Promise<SitemapEntry[]> {
         });
     }
 
-    // Legal/static pages
-    for (const path of ['/search', '/about', '/contact', '/privacy-policy', '/terms']) {
+    // Legal/static pages (/search is noindex,follow — excluded from sitemap)
+    for (const path of ['/about', '/contact', '/privacy-policy', '/terms']) {
         entries.push({
             path,
             changefreq: 'yearly',
