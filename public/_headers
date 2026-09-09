@@ -2,7 +2,7 @@
 # engines never index it as duplicate content. The _middleware.js also sets
 # this header for ALL *.pages.dev hosts (per-deployment previews included),
 # since _headers can only match paths, not hostnames.
-https://freekidworksheets.pages.dev/*
+https://freekidworksheet.pages.dev/*
   X-Robots-Tag: noindex
 
 # Revalidate HTML on the production domain so every Pages deployment is
