@@ -27,6 +27,8 @@ interface Props {
     jsonLd?: Record<string, unknown> | Array<Record<string, unknown>>;
     /** When a worksheet image is landscape (print CSS). */
     printLandscape?: boolean;
+    /** UI language of this page — scopes footer popular topics (default English). */
+    lang?: 'en' | 'ne' | 'es';
 }
 const {
     pageTitle,
@@ -37,6 +39,7 @@ const {
     ogImage = '/assets/worksheets-icon.png',
     jsonLd,
     printLandscape = false,
+    lang = 'en',
 } = Astro.props;
 
 const canonical = absoluteUrl(path);
@@ -116,7 +119,7 @@ const adsenseScript = ADSENSE_PUBLISHER_ID
             <slot />
         </main>
 
-        <SiteFooter />
+        <SiteFooter lang={lang} />
 
         <!-- Body-level after-footer hooks: sticky footer ad + popup (§14) -->
         <slot name="after-footer" />

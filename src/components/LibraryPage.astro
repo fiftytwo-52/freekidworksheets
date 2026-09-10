@@ -44,7 +44,7 @@ const description =
         : `${config.blurb} Page ${page} of ${totalPages}.`;
 ---
 
-<Base pageTitle={pageTitle} description={description} path={path}>
+<Base pageTitle={pageTitle} description={description} path={path} lang={lang === 'en' ? undefined : lang}>
     <BrowseLayout
         kicker={config.kicker}
         title={config.title}

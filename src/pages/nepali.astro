@@ -49,6 +49,7 @@ const PILL_SECONDARY =
     description={DESCRIPTION}
     path="/nepali"
     keywords={KEYWORDS}
+    lang="ne"
     jsonLd={[websiteJsonLd(), faqJsonLd(NEPALI_FAQS)]}
 >
     <!-- 1. Hero — same wide 2-column layout as the English home, light green tone -->
@@ -95,8 +96,9 @@ const PILL_SECONDARY =
 
                         <!-- Hero Search Form -->
                         <form action="/search" method="get" role="search" class="mt-3 flex items-center gap-2 rounded-full border border-neutral-300/90 bg-white p-1.5 shadow-2xs transition focus-within:border-emerald-500 focus-within:ring-4 focus-within:ring-emerald-500/10 dark:border-neutral-700 dark:bg-neutral-800">
-                            <label for="hero-search" class="sr-only">Search Nepali worksheets</label>
-                            <input
+                                                    <label for="hero-search" class="sr-only">Search Nepali worksheets</label>
+                                                    <input type="hidden" name="lang" value="ne" />
+                                                    <input
                                 id="hero-search"
                                 type="search"
                                 name="q"
@@ -119,7 +121,7 @@ const PILL_SECONDARY =
                             <div class="flex flex-wrap gap-1.5">
                                 {['Nepali', 'Tracing', 'Alphabet', 'Numbers', 'Matching', 'Colouring'].map((tag) => (
                                     <a
-                                        href={`/search?q=${encodeURIComponent(tag)}`}
+                                        href={`/search?q=${encodeURIComponent(tag)}&lang=ne`}
                                         class="rounded-full border border-neutral-200 bg-neutral-50/80 px-2.5 py-1 text-xs font-medium text-neutral-700 transition hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-600 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700 dark:hover:text-emerald-300"
                                     >
                                         {tag}

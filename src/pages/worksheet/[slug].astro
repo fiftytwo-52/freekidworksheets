@@ -16,7 +16,7 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
-const { title, category, ageGroup, code, description, image, tags = [] } = entry.data;
+const { title, category, ageGroup, code, description, image, tags = [], language } = entry.data;
 const path = `/worksheet/${entry.slug}`;
 const related = await getRelated(entry.slug);
 const isLandscape = image.width > image.height;
@@ -46,6 +46,7 @@ const pageKeywords = Array.from(
     keywords={pageKeywords}
     ogImage={image.src}
     printLandscape={isLandscape}
+    lang={language === 'ne' || language === 'es' ? language : 'en'}
     jsonLd={learningResourceJsonLd(entry, absoluteUrl(path))}
 >
     <div

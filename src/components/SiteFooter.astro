@@ -4,8 +4,16 @@
 // Explore links, and the four legal/help links plainly visible on every page
 // (AdSense requirement, §10.4 / §13). Column headings use mono eyebrows.
 import Brand from './Brand.astro';
-import { CONTACT_EMAIL, FOOTER_EXPLORE, FOOTER_LEGAL, POPULAR_TOPICS, SITE_NAME, TAGLINE } from '../data/site';
+import { CONTACT_EMAIL, FOOTER_EXPLORE, FOOTER_LEGAL, SITE_NAME, TAGLINE } from '../data/site';
+import { TOPICS_BY_LANG } from '../data/ui-strings';
 const year = new Date().getFullYear();
+
+interface Props {
+    /** UI language for the popular-topics block (default English). */
+    lang?: 'en' | 'ne' | 'es';
+}
+const { lang = 'en' } = Astro.props;
+const topics = TOPICS_BY_LANG[lang];
 const brand = 'freekidworksheets';
 ---
 
@@ -94,15 +102,15 @@ const brand = 'freekidworksheets';
             </div>
         </aside>
 
-        <!-- Popular Topics Sitewide Links -->
+        <!-- Popular Topics Sitewide Links — scoped to the page's language -->
         <div class="mt-8 border-t border-hairline pt-6 dark:border-neutral-800">
             <h3 class="font-mono text-[11px] font-medium uppercase tracking-widest text-mute dark:text-neutral-500">
                 Popular Worksheet Searches
             </h3>
-            <div class="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-xs text-body dark:text-neutral-400">
-                {POPULAR_TOPICS.map((topic) => (
+            <div class="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-xs text-body dark:text-neutral-400" data-footer-topics>
+                {topics.map((topic) => (
                     <a
-                        href={`/search?q=${encodeURIComponent(topic.query)}`}
+                        href={`/search?q=${encodeURIComponent(topic.query)}&lang=${lang}`}
                         class="hover:text-ink hover:underline dark:hover:text-neutral-100"
                     >
                         {topic.label}

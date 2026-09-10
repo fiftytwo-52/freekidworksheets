@@ -54,8 +54,9 @@ const DESCRIPTION =
             </form>
         </div>
 
-        <!-- Quick filter pills on search page -->
-        <div class="mt-6 flex flex-wrap items-center gap-2">
+        <!-- Quick filter pills on search page — data-search-pills lets the
+             inline script below re-scope them to the active ?lang= value. -->
+        <div class="mt-6 flex flex-wrap items-center gap-2" data-search-pills>
             <span class="text-xs font-bold text-neutral-500">Popular:</span>
             {POPULAR_TOPICS.map((topic) => (
                 <a
@@ -66,6 +67,29 @@ const DESCRIPTION =
                 </a>
             ))}
         </div>
+        <script is:inline>
+            // Preserve the ?lang= scope across the search form and pill links
+            // (the page is static, so this must happen client-side).
+            (function () {
+                var lang = new URLSearchParams(window.location.search).get('lang');
+                if (!lang) return;
+                document
+                    .querySelectorAll('[data-search-pills] a')
+                    .forEach(function (a) {
+                        var url = new URL(a.href, window.location.origin);
+                        url.searchParams.set('lang', lang);
+                        a.href = url.pathname + '?' + url.searchParams.toString();
+                    });
+                var form = document.querySelector('form[action="/search"]');
+                if (form) {
+                    var input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'lang';
+                    input.value = lang;
+                    form.appendChild(input);
+                }
+            })();
+        </script>
 
         <!-- Results shell — filled in by site-search.ts -->
         <div id="search-app" class="mt-8">

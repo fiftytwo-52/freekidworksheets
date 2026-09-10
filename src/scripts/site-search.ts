@@ -1,7 +1,10 @@
 // site-search.ts — /search client-side behavior over the build-time
 // search-index.json. Reads ?q= from the URL, filters entries
 // by code / title / description / category / ageGroup / tags / language (case-insensitive substring),
-// and renders worksheet-card-style results. All user text is HTML-escaped.
+// and renders worksheet-card-style results. An optional ?lang= param
+// (en / ne / es) first restricts the pool to worksheets of that language,
+// so popular-topic chips and hero search forms stay language-aware.
+// All user text is HTML-escaped.
 
 interface IndexEntry {
     slug: string;
@@ -15,6 +18,13 @@ interface IndexEntry {
     tags?: string[];
     language?: string;
 }
+
+const LANG_NAMES: Record<string, string> = {
+    en: 'English',
+    ne: 'Nepali',
+    es: 'Spanish',
+    pt: 'Portuguese',
+};
 
 function esc(s: string): string {
     return s
@@ -55,8 +65,11 @@ function init() {
     const emptyEl = root.querySelector<HTMLElement>('[data-search-empty]');
     if (!grid || !countEl || !emptyEl) return;
 
-    const q =
-        new URLSearchParams(window.location.search).get('q')?.trim() ?? '';
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get('q')?.trim() ?? '';
+    // Optional language scope (?lang=en|ne|es) — when present, only
+    // worksheets of that language are searched (language-aware chips/forms).
+    const lang = params.get('lang')?.trim().toLowerCase() ?? '';
 
     fetch('/search-index.json')
         .then((res) => {
@@ -64,9 +77,12 @@ function init() {
             return res.json();
         })
         .then((entries: IndexEntry[]) => {
+            const pool = lang
+                ? entries.filter((e) => (e.language ?? 'en') === lang)
+                : entries;
             const term = q.toLowerCase();
             const results = term
-                ? entries.filter(
+                ? pool.filter(
                     (e) =>
                         (e.code && e.code.toLowerCase().includes(term)) ||
                         e.title.toLowerCase().includes(term) ||
@@ -76,7 +92,7 @@ function init() {
                         (e.tags && e.tags.some(t => t.toLowerCase().includes(term))) ||
                         (e.language && e.language.toLowerCase().includes(term)),
                 )
-                : entries;
+                : pool;
 
             const holder = document.createElement('div');
             holder.className =
@@ -90,8 +106,9 @@ function init() {
             grid.appendChild(frag);
 
             const n = results.length;
+            const scope = lang ? ` in ${LANG_NAMES[lang] ?? lang} worksheets` : '';
             countEl.textContent =
-                `${n === 0 ? 'No' : n} ${n === 1 ? 'result' : 'results'}`;
+                `${n === 0 ? 'No' : n} ${n === 1 ? 'result' : 'results'}${scope}`;
             emptyEl.hidden = n !== 0;
         })
         .catch(() => {
