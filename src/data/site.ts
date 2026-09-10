@@ -68,6 +68,16 @@ export const SEO_KEYWORDS = [
     'nepali worksheet for class 2',
     'lkg nepali worksheet',
     'nepali worksheet for lkg with answers',
+    'unicode to preeti converter',
+    'convert unicode to preeti',
+    'unicode to preeti converter online',
+    'mangal to preeti converter',
+    'convert unicode to preeti font',
+    'www.unicode to preeti.com',
+    'preeti to unicode',
+    'unicode preeti',
+    'unicode',
+    'roman to preeti',
 ] as const;
 
 export const DEFAULT_KEYWORDS_STRING = SEO_KEYWORDS.join(', ');
