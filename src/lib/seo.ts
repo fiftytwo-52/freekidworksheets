@@ -52,12 +52,15 @@ export function websiteJsonLd() {
     };
 }
 
-/** Home: FAQPage mirroring src/data/site.ts FAQS (§13.2). */
-export function faqJsonLd() {
+/** FAQPage JSON-LD mirroring FAQ sets from src/data/site.ts (§13.2).
+ *  Defaults to the home FAQS; pages can pass their own set (e.g. NEPALI_FAQS). */
+export function faqJsonLd(
+    faqs: ReadonlyArray<{ question: string; answer: string }> = FAQS,
+) {
     return {
         '@context': 'https://schema.org',
         '@type': 'FAQPage',
-        mainEntity: FAQS.map((f) => ({
+        mainEntity: faqs.map((f) => ({
             '@type': 'Question',
             name: f.question,
             acceptedAnswer: { '@type': 'Answer', text: f.answer },

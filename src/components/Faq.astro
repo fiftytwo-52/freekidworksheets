@@ -1,8 +1,17 @@
 ---
-// Faq.astro — home FAQ section from src/data/site.ts FAQS (§13.2). Matches
-// the FAQPage JSON-LD emitted on the home page. Accessible <details> accordion
-// in the Geist hairline-card language (DESIGN.md §3 "Cards & Containers").
+// Faq.astro — FAQ section from src/data/site.ts FAQ sets (§13.2). Defaults to
+// the home FAQS; pages can pass their own set (e.g. NEPALI_FAQS) so the
+// visible section matches the FAQPage JSON-LD emitted on that page. Accessible
+// <details> accordion in the Geist hairline-card language (DESIGN.md §3).
 import { FAQS } from '../data/site';
+
+interface Props {
+    /** Optional FAQ set override (defaults to home FAQS). */
+    faqs?: ReadonlyArray<{ question: string; answer: string }>;
+    /** Optional section heading override. */
+    heading?: string;
+}
+const { faqs = FAQS, heading = 'Frequently asked questions' } = Astro.props;
 ---
 
 <section class="mt-14" aria-labelledby="faq-heading">
@@ -14,12 +23,12 @@ import { FAQS } from '../data/site';
             id="faq-heading"
             class="mt-2 text-3xl font-semibold tracking-tight text-ink sm:text-4xl dark:text-neutral-100"
         >
-            Frequently asked questions
+            {heading}
         </h2>
     </div>
 
     <div class="mx-auto mt-6 max-w-3xl space-y-2">
-        {FAQS.map((f) => (
+        {faqs.map((f) => (
             <details
                 class="group overflow-hidden rounded-lg border border-hairline bg-elevated transition-colors open:border-neutral-300 dark:border-neutral-800 dark:bg-neutral-900 dark:open:border-neutral-700"
             >

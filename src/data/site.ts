@@ -55,6 +55,32 @@ export const SEO_KEYWORDS = [
     'actividades para niños de 3 años',
     'spanish worksheets for kids',
     'spanish worksheets printable',
+    'free worksheets for kids',
+    'free printable worksheets for kids',
+    'free worksheets and printables for kids',
+    'free educational worksheets and printables for kids',
+    'worksheets for kids',
+    'kids worksheets',
+    'kindergarten worksheets',
+    'kindergarten math worksheets',
+    'math worksheets',
+    '1st grade math worksheets',
+    '3rd grade math worksheets',
+    '4th grade math worksheets',
+    'super teacher worksheets',
+    'nepali worksheets',
+    'nepali worksheet',
+    'browse nepali worksheets',
+    'nepali alphabet consonant ka kha to nga',
+    'free nepali worksheets',
+    'free nepali worksheets printable',
+    'free nepali worksheets and printables',
+    'nepali worksheets for ukg',
+    'nepali worksheets for grade 1',
+    'practice nepali worksheets for grade 1',
+    'nepali worksheets for nursery',
+    'nepali worksheets for nursery and lkg',
+    'lkg nepali worksheets',
     'nepali worksheets with answers pdf',
     'nepali worksheets pdf free download',
     'nepali worksheets pdf',
@@ -151,6 +177,73 @@ export const FAQS = [
         question: 'How do I search for a specific worksheet topic or code?',
         answer:
             'Every worksheet features a unique 4 or 5-digit search code. You can search directly by code (e.g., 1001), subject, or keyword such as "kids worksheet maths", "shapes for kids worksheet", "emotions for kids worksheet", or "weather for kids worksheet" in the search bar.',
+    },
+    {
+        question: 'Do you offer free printable worksheets for kindergarten and preschool?',
+        answer:
+            'Yes — my kindergarten worksheets and preschool collections are completely free. They include kindergarten math worksheets, alphabet tracing, phonics, counting, coloring, and fine-motor activities designed for early learners aged 3 to 6.',
+    },
+    {
+        question: 'What kind of math worksheets are available?',
+        answer:
+            'My math worksheets library covers counting, number tracing, addition, subtraction, comparing numbers, patterns, and problem-solving practice. You will find 1st grade math worksheets, 3rd grade math worksheets, 4th grade math worksheets, and kindergarten math worksheets — all free printable worksheets for kids.',
+    },
+    {
+        question: 'Are there worksheets organized by grade level?',
+        answer:
+            'Yes. Every worksheet is tagged with an age group from nursery and LKG through UKG, grade 1, grade 2, and grade 3+. You can filter the free worksheets for kids library by grade to quickly find printable activity pages at the right difficulty level.',
+    },
+    {
+        question: 'Do you have free Nepali worksheets for kids?',
+        answer:
+            'Yes! I offer free Nepali worksheets (निःशुल्क नेपाली कार्यपत्रहरू) including Nepali alphabet consonant Ka Kha to Nga (क ख ग घ ङ) tracing, Nepali numbers (१–१०), word matching, and handwriting practice. There are Nepali worksheets for UKG, Nepali worksheets for grade 1, and Nepali worksheets for nursery and LKG — all free to download and print.',
+    },
+    {
+        question: 'Can teachers use these free worksheets and printables in the classroom?',
+        answer:
+            'Absolutely. These free worksheets and printables for kids are made for teachers, daycare centers, tutors, and homeschool families. Download, print, and share them for unlimited personal and classroom use — no subscription or attribution needed.',
+    },
+] as const;
+
+/**
+ * Nepali-page FAQ — bilingual Q&As for the /nepali landing page.
+ * Mirrored by FAQPage JSON-LD via faqJsonLd(NEPALI_FAQS).
+ */
+export const NEPALI_FAQS = [
+    {
+        question: 'के यी नेपाली कार्यपत्रहरू साँच्चै निःशुल्क छन्? (Are these Nepali worksheets really free?)',
+        answer:
+            'हो, freekidworksheets.com मा भएका सबै नेपाली कार्यपत्रहरू (Nepali worksheets) १००% निःशुल्क छन्। दर्ता गर्नुपर्दैन, डाउनलोड सीमा पनि छैन। Free Nepali worksheets printable रूपमा उच्च गुणस्तरका तस्बिरहरू डाउनलोड गरेर सिधै प्रिन्ट गर्न सक्नुहुन्छ।',
+    },
+    {
+        question: 'कुन कक्षाका लागि नेपाली कार्यपत्रहरू उपलब्ध छन्? (Which grade levels are the Nepali worksheets for?)',
+        answer:
+            'मैले नर्सरी र LKG का लागि Nepali worksheets for nursery and LKG, UKG का लागि Nepali worksheets for UKG, र कक्षा १ का लागि Nepali worksheets for grade 1 तयार गरेको छु। यसमा क ख ग अक्षर ट्रेसिङ, नेपाली अंक (१ देखि १०), शब्द मिलान, र हस्तलेखन अभ्यास समावेश छन्।',
+    },
+    {
+        question: 'के LKG र UKG का बच्चाहरूका लागि छुट्टै कार्यपत्र छन्? (Are there separate worksheets for LKG and UKG kids?)',
+        answer:
+            'छन्! LKG Nepali worksheets मा सजिलो लाइन ट्रेसिङ, अक्षर चिन्ने र गन्तीका अभ्यास हुन्छन्, भने UKG का लागि मात्रा (matra), शब्द जोड्ने र वाक्य लेखनजस्ता अभ्यासहरू छन्। हरेक कार्यपत्र उमेर समूह अनुसार ट्याग गरिएको छ।',
+    },
+    {
+        question: 'नेपाली वर्णमाला क ख ग देखि ङ सम्म अभ्यास गर्न पाइन्छ? (Can kids practice the Nepali alphabet Ka Kha to Nga?)',
+        answer:
+            'पाइन्छ। Nepali alphabet consonant Ka Kha to Nga (क ख ग घ ङ) ट्रेसिङ कार्यपत्रहरू उपलब्ध छन् — क ख ग समूहदेखि घ ङ सम्म, साथै च छ ज झ जस्ता curled consonant समूहहरूका लागि पनि छुट्टै ट्रेसिङ पृष्ठहरू छन्।',
+    },
+    {
+        question: 'कक्षा १ (Grade 1) का बच्चाहरूले कस्तो अभ्यास गर्न सक्छन्? (What practice is available for Grade 1 kids?)',
+        answer:
+            'Practice Nepali worksheets for grade 1 मा वाचन र उत्तर लेखन, शब्द जोडी (sabda jodi), गणितका समस्या समाधान, र पढेर रङ भर्ने जस्ता अभ्यासहरू समावेश छन्। यी सबै निःशुल्क Nepali worksheets PDF जस्तै प्रिन्ट गर्न मिल्ने रूपमा उपलब्ध छन्।',
+    },
+    {
+        question: 'कार्यपत्रहरू कसरी डाउनलोड वा प्रिन्ट गर्ने? (How do I download or print the worksheets?)',
+        answer:
+            'कुनै पनि कार्यपत्र खोल्नुहोस् र "Download" बटन थिचेर तस्बिर डाउनलोड गर्नुहोस्, वा "Print" बटनबाट सिधै प्रिन्ट गर्नुहोस्। सबै पृष्ठहरू A4 कागजका लागि तयार गरिएका छन् — ब्राउजरको प्रिन्ट सेटिङमा "Save as PDF" छानेर PDF पनि सुरक्षित गर्न सक्नुहुन्छ।',
+    },
+    {
+        question: 'विदेशमा रहेका नेपाली परिवारका लागि उपयुक्त छ? (Are these suitable for Nepali families living abroad?)',
+        answer:
+            'अत्यन्त उपयुक्त! विदेशमा बस्ने नेपाली परिवारका बच्चाहरूले घरमै नेपाली भाषा र लिपि सिक्न यी निःशुल्क कार्यपत्रहरू प्रयोग गर्न सक्छन्। अभिभावक वा शिक्षकलाई कुनै खर्च लाग्दैन — सबै worksheets free download गर्न मिल्छ।',
     },
 ] as const;
 
