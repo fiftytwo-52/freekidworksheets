@@ -10,6 +10,7 @@ import {
     getNepaliWorksheets,
     getSpanishWorksheets,
     paginate,
+    type Worksheet,
 } from '../lib/content';
 
 export const prerender = true;
@@ -19,6 +20,8 @@ interface SitemapEntry {
     lastmod?: string;
     changefreq: 'daily' | 'weekly' | 'monthly' | 'yearly';
     priority: string;
+    /** Absolute image URLs associated with this page (image sitemap §). */
+    images?: string[];
 }
 
 function isoDate(d: Date): string {
@@ -29,6 +32,17 @@ function lastmodFor(items: Array<{ data: { date: Date } }>, page: number): strin
     if (items.length === 0) return undefined;
     const index = Math.min((page - 1) * PER_PAGE, items.length - 1);
     return isoDate(items[index].data.date);
+}
+
+/** Absolute URL for a worksheet's optimized image (works in prerendered routes). */
+function imageAbsUrl(entry: Worksheet): string {
+    return `${SITE_URL}${entry.data.image.src}`;
+}
+
+/** Image URLs for one page slice of a paginated listing. */
+function pageImages(items: Worksheet[], page: number): string[] {
+    const slice = items.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+    return slice.map(imageAbsUrl);
 }
 
 async function buildEntries(): Promise<SitemapEntry[]> {
@@ -42,6 +56,7 @@ async function buildEntries(): Promise<SitemapEntry[]> {
         lastmod: newest ? isoDate(newest.data.date) : undefined,
         changefreq: 'daily',
         priority: '1.0',
+        images: pageImages(all, 1),
     });
 
     // Nepali feed
@@ -76,6 +91,7 @@ async function buildEntries(): Promise<SitemapEntry[]> {
                 lastmod: lastmodFor(items, page),
                 changefreq: 'daily',
                 priority: page === 1 ? '0.9' : '0.6',
+                images: pageImages(items, page),
             });
         }
     }
@@ -93,6 +109,7 @@ async function buildEntries(): Promise<SitemapEntry[]> {
                 lastmod: lastmodFor(items, page),
                 changefreq: 'weekly',
                 priority: page === 1 ? '0.8' : '0.5',
+                images: pageImages(items, page),
             });
         }
     }
@@ -104,6 +121,7 @@ async function buildEntries(): Promise<SitemapEntry[]> {
             lastmod: isoDate(entry.data.date),
             changefreq: 'monthly',
             priority: '0.7',
+            images: [imageAbsUrl(entry)],
         });
     }
 
@@ -135,11 +153,16 @@ export const GET: APIRoute = async () => {
             (e) =>
                 `  <url>\u003cloc\u003e${SITE_URL}${xmlEscape(e.path)}\u003c/loc\u003e${e.lastmod ? `\u003clastmod\u003e${e.lastmod}\u003c/lastmod\u003e` : ''
                 }\u003cchangefreq\u003e${e.changefreq}\u003c/changefreq\u003e\u003cpriority\u003e${e.priority
-                }\u003c/priority\u003e\n  </url>`,
+                }\u003c/priority\u003e${(e.images ?? [])
+                    .map(
+                        (img) =>
+                            `\u003cimage:image\u003e\u003cimage:loc\u003e${xmlEscape(img)}\u003c/image:loc\u003e\u003c/image:image\u003e`,
+                    )
+                    .join('')}\n  </url>`,
         )
         .join('\n');
 
-    const xml = `\u003c?xml version="1.0" encoding="UTF-8"?\u003e\n\u003curlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"\u003e\n${urls}\n\u003c/urlset\u003e\n`;
+    const xml = `\u003c?xml version="1.0" encoding="UTF-8"?\u003e\n\u003curlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"\u003e\n${urls}\n\u003c/urlset\u003e\n`;
 
     return new Response(xml, {
         headers: { 'Content-Type': 'application/xml' },
