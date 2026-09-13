@@ -1,0 +1,4 @@
+# /sitemap.xml was the old hand-rolled sitemap route (src/pages/sitemap.xml.ts).
+# @astrojs/sitemap now emits sitemap-index.xml + sitemap-0.xml instead, so
+# permanently redirect crawlers that still know the old URL.
+/sitemap.xml /sitemap-index.xml 301

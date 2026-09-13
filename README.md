@@ -85,7 +85,7 @@ unless the project owner explicitly approves a new category.
   worksheets, and LearningResource JSON-LD.
 - Inclusion in `/worksheets`, the matching `/category/{category}` page, the
   home-page featured strip, the client-side search index (`search-index.json`),
-  and `sitemap.xml`.
+  and the sitemap (`sitemap-index.xml` + `sitemap-0.xml` via `@astrojs/sitemap`).
 - Pagination splits automatically at 20 items per page.
 
 ## Editing / removing

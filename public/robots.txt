@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://freekidworksheets.com/sitemap.xml
+Sitemap: https://freekidworksheets.com/sitemap-index.xml

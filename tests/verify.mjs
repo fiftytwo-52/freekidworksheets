@@ -4,9 +4,10 @@
 //   2. Every search code is a unique 4 or 5-digit number string.
 //   3. Every description is unique and >= 60 chars (flag thin content).
 //   4. dist/ contains the expected routes (home, libraries, categories,
-//      worksheet details, legal pages, 404, search-index.json, sitemap.xml,
+//      worksheet details, legal pages, 404, search-index.json, the
+//      @astrojs/sitemap output (sitemap-index.xml + sitemap-0.xml),
 //      robots.txt, ads.txt).
-//   5. sitemap.xml lists every worksheet slug (count matches collection).
+//   5. sitemap-0.xml lists every worksheet slug (count matches collection).
 //   6. CSS/JS assets referenced by built HTML exist (no 404s on assets).
 import { readdir, readFile, stat } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
@@ -161,7 +162,8 @@ async function checkDist(slugs) {
         '404.html',
         '500.html',
         'search-index.json',
-        'sitemap.xml',
+        'sitemap-index.xml',
+        'sitemap-0.xml',
         'robots.txt',
         'ads.txt',
     ];
@@ -211,18 +213,30 @@ async function checkDist(slugs) {
 }
 
 // ---------------------------------------------------------------------------
-// 4. sitemap.xml lists every worksheet slug.
+// 4. sitemap lists every worksheet slug. @astrojs/sitemap emits an index
+//    file (sitemap-index.xml) plus chunk files (sitemap-0.xml, ...); the
+//    chunks hold the actual page <loc> entries.
 // ---------------------------------------------------------------------------
 async function checkSitemap(slugs) {
-    console.log('\n[3/5] sitemap.xml');
+    console.log('\n[3/5] sitemap');
 
-    const sitemapPath = path.join(DIST, 'sitemap.xml');
-    if (!existsSync(sitemapPath)) {
-        fail('sitemap.xml missing');
+    const indexPath = path.join(DIST, 'sitemap-index.xml');
+    const chunkPath = path.join(DIST, 'sitemap-0.xml');
+    if (!existsSync(indexPath)) {
+        fail('sitemap-index.xml missing');
+        return;
+    }
+    if (!existsSync(chunkPath)) {
+        fail('sitemap-0.xml missing');
         return;
     }
 
-    const xml = await readFile(sitemapPath, 'utf8');
+    const indexXml = await readFile(indexPath, 'utf8');
+    if (!indexXml.includes('sitemap-0.xml')) {
+        fail('sitemap-index.xml does not reference sitemap-0.xml');
+    }
+
+    const xml = await readFile(chunkPath, 'utf8');
     const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
 
     let ok = true;
