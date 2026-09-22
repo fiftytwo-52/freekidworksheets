@@ -100,6 +100,7 @@ const PILL_SECONDARY =
                                 {['Grafomotricidad', 'Grafomotricidad 3 años', 'Fichas grafomotricidad', 'Dibujos colorear', 'Trazos', 'Colorear'].map((tag) => (
                                     <a
                                         href={`/search?q=${encodeURIComponent(tag)}&lang=es`}
+                                        rel="nofollow"
                                         class="rounded-full border border-neutral-200 bg-neutral-50/80 px-2.5 py-1 text-xs font-medium text-neutral-700 transition hover:border-sky-300 hover:bg-sky-50 hover:text-sky-600 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700 dark:hover:text-sky-300"
                                     >
                                         {tag}

@@ -99,6 +99,7 @@ const PILL_PRIMARY =
                                 {POPULAR_TOPICS.slice(0, 8).map((topic) => (
                                     <a
                                         href={`/search?q=${encodeURIComponent(topic.query)}&lang=en`}
+                                        rel="nofollow"
                                         class="rounded-full border border-neutral-200 bg-neutral-50/80 px-2.5 py-1 text-xs font-medium text-neutral-700 transition hover:border-pink-300 hover:bg-pink-50 hover:text-pink-600 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700 dark:hover:text-pink-300"
                                     >
                                         {topic.label}

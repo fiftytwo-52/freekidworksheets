@@ -124,6 +124,7 @@ const s = UI_STRINGS[lang];
                             {TOPICS_BY_LANG[lang].slice(0, 7).map((topic) => (
                                 <a
                                     href={`/search?q=${encodeURIComponent(topic.query)}&lang=${lang}`}
+                                    rel="nofollow"
                                     class={`rounded-full border border-neutral-200 bg-neutral-50/80 px-2.5 py-1 text-xs font-medium text-neutral-700 transition dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200 ${t.chip}`}
                                 >
                                     {topic.label}

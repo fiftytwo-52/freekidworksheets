@@ -37,3 +37,6 @@ samplesheets/
 
 # wrangler local state / temp deploy artifacts
 .wrangler/
+
+# local audit and export files
+*.pdf
