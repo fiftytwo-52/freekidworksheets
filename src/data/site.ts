@@ -306,3 +306,51 @@ export const POPUP_AD = {
     aspectRatio: '1:1' as const,
     redirectUrl: '',
 };
+
+/** Social media profiles for follow icons & links. */
+export interface SocialLink {
+    name: string;
+    label: string;
+    href: string;
+    icon: 'facebook' | 'instagram' | 'tiktok' | 'youtube' | 'pinterest';
+    brandColor: string;
+}
+
+export const SOCIAL_LINKS: readonly SocialLink[] = [
+    {
+        name: 'Facebook',
+        label: 'Follow on Facebook',
+        href: 'https://www.facebook.com/profile.php?id=61594239620068',
+        icon: 'facebook',
+        brandColor: '#1877F2',
+    },
+    {
+        name: 'Instagram',
+        label: 'Follow on Instagram',
+        href: 'https://www.instagram.com/freekidworksheets/',
+        icon: 'instagram',
+        brandColor: '#E4405F',
+    },
+    {
+        name: 'TikTok',
+        label: 'Follow on TikTok',
+        href: 'https://www.tiktok.com/@kidscore01?is_from_webapp=1&sender_device=pc',
+        icon: 'tiktok',
+        brandColor: '#000000',
+    },
+    {
+        name: 'YouTube',
+        label: 'Follow on YouTube',
+        href: 'https://www.youtube.com/@gkfiftytwo',
+        icon: 'youtube',
+        brandColor: '#FF0000',
+    },
+    {
+        name: 'Pinterest',
+        label: 'Follow on Pinterest',
+        href: 'https://pin.it/591riFuva',
+        icon: 'pinterest',
+        brandColor: '#BD081C',
+    },
+] as const;
+

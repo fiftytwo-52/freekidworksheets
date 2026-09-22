@@ -3,6 +3,7 @@
 // (§11.5). Real contact details are filled in post-dev.
 import StaticPage from '../components/StaticPage.astro';
 import Icon from '../components/Icon.astro';
+import SocialFollow from '../components/SocialFollow.astro';
 import { CONTACT_EMAIL } from '../data/site';
 ---
 <StaticPage
@@ -36,6 +37,16 @@ import { CONTACT_EMAIL } from '../data/site';
             coming soon. In the meantime, thank you for your patience.
         </p>
     )}
+
+    <div class="my-8 rounded-2xl border border-hairline bg-elevated p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900/60">
+        <h2 class="text-base font-bold text-ink dark:text-neutral-100">Follow on social media</h2>
+        <p class="mt-1 text-sm text-body dark:text-neutral-400">
+            Connect with FreeKidWorksheets for new printables, early learning worksheets, and fun updates:
+        </p>
+        <div class="mt-4">
+            <SocialFollow showHeading={false} showLabels={true} size="md" />
+        </div>
+    </div>
 
     <p>
         For content requests, tell me the subject and the age group you have

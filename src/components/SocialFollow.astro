@@ -1,0 +1,121 @@
+---
+// SocialFollow.astro — interactive social media follow icons for
+// Facebook, Instagram, TikTok, YouTube, and Pinterest.
+// Styled with Geist tokens, brand hover accents, and accessible tooltips.
+import { SOCIAL_LINKS } from '../data/site';
+
+interface Props {
+    /** Optional section heading (default: "Follow on"). */
+    heading?: string;
+    /** Whether to render the heading eyebrow (default: true). */
+    showHeading?: boolean;
+    /** Icon size: 'sm' (h-4 w-4), 'md' (h-5 w-5), or 'lg' (h-6 w-6). */
+    size?: 'sm' | 'md' | 'lg';
+    /** Whether to show text labels next to the icons. */
+    showLabels?: boolean;
+    /** Extra classes on the outer wrapper. */
+    class?: string;
+}
+
+const {
+    heading = 'Follow on',
+    showHeading = true,
+    size = 'md',
+    showLabels = false,
+    class: className = '',
+} = Astro.props;
+
+const sizeClasses = {
+    sm: {
+        btn: 'h-8 w-8',
+        icon: 'h-3.5 w-3.5',
+    },
+    md: {
+        btn: 'h-9 w-9',
+        icon: 'h-4 w-4',
+    },
+    lg: {
+        btn: 'h-10 w-10',
+        icon: 'h-5 w-5',
+    },
+}[size];
+
+// Official brand vector SVG paths (viewBox 0 0 24 24)
+const BRAND_SVGS: Record<string, string> = {
+    facebook:
+        '<path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>',
+    instagram:
+        '<path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>',
+    tiktok:
+        '<path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 3 15.68a6.34 6.34 0 0 0 10.86 4.43c1.7-1.7 2.03-3.9 2.03-6.07V7.95a8.21 8.21 0 0 0 4.7 1.48V6.01a4.85 4.85 0 0 1-1-.02z"/>',
+    youtube:
+        '<path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>',
+    pinterest:
+        '<path d="M12 0a12 12 0 0 0-4.37 23.18c-.03-.98-.06-2.5.05-3.58.1-.98.66-4.39.66-4.39s-.17-.34-.17-.84c0-.79.46-1.38 1.03-1.38.48 0 .72.36.72.8 0 .49-.31 1.22-.47 1.9-.13.57.28 1.04.84 1.04 1.01 0 1.79-1.07 1.79-2.6 0-1.36-.98-2.31-2.37-2.31-1.62 0-2.57 1.21-2.57 2.47 0 .49.19 1.01.42 1.29.05.06.05.11.04.17-.04.17-.13.53-.15.6-.03.11-.09.13-.21.08-.79-.37-1.28-1.52-1.28-2.45 0-1.99 1.45-3.83 4.18-3.83 2.19 0 3.9 1.56 3.9 3.65 0 2.18-1.37 3.93-3.28 3.93-.64 0-1.24-.33-1.45-.72l-.39 1.5c-.14.55-.52 1.24-.78 1.66A12 12 0 1 0 12 0z"/>',
+};
+
+// Custom brand-specific hover accents for rich interactive styling
+const BRAND_HOVER_STYLES: Record<string, string> = {
+    facebook:
+        'hover:text-[#1877F2] hover:border-[#1877F2]/50 hover:bg-[#1877F2]/10 dark:hover:text-[#1877F2] dark:hover:border-[#1877F2]/60 dark:hover:bg-[#1877F2]/20 hover:shadow-[0_4px_12px_-2px_rgba(24,119,242,0.25)]',
+    instagram:
+        'hover:text-[#E4405F] hover:border-[#E4405F]/50 hover:bg-[#E4405F]/10 dark:hover:text-[#E4405F] dark:hover:border-[#E4405F]/60 dark:hover:bg-[#E4405F]/20 hover:shadow-[0_4px_12px_-2px_rgba(228,64,95,0.25)]',
+    tiktok:
+        'hover:text-neutral-900 hover:border-neutral-900/40 hover:bg-neutral-900/10 dark:hover:text-white dark:hover:border-white/50 dark:hover:bg-white/20 hover:shadow-[0_4px_12px_-2px_rgba(0,0,0,0.2)]',
+    youtube:
+        'hover:text-[#FF0000] hover:border-[#FF0000]/50 hover:bg-[#FF0000]/10 dark:hover:text-[#FF0000] dark:hover:border-[#FF0000]/60 dark:hover:bg-[#FF0000]/20 hover:shadow-[0_4px_12px_-2px_rgba(255,0,0,0.25)]',
+    pinterest:
+        'hover:text-[#BD081C] hover:border-[#BD081C]/50 hover:bg-[#BD081C]/10 dark:hover:text-[#BD081C] dark:hover:border-[#BD081C]/60 dark:hover:bg-[#BD081C]/20 hover:shadow-[0_4px_12px_-2px_rgba(189,8,28,0.25)]',
+};
+---
+
+<div class:list={['social-follow', className]}>
+    {showHeading && (
+        <h3 class="font-mono text-[11px] font-semibold uppercase tracking-widest text-mute dark:text-neutral-500">
+            {heading}
+        </h3>
+    )}
+
+    <div class:list={['flex flex-wrap items-center gap-2', showHeading && 'mt-3']}>
+        {SOCIAL_LINKS.map((item) => (
+            <a
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={item.label}
+                title={item.label}
+                class:list={[
+                    'group relative inline-flex items-center justify-center rounded-xl border border-hairline bg-elevated text-mute transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-95 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400',
+                    BRAND_HOVER_STYLES[item.icon] || 'hover:text-ink',
+                    showLabels ? 'gap-2 px-3 py-1.5' : sizeClasses.btn,
+                ]}
+            >
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    class:list={[
+                        sizeClasses.icon,
+                        'transition-transform duration-200 group-hover:scale-110',
+                    ]}
+                    aria-hidden="true"
+                    set:html={BRAND_SVGS[item.icon]}
+                />
+
+                {showLabels && (
+                    <span class="text-xs font-medium text-ink transition-colors group-hover:text-current dark:text-neutral-200">
+                        {item.name}
+                    </span>
+                )}
+
+                {!showLabels && (
+                    <span
+                        role="tooltip"
+                        class="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-neutral-900 px-2 py-0.5 text-[10px] font-medium text-white opacity-0 shadow-sm transition-all duration-150 group-hover:-top-9 group-hover:opacity-100 dark:bg-neutral-100 dark:text-neutral-900"
+                    >
+                        {item.label}
+                    </span>
+                )}
+            </a>
+        ))}
+    </div>
+</div>
