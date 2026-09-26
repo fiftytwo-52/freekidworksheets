@@ -14,6 +14,7 @@
 
 import { copyFileSync, existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
+import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 
 const root = process.cwd();
@@ -31,6 +32,47 @@ const LANGUAGES = {
     nep: { code: 'ne', label: 'Nepali', base: 4023 },
     pt: { code: 'pt', label: 'Portuguese', base: 50000 },
 };
+
+/**
+ * Manual metadata for staging files that do not follow §4, read off the filename itself
+ * (owner instruction: "the data are in the filenames"). `cap-*` = capital-letter sheets,
+ * `low-*` = lowercase-letter sheets, matching the published Capital letters A-E…X-Z series.
+ */
+const MANUAL_METADATA = {
+    'low-u-w.png': {
+        topic: 'lowercase letters u-w',
+        activity: 'trace',
+        lang: 'eng',
+        age: '3-4-preschool',
+        colorType: 'black-and-white',
+        origin: 'Original',
+        credit: '',
+    },
+    'low-x-z.png': {
+        topic: 'lowercase letters x-z',
+        activity: 'trace',
+        lang: 'eng',
+        age: '3-4-preschool',
+        colorType: 'black-and-white',
+        origin: 'Original',
+        credit: '',
+    },
+};
+
+/** Content hash of a file, used to detect images that are already published. */
+function hashFile(file) {
+    return createHash('md5').update(readFileSync(file)).digest('hex');
+}
+
+/** md5 -> published image filename, for every image already in the collection. */
+function readPublishedImageHashes() {
+    const hashes = new Map();
+    for (const file of readdirSync(contentDir)) {
+        if (!/\.(png|jpe?g)$/i.test(file)) continue;
+        hashes.set(hashFile(path.join(contentDir, file)), file);
+    }
+    return hashes;
+}
 
 /**
  * Age-group mapping — mirrors the age groups already published on the website
@@ -250,9 +292,16 @@ const sourceFiles = readdirSync(sourceDir, { withFileTypes: true })
 
 const records = [];
 const skipped = [];
+const duplicates = [];
+const publishedHashes = readPublishedImageHashes();
 for (const originalName of sourceFiles) {
     if (alreadyTracked.has(originalName)) continue;
-    const parsed = parseFilename(originalName);
+    const twin = publishedHashes.get(hashFile(path.join(sourceDir, originalName)));
+    if (twin) {
+        duplicates.push(`${originalName} == ${twin}`);
+        continue;
+    }
+    const parsed = parseFilename(originalName) ?? MANUAL_METADATA[originalName];
     if (!parsed) {
         skipped.push(originalName);
         continue;
@@ -372,6 +421,10 @@ if (records.length > 0) {
     console.log(`  age group: ${tally(records, 'ageGroup')}`);
     console.log(`  colour: ${tally(records, 'colorType')}`);
     console.log(`  origin: ${tally(records, 'status')}`);
+}
+if (duplicates.length > 0) {
+    console.log(`\nSkipped ${duplicates.length} file(s) — already published, byte-identical image:`);
+    for (const item of duplicates) console.log(`  = ${item}`);
 }
 if (skipped.length > 0) {
     console.log(`\nSkipped ${skipped.length} file(s) — filename carries no usable metadata (§2/§7):`);
