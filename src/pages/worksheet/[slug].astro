@@ -9,6 +9,7 @@ import RelatedGrid from '../../components/RelatedGrid.astro';
 import Icon from '../../components/Icon.astro';
 import { getRelated } from '../../lib/content';
 import { absoluteUrl, breadcrumbJsonLd, excerpt, learningResourceJsonLd } from '../../lib/seo';
+import ShareWorksheet from '../../components/ShareWorksheet.astro';
 import { categoryPath } from '../../data/site';
 
 export async function getStaticPaths() {
@@ -170,6 +171,14 @@ const pageKeywords = Array.from(
                 {aboutText}
             </p>
         </div>
+
+        <!-- Share This Worksheet (Facebook, Twitter, Instagram, WhatsApp) -->
+        <ShareWorksheet
+            url={pageUrl}
+            title={displayTitle}
+            lang={language === 'ne' ? 'ne' : 'en'}
+            class="mt-4"
+        />
     </section>
 
     <!-- Related Worksheets -->

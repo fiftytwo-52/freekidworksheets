@@ -1,0 +1,146 @@
+---
+// ShareWorksheet.astro — Social sharing buttons for worksheet detail pages.
+// Supports Facebook, Twitter (X), Instagram, and WhatsApp.
+// Accessible, responsive, and styled to match the site's Geist / Tailwind design system.
+import Icon from './Icon.astro';
+
+interface Props {
+    url: string;
+    title: string;
+    lang?: 'en' | 'ne' | 'es';
+    class?: string;
+}
+
+const { url, title, lang = 'en', class: className = '' } = Astro.props;
+
+const shareTitle = `${title} — Free printable worksheet`;
+const encodedUrl = encodeURIComponent(url);
+const encodedText = encodeURIComponent(shareTitle);
+const encodedWhatsApp = encodeURIComponent(`${shareTitle}\n${url}`);
+
+const fbShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
+const twitterShareUrl = `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedText}`;
+const whatsappShareUrl = `https://api.whatsapp.com/send?text=${encodedWhatsApp}`;
+
+const headingText = lang === 'ne' ? 'यो कार्यपत्र सेयर गर्नुहोस्' : 'Share this worksheet';
+const subtext =
+    lang === 'ne'
+        ? 'अभिभावक र शिक्षकहरूलाई निःशुल्क शैक्षिक कार्यपत्र भेट्टाउन मद्दत गर्नुहोस्।'
+        : 'Help parents, teachers, and friends find free learning activities.';
+---
+
+<div class:list={['share-worksheet-section rounded-2xl border border-neutral-200/90 bg-white/80 p-5 shadow-2xs backdrop-blur-xs dark:border-neutral-800 dark:bg-neutral-900/80', className]}>
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+            <h3 class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-neutral-600 dark:text-neutral-400">
+                <Icon name="spark" class="h-3.5 w-3.5 text-pink-500" />
+                {headingText}
+            </h3>
+            <p class="mt-0.5 text-xs text-neutral-500 dark:text-neutral-400">
+                {subtext}
+            </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2" role="group" aria-label="Social sharing links">
+            <!-- Facebook -->
+            <a
+                href={fbShareUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-white px-3.5 py-1.5 text-xs font-bold text-[#1877F2] shadow-2xs transition hover:scale-105 hover:border-[#1877F2]/40 hover:bg-[#1877F2]/10 active:scale-95 dark:border-neutral-700 dark:bg-neutral-800 dark:hover:bg-[#1877F2]/20"
+                aria-label="Share on Facebook"
+                title="Share on Facebook"
+            >
+                <Icon name="facebook" class="h-3.5 w-3.5" />
+                <span>Facebook</span>
+            </a>
+
+            <!-- Twitter / X -->
+            <a
+                href={twitterShareUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-white px-3.5 py-1.5 text-xs font-bold text-neutral-900 shadow-2xs transition hover:scale-105 hover:border-neutral-400 hover:bg-neutral-100 active:scale-95 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100 dark:hover:bg-neutral-700"
+                aria-label="Share on Twitter"
+                title="Share on Twitter"
+            >
+                <Icon name="twitter" class="h-3.5 w-3.5" />
+                <span>Twitter</span>
+            </a>
+
+            <!-- WhatsApp -->
+            <a
+                href={whatsappShareUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-white px-3.5 py-1.5 text-xs font-bold text-[#25D366] shadow-2xs transition hover:scale-105 hover:border-[#25D366]/40 hover:bg-[#25D366]/10 active:scale-95 dark:border-neutral-700 dark:bg-neutral-800 dark:hover:bg-[#25D366]/20"
+                aria-label="Share on WhatsApp"
+                title="Share on WhatsApp"
+            >
+                <Icon name="whatsapp" class="h-3.5 w-3.5" />
+                <span>WhatsApp</span>
+            </a>
+
+            <!-- Instagram / Copy Link -->
+            <button
+                type="button"
+                data-share-url={url}
+                data-share-title={shareTitle}
+                class="instagram-share-btn inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-white px-3.5 py-1.5 text-xs font-bold text-[#E4405F] shadow-2xs transition hover:scale-105 hover:border-[#E4405F]/40 hover:bg-[#E4405F]/10 active:scale-95 dark:border-neutral-700 dark:bg-neutral-800 dark:hover:bg-[#E4405F]/20 cursor-pointer"
+                aria-label="Share on Instagram or copy link"
+                title="Share on Instagram (copy link)"
+            >
+                <Icon name="instagram" class="h-3.5 w-3.5" />
+                <span class="btn-label">Instagram</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function setupShareButtons() {
+        document.querySelectorAll<HTMLButtonElement>('.instagram-share-btn').forEach((btn) => {
+            if (btn.dataset.initialized) return;
+            btn.dataset.initialized = 'true';
+
+            btn.addEventListener('click', async () => {
+                const url = btn.dataset.shareUrl || window.location.href;
+                const title = btn.dataset.shareTitle || document.title;
+                const label = btn.querySelector<HTMLSpanElement>('.btn-label');
+
+                // Try native Web Share API first (supported on mobile browsers)
+                if (navigator.share) {
+                    try {
+                        await navigator.share({
+                            title,
+                            url,
+                        });
+                        return;
+                    } catch (e) {
+                        // User cancelled or share failed, fallback to clipboard
+                    }
+                }
+
+                // Fallback: Copy link to clipboard for Instagram sharing
+                try {
+                    await navigator.clipboard.writeText(url);
+                    if (label) {
+                        const original = label.textContent;
+                        label.textContent = 'Link copied!';
+                        btn.classList.add('bg-pink-100', 'dark:bg-pink-900/40');
+                        setTimeout(() => {
+                            label.textContent = original;
+                            btn.classList.remove('bg-pink-100', 'dark:bg-pink-900/40');
+                        }, 2500);
+                    }
+                } catch {
+                    // Clipboard denied, open instagram in new window
+                    window.open('https://www.instagram.com', '_blank', 'noopener,noreferrer');
+                }
+            });
+        });
+    }
+
+    setupShareButtons();
+    document.addEventListener('astro:page-load', setupShareButtons);
+</script>

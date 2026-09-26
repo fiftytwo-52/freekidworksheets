@@ -245,6 +245,7 @@ a parent's guide") linking to the Nepali worksheet collection. Natural language,
 - [ ] Alt text descriptive (`Free printable <topic> worksheet for <age>`)
 - [ ] Assigned to a category + age group; visible in category grid
 - [ ] Breadcrumb present; 4–8 related worksheet links present
+- [ ] Social sharing buttons present (Facebook, Twitter/X, Instagram, WhatsApp) under description
 - [ ] URL in sitemap; page returns 200; no console errors
 - [ ] After deploy: request indexing in GSC
 
