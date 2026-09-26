@@ -113,23 +113,39 @@ def access_token() -> str:
     return token["access_token"]
 
 
-def api(method: str, url: str, payload: dict | None = None) -> dict:
+def api(method: str, url: str, payload: dict | None = None, max_retries: int = 5) -> dict:
     data = None
     headers = {"Accept": "application/json",
                "Authorization": f"Bearer {access_token()}"}
     if payload is not None:
         data = json.dumps(payload).encode("utf-8")
         headers["Content-Type"] = "application/json"
-    req = urllib.request.Request(url, data=data, headers=headers, method=method)
-    try:
-        with urllib.request.urlopen(req, timeout=60) as resp:
-            return json.load(resp)
-    except urllib.error.HTTPError as exc:
+    
+    for attempt in range(max_retries):
+        req = urllib.request.Request(url, data=data, headers=headers, method=method)
         try:
-            detail = exc.read().decode("utf-8", errors="replace")
-        except Exception:
-            detail = ""
-        raise PinError(f"Pinterest API HTTP {exc.code}: {detail.strip()}")
+            with urllib.request.urlopen(req, timeout=60) as resp:
+                return json.load(resp)
+        except urllib.error.HTTPError as exc:
+            try:
+                detail = exc.read().decode("utf-8", errors="replace")
+            except Exception:
+                detail = ""
+            if exc.code == 429 or exc.code >= 500:
+                retry_after = exc.headers.get("Retry-After")
+                wait_sec = int(retry_after) if retry_after and retry_after.isdigit() else (15 * (attempt + 1))
+                print(f"[RETRY] HTTP {exc.code}: {detail.strip()} - Waiting {wait_sec}s before retry ({attempt + 1}/{max_retries})...")
+                time.sleep(wait_sec)
+                continue
+            raise PinError(f"Pinterest API HTTP {exc.code}: {detail.strip()}")
+        except urllib.error.URLError as exc:
+            if attempt < max_retries - 1:
+                wait_sec = 5 * (attempt + 1)
+                print(f"[RETRY] Network error: {exc.reason} - Waiting {wait_sec}s before retry ({attempt + 1}/{max_retries})...")
+                time.sleep(wait_sec)
+                continue
+            raise PinError(f"Network error: {exc.reason}")
+    raise PinError(f"Failed after {max_retries} retries")
 
 
 # ---------------------------------------------------------------------------
@@ -152,6 +168,7 @@ def save_history(history: dict) -> None:
 
 
 def update_external_tracking(code: str, pin_id: str, board_name: str, pin_date: str) -> None:
+    # 1. Update Markdown tracker
     tracking_candidates = [
         "/home/fiftytwo/Desktop/GaNesh Khatiwada/Do not Delete/Code base/Newsheet-for-freekidworksheets/worksheet-upload-tracking.md",
         os.path.abspath(os.path.join(HERE, "..", "..", "Newsheet-for-freekidworksheets", "worksheet-upload-tracking.md")),
@@ -177,9 +194,42 @@ def update_external_tracking(code: str, pin_id: str, board_name: str, pin_date: 
                 if updated:
                     with open(target, "w", encoding="utf-8") as fh:
                         fh.writelines(new_lines)
-                    print(f"Updated tracking ledger: {target}")
             except Exception as e:
                 print(f"Note: Could not update tracking ledger {target}: {e}")
+
+    # 2. Update Excel tracker
+    xlsx_candidates = [
+        "/home/fiftytwo/Desktop/GaNesh Khatiwada/Do not Delete/Code base/Newsheet-for-freekidworksheets/worksheets-tracker.xlsx",
+        os.path.abspath(os.path.join(HERE, "..", "..", "Newsheet-for-freekidworksheets", "worksheets-tracker.xlsx")),
+        os.path.abspath(os.path.join(HERE, "..", "worksheets-tracker.xlsx")),
+    ]
+    for xlsx_path in xlsx_candidates:
+        if os.path.exists(xlsx_path):
+            try:
+                import openpyxl
+                wb = openpyxl.load_workbook(xlsx_path)
+                ws = wb["Worksheets"]
+                matched = False
+                for r in range(2, ws.max_row + 1):
+                    val = ws.cell(r, 1).value
+                    if val is not None and str(val).strip() == str(code):
+                        ws.cell(r, 11).value = "Pinned"
+                        ws.cell(r, 12).value = str(pin_id)
+                        ws.cell(r, 13).value = str(board_name)
+                        ws.cell(r, 14).value = str(pin_date)
+                        matched = True
+                        break
+                if matched:
+                    if "Summary" in wb.sheetnames:
+                        summary = wb["Summary"]
+                        all_rows = list(ws.iter_rows(min_row=2, values_only=True))
+                        pinned_count = sum(1 for r in all_rows if len(r) > 10 and str(r[10]).strip() == "Pinned")
+                        for row in summary.iter_rows(min_row=2, max_col=2):
+                            if row[0].value == "Worksheets pinned on Pinterest":
+                                row[1].value = pinned_count
+                    wb.save(xlsx_path)
+            except Exception as e:
+                print(f"Note: Could not update Excel tracker {xlsx_path}: {e}")
 
 
 def record_pinned(code: str, slug: str, pin_id: str, board_id: str,
@@ -377,7 +427,16 @@ def format_pin_for_worksheet(ws: dict, board_override: str | None = None) -> dic
         tags = ["kidsworksheets", "freeprintable", "preschoolactivities", "homeschool", "learningactivities"]
 
     hashtags_str = " ".join(f"#{t}" for t in tags)
-    description = f"{desc_base} {hashtags_str} Download and print free A4 worksheets at freekidworksheets.com."
+    cta = f"{hashtags_str} Download free A4 printables at freekidworksheets.com."
+    max_desc_base_len = 485 - len(cta) - 1
+    if len(desc_base) > max_desc_base_len:
+        truncated = desc_base[:max_desc_base_len].rsplit(" ", 1)[0]
+        if not truncated.endswith("."):
+            truncated += "..."
+        desc_base = truncated
+    description = f"{desc_base} {cta}".strip()
+    if len(description) > 500:
+        description = description[:497] + "..."
 
     return {
         "code": ws["code"],
@@ -727,6 +786,113 @@ def cmd_batch(args: argparse.Namespace) -> int:
     return 1 if failed else 0
 
 
+def cmd_upload_all(args: argparse.Namespace) -> int:
+    base = get_base_url(args)
+    # Verify auth
+    user_info = api("GET", f"{base}/user_account")
+    print(f"\n=== Starting Upload All Unpinned Worksheets ===")
+    print(f"User:        {user_info.get('business_name')} (@{user_info.get('username')})")
+    print(f"Environment: {'Sandbox' if base == SANDBOX else 'Production'}")
+
+    # 1. Sync any existing pinned worksheets from history into Excel tracker
+    hist = load_history()
+    for code, item in hist.items():
+        update_external_tracking(code, item["pin_id"], item["board_name"], item.get("pinned_at", "")[:10] or datetime.date.today().isoformat())
+
+    # 2. Read tracking ledger to find all unpinned sheets
+    tracking_candidates = [
+        "/home/fiftytwo/Desktop/GaNesh Khatiwada/Do not Delete/Code base/Newsheet-for-freekidworksheets/worksheet-upload-tracking.md",
+        os.path.abspath(os.path.join(HERE, "..", "..", "Newsheet-for-freekidworksheets", "worksheet-upload-tracking.md")),
+        os.path.abspath(os.path.join(HERE, "..", "worksheet-upload-tracking.md")),
+    ]
+    target_md = None
+    for cand in tracking_candidates:
+        if os.path.exists(cand):
+            target_md = cand
+            break
+
+    if not target_md:
+        raise PinError("worksheet-upload-tracking.md not found")
+
+    with open(target_md, "r", encoding="utf-8") as fh:
+        lines = fh.readlines()
+
+    unpinned_codes = []
+    for line in lines:
+        parts = [p.strip() for p in line.split("|")]
+        if len(parts) >= 15 and parts[1].isdigit():
+            code = parts[1]
+            pin_status = parts[11]
+            if pin_status != "Pinned" and not is_pinned(code, hist=hist):
+                unpinned_codes.append(code)
+
+    print(f"Found {len(unpinned_codes)} unpinned worksheets in tracking ledger.")
+    if not unpinned_codes:
+        print("All worksheets are already pinned! Nothing to do.")
+        return 0
+
+    limit = getattr(args, "limit", None)
+    if limit and limit > 0:
+        unpinned_codes = unpinned_codes[:limit]
+        print(f"Limiting to first {limit} worksheets.")
+
+    delay = getattr(args, "delay", 1.2)
+    default_board_id = "1127096312935342580" if base == SANDBOX else None
+    default_board_name = "Sandbox Test Worksheets" if base == SANDBOX else None
+
+    # Load all worksheets by code
+    all_ws = {ws["code"]: ws for ws in list_all_worksheets()}
+
+    success = 0
+    failed = 0
+
+    print(f"\nStarting batch upload of {len(unpinned_codes)} pins (delay: {delay}s)...")
+    for idx, code in enumerate(unpinned_codes, start=1):
+        ws = all_ws.get(code)
+        if not ws:
+            print(f"[{idx}/{len(unpinned_codes)}] SKIP Code {code}: Markdown file not found in repo")
+            failed += 1
+            continue
+
+        if not os.path.exists(ws["image_path"]):
+            print(f"[{idx}/{len(unpinned_codes)}] SKIP Code {code}: Image not found ({ws['image_path']})")
+            failed += 1
+            continue
+
+        pin_data = format_pin_for_worksheet(ws, getattr(args, "board", None))
+        board_id = pin_data["board_id"]
+        board_name = pin_data["board_name"]
+
+        if base == SANDBOX and not getattr(args, "board", None):
+            board_id = default_board_id
+            board_name = default_board_name
+
+        if getattr(args, "dry_run", False):
+            print(f"[{idx}/{len(unpinned_codes)}] DRY-RUN Code {code}: '{pin_data['title']}' -> {board_name}")
+            continue
+
+        try:
+            pin = create_pin(base, pin_data["image"], board_id,
+                             pin_data["title"], pin_data["description"], pin_data["link"])
+            pin_id = pin.get("id")
+            today_str = datetime.date.today().isoformat()
+            record_pinned(ws["code"], ws["slug"], pin_id, board_id,
+                          board_name, pin_data["title"], pin_data["link"])
+            success += 1
+            print(f"[{idx}/{len(unpinned_codes)}] SUCCESS Code {code} ({ws['slug']}) -> Pin ID {pin_id}")
+            time.sleep(delay)
+        except Exception as e:
+            failed += 1
+            print(f"[{idx}/{len(unpinned_codes)}] FAILED Code {code}: {e}")
+            time.sleep(max(2.0, delay))
+
+    print(f"\n=== Batch Upload Complete ===")
+    print(f"Total processed: {len(unpinned_codes)}")
+    print(f"Success:         {success}")
+    print(f"Failed:          {failed}")
+    return 1 if failed and not success else 0
+
+
 # ---------------------------------------------------------------------------
 # Main Entry Point
 # ---------------------------------------------------------------------------
@@ -751,6 +917,12 @@ def main() -> int:
     ws_p.add_argument("--board", help="optional board ID override")
     ws_p.add_argument("--dry-run", action="store_true", help="preview payload without posting")
     ws_p.add_argument("--force", action="store_true", help="post even if already recorded in history")
+
+    up_all_p = sub.add_parser("upload-all", help="batch upload all unpinned worksheets from tracking ledger")
+    up_all_p.add_argument("--limit", type=int, help="max worksheets to upload")
+    up_all_p.add_argument("--delay", type=float, default=1.2, help="delay in seconds between uploads (default 1.2s)")
+    up_all_p.add_argument("--board", help="optional board ID override")
+    up_all_p.add_argument("--dry-run", action="store_true", help="preview without posting")
 
     plan_p = sub.add_parser("plan", help="draft a plan of worksheets to upload (for approval)")
     plan_p.add_argument("--code", help="filter by specific code")
@@ -786,6 +958,8 @@ def main() -> int:
             return cmd_plan(args)
         elif args.cmd == "worksheet":
             return cmd_worksheet(args)
+        elif args.cmd == "upload-all":
+            return cmd_upload_all(args)
         elif args.cmd == "sync-pins":
             return cmd_sync_pins(args)
         elif args.cmd == "post":
