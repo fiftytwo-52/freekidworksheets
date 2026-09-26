@@ -1,4 +1,18 @@
-import { copyFileSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+// scripts/import-new-worksheets.mjs
+// Publishes every finalized worksheet image in NEW/ into src/content/worksheets/ and keeps the
+// dual tracking files (worksheet-upload-tracking.md + worksheets-tracker.xlsx) in sync, following
+// new-sheet-rule.md §6 (dual-format tracking) and §7 (publication steps).
+//
+// Filename convention (§4): [Topic] - [Activity] - [lang] - [colour] - [origin] - [Age].png
+//   lang   : eng | nep                    colour : bw | color
+//   origin : orig | alt | down            Age    : e.g. 3-5-preschool, 4-6-lkg, 6-8-class 1
+//
+// Images whose filename carries no recognisable metadata (e.g. cap-A-E.png) are SKIPPED and
+// reported, because §2/§7 require the owner to supply that metadata before publication.
+//
+// Usage: node scripts/import-new-worksheets.mjs [--dry-run]
+
+import { copyFileSync, existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 
@@ -6,58 +20,164 @@ const root = process.cwd();
 const sourceDir = path.join(root, 'NEW');
 const contentDir = path.join(root, 'src', 'content', 'worksheets');
 const trackerDir = path.resolve(root, '..', 'Newsheet-for-freekidworksheets');
-const date = '2026-09-06';
+const manifestPath = path.join(trackerDir, '.new-import-records.json');
+const DRY_RUN = process.argv.includes('--dry-run') || process.argv.includes('--list');
+const LIST = process.argv.includes('--list');
+const TODAY = new Date().toISOString().slice(0, 10);
 
-const sourceFiles = readdirSync(sourceDir, { withFileTypes: true })
-    .filter((entry) => entry.isFile())
-    .map((entry) => entry.name)
-    .sort((a, b) => a.localeCompare(b));
+/** Language tokens -> content language code, tracker label, and legacy code base. */
+const LANGUAGES = {
+    eng: { code: 'en', label: 'English', base: 3052 },
+    nep: { code: 'ne', label: 'Nepali', base: 4023 },
+    pt: { code: 'pt', label: 'Portuguese', base: 50000 },
+};
 
-function languageFor(name) {
-    if (/\bpt\b/i.test(name)) return { code: 'pt', label: 'Portuguese' };
-    if (/\b(nep|nepali)\b/i.test(name)) return { code: 'ne', label: 'Nepali' };
-    return { code: 'en', label: 'English' };
+/**
+ * Age-group mapping — mirrors the age groups already published on the website
+ * (preschool/nursery -> 3-4, lkg/ukg/kg -> 5-6, class 1-3 -> 7-8).
+ */
+function ageGroupFor(ageToken) {
+    const token = ageToken.toLowerCase();
+    if (/lkg|ukg|kindergarten|\bkg\b/.test(token)) return '5-6';
+    if (/preschool|nursery/.test(token)) return '3-4';
+    if (/class|grade/.test(token)) {
+        return /(class|grade)\s*(1|2|3)\b/.test(token) ? '7-8' : '9+';
+    }
+    const lower = Number.parseInt(token, 10);
+    if (Number.isNaN(lower)) return '5-6';
+    if (lower <= 4) return '3-4';
+    if (lower <= 6) return '5-6';
+    if (lower <= 8) return '7-8';
+    return '9+';
 }
 
-function ageFor(name) {
-    if (/3-4|preschool|nursery/i.test(name)) return '3-4';
-    return '5-6';
-}
-
-function colorFor(name) {
-    return /colour|color(?!ing)|colorful/i.test(name) ? 'colorful' : 'black-and-white';
-}
-
-function titleFor(name) {
-    let title = name.replace(/\.[^.]+$/, '');
-    title = title
-        .replace(/^English\s*-\s*/i, '')
-        .replace(/^Nepali\s*-\s*/i, '')
-        .replace(/^general knowledge\s*-\s*/i, '')
-        .replace(/^math\s*-\s*/i, '')
-        .replace(/^science\s*-\s*/i, '')
-        .replace(/\s*-\s*(english|nepali|pt)\s*-\s*/gi, ' - ')
-        .replace(/\s*-\s*(black and white|colour|color)\s*-\s*/gi, ' - ')
-        .replace(/\s*-\s*(original|orig)\s*-\s*/gi, ' - ')
-        .replace(/\s*-\s*(preschool|nursery|lkg|ukg|kg|3-4)\s*$/i, '')
-        .replace(/\s*-\s*$/g, '')
-        .replace(/\s+/g, ' ')
-        .trim();
-    if (/^cores e formas/i.test(title)) return 'Cores e Formas Colors and Shapes Matching';
-    if (/^ruit\b/i.test(title)) title = title.replace(/^ruit\b/i, 'Fruit');
-    if (/^A aa/i.test(title)) title = 'A Aa I Nepali Vowel Tracing';
-    if (/^Ee u oo/i.test(title)) title = 'Ee U Oo Nepali Vowel Tracing';
-    if (/^Gha Nga/i.test(title)) title = 'Gha Nga Nepali Letter Tracing';
-    if (/^ka kha/i.test(title)) title = 'Ka Kha Nepali Letter Tracing';
-    if (/^\- Filename:/i.test(title)) title = 'Standing Sleeping Slanting U-Curve and Zigzag Line Tracing';
-    return title.charAt(0).toUpperCase() + title.slice(1);
-}
-
-function categoryFor(name, title) {
-    if (/math\s*-|number|count|addition|subtraction|comparison|ordering|quantity|pyramid/i.test(name)) return 'Math';
-    if (/color|colour|drawing|draw/i.test(name)) return 'Coloring';
-    if (/tracing|trace|letter|vowel|consonant|alphabet|stroke|line|word/i.test(`${name} ${title}`)) return 'Alphabet & Tracing';
+/**
+ * Category mapping into the canonical list in src/data/site.ts, preserving the precedence
+ * already used across the published library: number/quantity work -> Math, colouring/drawing ->
+ * Coloring, letter/word/tracing work -> Alphabet & Tracing, everything else -> Writing.
+ * Only the topic + activity are inspected, so the colour token never forces a category.
+ */
+function categoryFor(topic, activity) {
+    const text = `${topic} ${activity}`;
+    if (/color by number|colour by number/i.test(text)) return 'Coloring';
+    if (/\b(add|addition|subtract|subtraction|mix|mixed|count|counting|number|numbers|quantity|compare|comparison|order|ordering|bigger|smaller|biggest|smallest|big and small|tall|short|sum)\b/i.test(text)) {
+        return 'Math';
+    }
+    if (/\b(color|colour|draw|drawing)\b/i.test(text)) return 'Coloring';
+    if (/\b(trace|tracing|write|writing|label|labeling|alphabet|letter|letters|capital|uppercase|lowercase|vowel|vowels|consonant|consonants|word|words|read|reading|cvc|sight)\b/i.test(text)) {
+        return 'Alphabet & Tracing';
+    }
     return 'Writing';
+}
+
+/** Activity label used in the worksheet title (sentence-case, mirrors the published titles). */
+const ACTIVITY_LABELS = {
+    trace: 'tracing',
+    'trace and write': 'tracing and writing',
+    connect: 'connecting',
+    'connect the dots': 'connect the dots',
+    'dot to dot': 'dot to dot',
+    match: 'matching',
+    color: 'coloring',
+    draw: 'drawing',
+    'sentence draw': 'sentence drawing',
+    write: 'writing',
+    count: 'counting',
+    pattern: 'pattern',
+    label: 'labeling',
+    complete: 'complete the picture',
+    add: 'addition',
+    subtract: 'subtraction',
+    mix: 'mixed practice',
+    circle: 'circle the answer',
+    'missing letter': 'missing letter',
+    maze: 'maze',
+    join: 'word joining',
+    'odd one': 'odd one out',
+    sort: 'sorting',
+    compare: 'comparing',
+    order: 'ordering',
+    find: 'find and circle',
+    bingo: 'bingo',
+    read: 'reading',
+};
+
+/** Tracker "Activity / Type" values, kept to the vocabulary already used in the tracker. */
+function trackerType(category, activity) {
+    if (/^trace/.test(activity)) return 'tracing';
+    if (/^(write|label|missing letter)/.test(activity)) return 'writing / language';
+    if (/^(read|bingo)/.test(activity)) return 'reading';
+    if (/^(color|draw|sentence draw)/.test(activity)) return 'coloring / drawing';
+    if (category === 'Math') return 'math / practice';
+    if (category === 'Alphabet & Tracing') return 'tracing / writing';
+    return 'matching / puzzle';
+}
+
+/** Splits "[Topic] - [Activity] - [lang] - [colour] - [origin] - [Age]" into its parts. */
+function parseFilename(name) {
+    const stem = name.replace(/\.[^.]+$/, '');
+    const parts = stem.split(' - ').map((part) => part.trim());
+    if (parts.length < 6) return null;
+    const [activity, lang, colour, origin, age] = parts.slice(-5);
+    const topic = parts.slice(0, parts.length - 5).join(' - ');
+    if (!topic || !activity || !LANGUAGES[lang]) return null;
+    if (!/^(bw|black and white|color|colour)$/i.test(colour)) return null;
+    if (!/^(orig|original|alt|altered|down|downloaded)/i.test(origin)) return null;
+    return {
+        topic,
+        activity,
+        lang,
+        age,
+        colorType: /^bw$|^black and white$/i.test(colour) ? 'black-and-white' : 'colorful',
+        origin: /^orig/i.test(origin)
+            ? 'Original'
+            : /^alt/i.test(origin)
+              ? 'Altered'
+              : 'Downloaded (credit to owner)',
+        credit: /^(alt|altered|down|downloaded)\s*-\s*(.+)$/i.test(origin)
+            ? origin.replace(/^(alt|altered|down|downloaded)\s*-\s*/i, '')
+            : '',
+    };
+}
+
+/** Reads the published collection for the next free codes and the existing description set. */
+function readExistingContent() {
+    const descriptions = new Set();
+    const highestCode = {};
+    for (const file of readdirSync(contentDir).filter((name) => name.endsWith('.md'))) {
+        const raw = readFileSync(path.join(contentDir, file), 'utf8');
+        const block = raw.match(/^---\n([\s\S]*?)\n---/);
+        if (!block) continue;
+        const field = (key) => {
+            const match = block[1].match(new RegExp(`^${key}:\\s*"?([^"\\n]+?)"?\\s*$`, 'm'));
+            return match ? match[1].trim() : null;
+        };
+        const description = field('description');
+        if (description) descriptions.add(description);
+        const code = Number.parseInt(field('code') ?? '', 10);
+        const language = field('language') ?? 'en';
+        if (!Number.isNaN(code)) {
+            highestCode[language] = Math.max(highestCode[language] ?? 0, code);
+        }
+    }
+    return { descriptions, highestCode };
+}
+
+/** Sentence-case title: "<Topic> <activity label>", collapsing a topic that repeats the activity. */
+function titleFor(record) {
+    let topic = record.topic;
+    if (topic.toLowerCase().endsWith(` ${record.activity.toLowerCase()}`)) {
+        topic = topic.slice(0, -(record.activity.length + 1));
+    }
+    topic = topic.charAt(0).toUpperCase() + topic.slice(1);
+    let label = ACTIVITY_LABELS[record.activity];
+    if (!label) {
+        const numbered = record.activity.match(/^trace and color\s*(\d*)$/i);
+        label = numbered
+            ? `tracing and coloring${numbered[1] ? ` ${numbered[1]}` : ''}`
+            : record.activity;
+    }
+    return `${topic} ${label}`;
 }
 
 function slugFor(title, code) {
@@ -70,59 +190,209 @@ function slugFor(title, code) {
     return `${slug || 'worksheet'}-${code}`;
 }
 
+function tagsFor(record) {
+    const words = record.title.toLowerCase().split(/[^a-z0-9]+/).filter((word) => word.length > 1);
+    return [
+        ...new Set([
+            ...words,
+            record.category.toLowerCase(),
+            record.ageGroup,
+            record.languageLabel.toLowerCase(),
+            'kids worksheet',
+        ]),
+    ];
+}
+
+/** §1.2 — description must be unique and at least 60 characters of real copy. */
+function descriptionFor(record) {
+    const colourNote =
+        record.colorType === 'colorful' ? ' The sheet is supplied in full colour.' : '';
+    const originNote =
+        record.status === 'Original'
+            ? 'It is an original worksheet prepared for FreeKidWorksheets and is marked Original.'
+            : record.credit
+              ? `It was sourced externally and is marked ${record.status} — credit to ${record.credit}.`
+              : `It is marked ${record.status}.`;
+    return (
+        `${record.title} is a free printable ${record.languageLabel.toLowerCase()} worksheet ` +
+        `for children aged ${record.ageGroup}. This ${record.category.toLowerCase()} activity ` +
+        `supports guided practice at home, in class, or during independent learning.${colourNote} ${originNote}`
+    );
+}
+
+/** Original filenames already recorded in the Markdown tracker (idempotency guard). */
+function readTrackedFilenames() {
+    const ledger = path.join(trackerDir, 'worksheet-upload-tracking.md');
+    if (!existsSync(ledger)) return new Set();
+    const tracked = new Set();
+    for (const line of readFileSync(ledger, 'utf8').split('\n')) {
+        if (!line.startsWith('|')) continue;
+        const cells = line.replace(/^\||\|$/g, '').split('|').map((cell) => cell.trim());
+        if (cells.length >= 10 && cells[0] !== 'Code') tracked.add(cells[8]);
+    }
+    return tracked;
+}
+
+// ---------------------------------------------------------------------------
+// Main
+// ---------------------------------------------------------------------------
+const { descriptions: publishedDescriptions, highestCode } = readExistingContent();
+const alreadyTracked = readTrackedFilenames();
+const nextCode = {};
+for (const [token, meta] of Object.entries(LANGUAGES)) {
+    nextCode[token] = Math.max(highestCode[meta.code] ?? 0, meta.base) + 1;
+}
+
+const sourceFiles = readdirSync(sourceDir, { withFileTypes: true })
+    .filter((entry) => entry.isFile())
+    .map((entry) => entry.name)
+    .sort((a, b) => a.localeCompare(b));
+
 const records = [];
-let english = 3053;
-let nepali = 4024;
-let portuguese = 50001;
+const skipped = [];
 for (const originalName of sourceFiles) {
-    const language = languageFor(originalName);
-    const code = language.code === 'en' ? String(english++) : language.code === 'ne' ? String(nepali++) : String(portuguese++);
-    const title = titleFor(originalName);
-    const ageGroup = ageFor(originalName);
-    const colorType = colorFor(originalName);
-    const category = categoryFor(originalName, title);
-    const ext = path.extname(originalName).toLowerCase();
-    const imageName = `${code}${ext}`;
-    const slug = slugFor(title, code);
-    const description = `${title} is a free printable ${language.label.toLowerCase()} worksheet for children aged ${ageGroup}. This ${category.toLowerCase()} activity supports guided practice at home, in class, or during independent learning. It is an original worksheet prepared for FreeKidWorksheets and is marked Original.`;
-    const tags = [...new Set([
-        ...title.toLowerCase().split(/[^a-z0-9]+/).filter((word) => word.length > 1),
-        category.toLowerCase(),
-        ageGroup,
-        language.code === 'ne' ? 'nepali' : language.code === 'pt' ? 'portuguese' : 'english',
-        'kids worksheet',
-    ])];
+    if (alreadyTracked.has(originalName)) continue;
+    const parsed = parseFilename(originalName);
+    if (!parsed) {
+        skipped.push(originalName);
+        continue;
+    }
+    const language = LANGUAGES[parsed.lang];
+    const record = {
+        ...parsed,
+        status: parsed.origin,
+        code: String(nextCode[parsed.lang]++),
+        category: categoryFor(parsed.topic, parsed.activity),
+        ageGroup: ageGroupFor(parsed.age),
+        language: language.code,
+        languageLabel: language.label,
+        date: TODAY,
+        originalName,
+        extension: path.extname(originalName).toLowerCase() || '.png',
+    };
+    record.title = titleFor(record);
+    record.description = descriptionFor(record);
+    records.push(record);
+}
+
+// Descriptions must be unique site-wide (tests/verify.mjs fails on duplicates), so colour twins
+// and any other clash get an explicit suffix.
+const usedDescriptions = new Set(publishedDescriptions);
+for (const record of records) {
+    let attempt = 0;
+    while (usedDescriptions.has(record.description) || record.description.length < 60) {
+        attempt += 1;
+        const suffix =
+            attempt === 1
+                ? ` - ${record.colorType === 'colorful' ? 'color' : 'black and white'}`
+                : ` - ${record.code}`;
+        record.title = `${titleFor(record)}${suffix}`;
+        record.description = descriptionFor(record);
+        if (attempt >= 3) break;
+    }
+    usedDescriptions.add(record.description);
+    record.slug = slugFor(record.title, record.code);
+    record.imageName = `${record.code}${record.extension}`;
+}
+
+for (const record of records) {
+    if (DRY_RUN) continue;
+    copyFileSync(path.join(sourceDir, record.originalName), path.join(contentDir, record.imageName));
     const frontmatter = [
         '---',
-        `title: ${JSON.stringify(title)}`,
-        `code: "${code}"`,
-        `category: ${JSON.stringify(category)}`,
-        `ageGroup: "${ageGroup}"`,
-        `date: ${date}`,
-        `description: ${JSON.stringify(description)}`,
-        `image: "./${imageName}"`,
-        `tags: [${tags.map((tag) => JSON.stringify(tag)).join(', ')}]`,
-        `language: "${language.code}"`,
-        `colorType: "${colorType}"`,
+        `title: ${JSON.stringify(record.title)}`,
+        `code: "${record.code}"`,
+        `category: ${JSON.stringify(record.category)}`,
+        `ageGroup: "${record.ageGroup}"`,
+        `date: ${record.date}`,
+        `description: ${JSON.stringify(record.description)}`,
+        `image: "./${record.imageName}"`,
+        `tags: [${tagsFor(record).map((tag) => JSON.stringify(tag)).join(', ')}]`,
+        `language: "${record.language}"`,
+        `colorType: "${record.colorType}"`,
         '---',
         '',
     ].join('\n');
-    copyFileSync(path.join(sourceDir, originalName), path.join(contentDir, imageName));
-    writeFileSync(path.join(contentDir, `${slug}.md`), frontmatter);
-    records.push({ code, title, language: language.label, type: activityFor(category, title), colour: colorType, origin: 'Original', ageGroup, date, originalName, status: 'Uploaded' });
+    writeFileSync(path.join(contentDir, `${record.slug}.md`), frontmatter);
 }
 
-function activityFor(category, title) {
-    if (category === 'Math') return 'math / practice';
-    if (category === 'Coloring') return 'coloring / drawing';
-    if (/matching|maze|puzzle|sorting/i.test(title)) return 'matching / puzzle';
-    if (/writing|word|sentence|sound/i.test(title)) return 'writing / language';
-    return 'tracing';
+const manifest = records.map((record) => ({
+    code: record.code,
+    title: record.title,
+    language: record.languageLabel,
+    type: trackerType(record.category, record.activity),
+    colour: record.colorType,
+    origin: record.status,
+    ageGroup: record.ageGroup,
+    date: record.date,
+    originalName: record.originalName,
+    status: 'Uploaded',
+}));
+
+if (!DRY_RUN && manifest.length > 0) {
+    writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+    execFileSync('python3', [path.join(root, 'scripts', 'update-trackers.py'), manifestPath], {
+        stdio: 'inherit',
+    });
+    if (existsSync(manifestPath)) {
+        console.warn('warning: update-trackers.py did not remove the manifest file');
+    }
 }
 
-const manifestPath = path.join(trackerDir, '.new-import-records.json');
-writeFileSync(manifestPath, JSON.stringify(records, null, 2) + '\n');
-console.log(`Imported ${records.length} worksheets: ${english - 3053} English, ${nepali - 4024} Nepali, ${portuguese - 50001} Portuguese.`);
-console.log(`Manifest: ${manifestPath}`);
+// ---------------------------------------------------------------------------
+// Report
+// ---------------------------------------------------------------------------
+const tally = (items, key) =>
+    Object.entries(
+        items.reduce((acc, item) => {
+            const value = item[key];
+            acc[value] = (acc[value] ?? 0) + 1;
+            return acc;
+        }, {}),
+    )
+        .sort((a, b) => b[1] - a[1])
+        .map(([value, count]) => `${value} ${count}`)
+        .join(' | ');
 
-execFileSync('python3', [path.join(root, 'scripts', 'update-trackers.py'), manifestPath], { stdio: 'inherit' });
+console.log(`${DRY_RUN ? '[dry run] ' : ''}Prepared ${records.length} worksheets for publication.`);
+if (records.length > 0) {
+    for (const [token, label] of [
+        ['eng', 'English'],
+        ['nep', 'Nepali'],
+        ['pt', 'Portuguese'],
+    ]) {
+        const group = records.filter((record) => record.lang === token);
+        if (group.length === 0) continue;
+        const codes = group.map((record) => Number(record.code)).sort((a, b) => a - b);
+        console.log(
+            `  ${label}: ${group.length} (codes ${codes[0]}-${codes[codes.length - 1]})`,
+        );
+    }
+    console.log(`  category: ${tally(records, 'category')}`);
+    console.log(`  age group: ${tally(records, 'ageGroup')}`);
+    console.log(`  colour: ${tally(records, 'colorType')}`);
+    console.log(`  origin: ${tally(records, 'status')}`);
+}
+if (skipped.length > 0) {
+    console.log(`\nSkipped ${skipped.length} file(s) — filename carries no usable metadata (§2/§7):`);
+    for (const name of skipped) console.log(`  - ${name}`);
+}
+if (DRY_RUN) {
+    console.log('\nNothing was written (dry run). Re-run without --dry-run to publish.');
+} else if (records.length > 0) {
+    console.log('\nNext: npm run check && npm run build (postbuild runs the verification suite).');
+}
+
+if (LIST) {
+    console.log('\ncode | title | category | age | colour | language');
+    for (const record of records) {
+        console.log(
+            `${record.code} | ${record.title} | ${record.category} | ${record.ageGroup} | ` +
+                `${record.colorType} | ${record.language}`,
+        );
+    }
+}
+
+
+
+
