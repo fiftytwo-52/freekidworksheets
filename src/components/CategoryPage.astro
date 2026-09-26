@@ -4,6 +4,7 @@
 import Base from '../layouts/Base.astro';
 import BrowseLayout from './BrowseLayout.astro';
 import { getByCategory, paginate } from '../lib/content';
+import { CATEGORY_INTROS, categoryPath } from '../data/site';
 
 interface Props {
     category: string;
@@ -13,17 +14,25 @@ const { category, page } = Astro.props;
 
 const { items, totalPages } = paginate(await getByCategory(category), page);
 
-const basePath = `/category/${category}`;
+const basePath = categoryPath(category);
 const path = page === 1 ? basePath : `${basePath}/page/${page}`;
+// Title-friendly category name ("Alphabet & Tracing" -> "Alphabet Tracing") keeps
+// every paginated <title> inside the 50-60 character target (SEO TASK-05/12).
+const titleCategory = category.replace(/\s*&\s*/g, ' ');
 const pageTitle =
-    page === 1 ? `${category} worksheets` : `${category} worksheets — page ${page}`;
+    page === 1
+        ? `${titleCategory} worksheets`
+        : `${titleCategory} worksheets - page ${page}`;
 const catLower = category.toLowerCase();
 const description =
-    `Free printable ${catLower} worksheets for kids — ` +
-    `download and print A4 activity sheets for young learners.` +
-    (page === 1 ? '' : ` Page ${page} of ${totalPages}.`);
+    `Free printable ${catLower} worksheets for kids — browse, download and print ` +
+    `A4 activity sheets for young learners at home or in class. ` +
+    (page === 1 ? 'No signup needed.' : `Page ${page} of ${totalPages}.`);
 
 const pageKeywords = `${catLower} for kids worksheet, ${catLower} kids worksheet, kids worksheet, kids worksheet pdf, kids worksheets free, kids worksheets printable, ${catLower} worksheets`;
+
+// Unique 150-250 word intro copy above the grid (SEO TASK-08).
+const intro = CATEGORY_INTROS[category];
 ---
 
 <Base pageTitle={pageTitle} description={description} path={path} keywords={pageKeywords}>
@@ -36,6 +45,7 @@ const pageKeywords = `${catLower} for kids worksheet, ${catLower} kids worksheet
         basePath={basePath}
         page={page}
         {totalPages}
+        {intro}
     />
 </Base>
 

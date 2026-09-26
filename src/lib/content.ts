@@ -77,7 +77,7 @@ export async function getAgeGroups(): Promise<string[]> {
  */
 export async function getRelated(
     slug: string,
-    limit = 4,
+    limit = 6,
 ): Promise<Worksheet[]> {
     const all = await getAllWorksheets();
     const entry = all.find((w) => w.slug === slug);

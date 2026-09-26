@@ -28,6 +28,8 @@ interface Props {
     tone?: 'pink' | 'green' | 'blue';
     /** UI language for labels/topics (default English). */
     lang?: 'en' | 'ne' | 'es';
+    /** Optional 150-250 word intro copy rendered above the filter/grid (SEO TASK-08). */
+    intro?: string;
 }
 const {
     kicker,
@@ -40,6 +42,7 @@ const {
     totalPages,
     tone = 'pink',
     lang = 'en',
+    intro,
 } = Astro.props;
 
 /** Hero + search-card accent classes per language tone (mirrors the home heroes). */
@@ -137,6 +140,20 @@ const s = UI_STRINGS[lang];
         </div>
     </div>
 </section>
+
+<!-- Category intro copy — unique per category, above the grid (SEO TASK-08) -->
+{intro && (
+    <section class="mx-auto w-full max-w-7xl px-4 pt-8 sm:px-6 lg:px-8">
+        <div class="rounded-2xl border border-hairline bg-elevated p-5 sm:p-6 dark:border-neutral-800 dark:bg-neutral-900">
+            <h2 class="text-lg font-bold tracking-tight text-ink sm:text-xl dark:text-neutral-100">
+                About {title} worksheets
+            </h2>
+            <p class="mt-3 text-[15px] leading-relaxed text-body dark:text-neutral-300">
+                {intro}
+            </p>
+        </div>
+    </section>
+)}
 
 <!-- Library content: filter panel + card grid + pagination -->
 <section class="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">

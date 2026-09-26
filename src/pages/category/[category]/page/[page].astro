@@ -1,25 +1,29 @@
 ---
 // /category/{category}/page/{n} — static pagination for category listings
-// (§9.2). Page 1 lives at the bare /category/{category} path, so this route
+// (§9.2 / TASK-13). Page 1 lives at the bare /category/{slug} path, so this route
 // emits only n ≥ 2, one entry per (category, page) pair (§9.3).
 import CategoryPage from '../../../../components/CategoryPage.astro';
-import { getCategories, getByCategory } from '../../../../lib/content';
-import { PER_PAGE } from '../../../../data/site';
+import { CATEGORIES, CATEGORY_SLUGS, PER_PAGE } from '../../../../data/site';
+import { getByCategory } from '../../../../lib/content';
 
 export async function getStaticPaths() {
-    const categories = await getCategories();
     const paths: Array<{ params: { category: string; page: string } }> = [];
-    for (const category of categories) {
+    for (const category of CATEGORIES) {
         const items = await getByCategory(category);
         const totalPages = Math.max(1, Math.ceil(items.length / PER_PAGE));
         for (let page = 2; page <= totalPages; page++) {
-            paths.push({ params: { category, page: String(page) } });
+            paths.push({ params: { category: CATEGORY_SLUGS[category], page: String(page) } });
         }
     }
     return paths;
 }
 
-const { category, page } = Astro.params;
+const { category: slug, page } = Astro.params;
+const entry = Object.entries(CATEGORY_SLUGS).find(([, value]) => value === slug);
+if (!entry) {
+    return Astro.redirect('/worksheets', 301);
+}
+const category = entry[0];
 ---
 
-<CategoryPage category={category!} page={Number(page)} />
+<CategoryPage {category} page={Number(page)} />

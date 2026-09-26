@@ -5,6 +5,9 @@ category: "Writing"
 ageGroup: "3-4"
 date: 2026-09-06
 description: "Animal shadow matching worksheet - preschool 2 is a free printable english worksheet for children aged 3-4. This writing activity supports guided practice at home, in class, or during independent learning. It is an original worksheet prepared for FreeKidWorksheets and is marked Original."
+about: "Animal shadow matching worksheet - preschool 2 is a free printable matching sheet for ages 3-4. Animal shadow matching worksheet - preschool 2 is a free printable writing worksheet for ages 3-4. Young learners match every item once while exploring a friendly shapes theme, and the clean A4 page prints sharply at home or in class, so the skill grows through guided practice rather than guessing. Print the clean A4 page at home or in class and let your child finish it independently."
+shortTitle: "Animal shadow matching worksheet"
+metaDescription: "Animal shadow matching worksheet - preschool 2 — free printable english writing practice worksheet for ages 3-4. Match every pair together. Download the A4..."
 image: "./3058.jpg"
 tags: ["animal", "shadow", "matching", "worksheet", "preschool", "writing", "3-4", "english", "kids worksheet"]
 language: "en"

@@ -1,0 +1,257 @@
+---
+// /nepali-alphabet-guide — Nepali-language guide to teaching the Nepali vowels
+// (अ–अः) at home (SEO TASK-20). Written for parents and teachers, with the
+// printable sheets it pairs with linked inline.
+import Base from '../layouts/Base.astro';
+import { articleJsonLd, breadcrumbListJsonLd, faqJsonLd } from '../lib/seo';
+
+const PATH = '/nepali-alphabet-guide';
+const TITLE = 'नेपाली स्वर अ–अः घरमै सिकाउने तरिका';
+const DESCRIPTION =
+    'नेपाली स्वर अ देखि अः सम्म घरमै सिकाउने सहज तरिका — अक्षर चिन्ने, मात्रा जोड्ने, चन्द्रबिन्दु र लेखन अभ्यासका लागि निःशुल्क प्रिन्टेबल कार्यपत्रहरू।';
+
+const GUIDE_FAQS = [
+    {
+        question: 'बच्चालाई नेपाली स्वर कहिलेदेखि सिकाउने?',
+        answer:
+            'धेरैजसो बच्चा तीन वर्षको उमेरदेखि अक्षर चिन्न थाल्छन्। पहिलो महिना केवल अ, आ, इ र ई — यी चारवटा स्वरमा सीमित राख्नुहोस्। बाँकी स्वर बिस्तारै थप्दै लैजानु राम्रो हुन्छ।',
+    },
+    {
+        question: 'एक दिनमा कति बेर अभ्यास गर्ने?',
+        answer:
+            'एक पटकमा दस देखि पन्ध्र मिनेटभन्दा बढी होइन। दिनमा दुई पटक छोटो अभ्यास गर्दा बच्चा थक्दैन र सिकाइ लामो समयसम्म टिन्छ।',
+    },
+    {
+        question: 'स्वर पहिले सिकाउने, कि व्यञ्जन पहिले?',
+        answer:
+            'स्वर पहिले सिकाउनु उपयुक्त हुन्छ। अ, आ, इ जस्ता स्वर बोल्न र लेख्न सजिला हुन्छन्, र त्यसपछि क, ख, ग जस्ता व्यञ्जन सिकाउन सजिलो हुन्छ।',
+    },
+    {
+        question: 'यी कार्यपत्रहरू प्रिन्ट गर्न पैसा लाग्छ?',
+        answer:
+            'लाग्दैन। नेपाली कार्यपत्रहरू निःशुल्क डाउनलोड गरिन्छन्। कुनै खाता वा शुल्क चाहिँदैन, र A4 कागजमा जति पटक मन पर्‍यो प्रिन्ट गर्न सकिन्छ।',
+    },
+];
+
+const RELATED = [
+    {
+        href: '/worksheet/a-aa-i-nepali-vowel-tracing-4024',
+        label: 'अ, आ, इ स्वर ट्रेसिङ कार्यपत्र (उमेर ३–४)',
+    },
+    {
+        href: '/worksheet/ee-u-oo-nepali-vowel-tracing-4029',
+        label: 'ई, उ, ऊ स्वर ट्रेसिङ कार्यपत्र (उमेर ३–४)',
+    },
+    {
+        href: '/worksheet/vowel-sign-akar-matra-tracing-4059',
+        label: 'कार मात्रा लेख्ने अभ्यास पत्र',
+    },
+    {
+        href: '/worksheet/ukg-complete-vowel-alphabet-tracing-4052',
+        label: 'UKG पूर्ण स्वर अभ्यास पत्र (उमेर ५–६)',
+    },
+];
+---
+
+<Base
+    pageTitle={TITLE}
+    description={DESCRIPTION}
+    path={PATH}
+    lang="ne"
+    keywords="नेपाली स्वर, nepali vowels, nepali alphabet, nepali worksheets, नेपाली कार्यपत्र, अ अः, nepali vowel tracing"
+    jsonLd={[
+        articleJsonLd({
+            name: TITLE,
+            description: DESCRIPTION,
+            url: 'https://freekidworksheets.com/nepali-alphabet-guide',
+            inLanguage: 'ne',
+            datePublished: '2026-09-26',
+        }),
+        breadcrumbListJsonLd([
+            { name: 'Home', url: '/' },
+            { name: 'नेपाली कार्यपत्र', url: '/nepali' },
+            { name: TITLE },
+        ]),
+        faqJsonLd(GUIDE_FAQS),
+    ]}
+>
+    <article class="mx-auto w-full max-w-3xl px-4 pt-10 pb-16 sm:px-6 lg:px-8">
+        <nav aria-label="Breadcrumb" class="font-mono text-[11px] uppercase tracking-widest text-mute dark:text-neutral-500">
+            <a href="/" class="hover:text-pink-600">गृहपृष्ठ</a>
+            <span aria-hidden="true"> › </span>
+            <a href="/nepali" class="hover:text-pink-600">नेपाली कार्यपत्र</a>
+            <span aria-hidden="true"> › </span>
+            <span class="normal-case tracking-normal">स्वर गाइड</span>
+        </nav>
+
+        <h1 class="mt-3 text-3xl font-semibold tracking-tight text-ink sm:text-4xl dark:text-neutral-100">
+            {TITLE}
+        </h1>
+        <p class="mt-3 text-base leading-relaxed text-body dark:text-neutral-400">
+            नेपाली वर्णमालाका स्वर अ देखि अः सम्म — घरमै, बिना तनाव, कसरी सिकाउने?
+            यो गाइडमा बुझ्न सजिलो क्रम, दैनिक पन्ध्र मिनेटको अभ्यास तालिका र प्रिन्ट
+            गर्न मिल्ने निःशुल्क कार्यपत्रहरू जोडिएका छन्।
+        </p>
+
+        <div class="mt-8 space-y-6 text-[15px] leading-relaxed text-body dark:text-neutral-300">
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                किन स्वर पहिले? (Why start with the vowels)
+            </h2>
+            <p>
+                नेपाली वर्णमालामा ११ वटा स्वर हुन्छन्: अ, आ, इ, ई, उ, ऊ, ए, ऐ, ओ, औ र
+                अः। स्वर चिन्न थालेपछि बच्चाको कानले ध्वनि छुट्याउन थाल्छ। "मा" भन्दा
+                "म" कति फरक पर्छ भन्ने कुरा कानले बुझ्न थाल्छ। त्यसैले स्वर पहिले
+                सिकेपछि व्यञ्जन जोड्न सजिलो हुन्छ, र पढ्न सुरु गरेकै दिनदेखि बच्चाले
+                शब्द पढ्न थाल्छ।
+            </p>
+            <p>
+                अर्को कुरा: स्वरहरूको आकृति सानो हुन्छ र टाउकोमा रेखा हुँदैन। अ, आ, इ
+                जस्ता अक्षर एकै पट्टि देखिन्छन्, जसले पहिलो पटक पेन्सिल समात्ने बच्चालाई
+                डर देखाउँदैन। चित्रसँग जोडेर सिकाउनु अरु सजिलो हुन्छ — "आ" देखाएर
+                "आँप" भन्नुहोस्, चन्द्रबिन्दु (ाँ) को ध्वनि आफैँ सुनिन्छ।
+            </p>
+
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                १. चिन्ने क्रम (the order that works)
+            </h2>
+            <p>
+                वर्णमालाको क्रममै सिकाउनुभन्दा सजिलोबाट गाह्रोतिर जानु राम्रो हुन्छ।
+                पहिलो हप्ता अ र आ — दुवै मुख फराकिलो पारेर बोलिने, हेर्दा फरक देखिने
+                अक्षर। दोस्रो हप्ता इ र ई, तेस्रो हप्ता उ र ऊ। ए, ऐ, ओ र औ पानाको
+                दोस्रो आधा भागमा सिकाउनुहोस्, किनभने तिनमा दुईवटा ध्वनि मिसिएका
+                हुन्छन्। अः लाई अन्तिममा राख्नुहोस् — यो धेरैजसो शब्दको अन्त्यमा मात्र
+                आउने चिह्न हो।
+            </p>
+            <p>
+                हरेक अक्षर चिनाउँदा तीन कुरा एकैचोटि गराउनुहोस्: हेर्ने (आकृति), सुन्ने
+                (उच्चारण) र लेख्ने (हात चलाउने)। तीनै नलीले सिकाइएको कुरा टिक्छ।
+            </p>
+
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                २. मात्रा सिकाउने सही समय (vowel signs)
+            </h2>
+            <p>
+                बच्चाले सात–आठवटा स्वर चिनेपछि मात्र सुरु गर्नुहोस्। कार (ा) ले "क"
+                लाई "का" बनाउँछ भन्ने कुरा जादूजस्तो लाग्छ, र त्यही कारण बच्चा छिटो
+                उत्साहित हुन्छन्। मात्रा सिकाउँदा एउटै अक्षर लिएर फरक मात्रा जोड्नुहोस्:
+                क → का कि कु के को। यसो गर्दा बच्चाले अक्षर दोहोर्‍याएर होइन, सोचेर
+                लेख्छ।
+            </p>
+            <p>
+                अनुस्वार (ं) र चन्द्रबिन्दु (ाँ) लाई नयाँ चिह्नका रूपमा सिकाउनुहोस् —
+                "अनुस्वार" भन्ने नाम बुझाउनुपर्दैन, "नाकबाट निस्कने ध्वनि" भन्दा पुग्छ।
+                "आँप", "बाँस" र "उहाँ" जस्ता शब्द घरमै जति पटक भनियो, त्यति नै यी दुई
+                चिह्न परिचित हुन्छन्।
+            </p>
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                ३. दैनिक पन्ध्र मिनेटको तालिका (a simple daily routine)
+            </h2>
+            <p>
+                एकैचोटि आधा घण्टा बसाउनुभन्दा पन्ध्र मिनेट दुई पटक रमाइलो हुन्छ। तलको
+                तालिका अनुसार बिहान र साँझ गरी दुई साना सत्र राख्न सकिन्छ:
+            </p>
+            <div class="overflow-x-auto">
+                <table class="w-full border-collapse text-left text-sm">
+                    <thead>
+                        <tr class="border-b border-pink-200 font-mono text-[11px] uppercase tracking-widest text-mute dark:border-pink-900/60">
+                            <th class="py-2 pr-4">बेला</th>
+                            <th class="py-2 pr-4">के गर्ने</th>
+                            <th class="py-2">कति समय</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-pink-100 dark:divide-pink-900/40">
+                        <tr>
+                            <td class="py-2 pr-4 font-medium">बिहान</td>
+                            <td class="py-2 pr-4">हिजोको अक्षर दोहोर्‍याउने, आजको अक्षर चिन्ने</td>
+                            <td class="py-2">५ मिनेट</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 pr-4 font-medium">बिहान</td>
+                            <td class="py-2 pr-4">छेउको चित्र हेरेर अक्षरको आवाज खोज्ने</td>
+                            <td class="py-2">५ मिनेट</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 pr-4 font-medium">दिउँसो</td>
+                            <td class="py-2 pr-4">एउटा पाना ट्रेस गर्ने (धारे कापी जस्तै रेखामाथि)</td>
+                            <td class="py-2">५ मिनेट</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 pr-4 font-medium">साँझ</td>
+                            <td class="py-2 pr-4">आफ्नै नामको पहिलो अक्षर कागजमा लेख्ने</td>
+                            <td class="py-2">५ मिनेट</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                ४. पाना छान्दा यो कुरा याद राख्नुहोस् (choosing the right sheet)
+            </h2>
+            <p>
+                उमेर अनुसार पाना छान्नुहोस्। तीन–चार वर्षका बच्चालाई ठूलो अक्षर भएको र
+                रेखा मोटो भएको ट्रेसिङ पाना उपयुक्त हुन्छ; पाँच–छ वर्षका बच्चाले
+                आफैँ लेख्ने पाना प्रयोग गर्न सक्छन्। "अ–अः" सम्म पूरै एउटै पानामा
+                भएको पानाभन्दा तीन–चार अक्षर मात्र भएको पाना पहिलो हप्ता बढी उपयोगी
+                हुन्छ।
+            </p>
+            <ul class="list-disc space-y-2 pl-5">
+                <li>एउटै पाना फेरि प्रयोग गर्न सेतो कागज ओडाएर चलाउन मिल्छ।</li>
+                <li>सानै उमेरको बच्चालाई कलम तीनै औँलाले समाउन सिकाउनुहोस्।</li>
+                <li>गल्ती भएमा "फेरि गर" भन्नुहोस् — हरेक पटक नयाँ प्रयास हो।</li>
+            </ul>
+
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                ५. यो गाइडसँग जोडिएका निःशुल्क पानाहरू (free worksheets)
+            </h2>
+            <p>
+                माथिको तालिकामा प्रयोग गर्न मिल्ने पानाहरू सबै निःशुल्क छन् — कुनै
+                खाता वा मूल्य लाग्दैन, हेर्ने बित्तिकै PDF खोलेर छाप्न मिल्छ:
+            </p>
+            <ul class="list-disc space-y-2 pl-5">
+                {RELATED.map((item) => (
+                    <li>
+                        <a href={item.href} class="font-medium text-pink-600 underline-offset-2 hover:underline dark:text-pink-400">
+                            {item.label}
+                        </a>
+                    </li>
+                ))}
+            </ul>
+            <p>
+                अझ धेरै पाना हेर्न
+                <a href="/nepali" class="font-medium text-pink-600 underline-offset-2 hover:underline dark:text-pink-400">नेपाली कार्यपत्रहरूको मुख्य सङ्ग्रह</a>
+                र अक्षर लेख्ने अरू पानाका लागि
+                <a href="/category/alphabet-tracing" class="font-medium text-pink-600 underline-offset-2 hover:underline dark:text-pink-400">अक्षर र लेखन श्रेणी</a>
+                हेर्नुहोस्। हरेक पानामा उमेर लेखिएको छ, छान्दा बिज्ञ पनि सजिलो हुन्छ।
+            </p>
+        </div>
+
+        <div class="mt-12">
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                ६. स्वर सिकेपछि अर्को कदम (what comes next)
+            </h2>
+            <p class="mt-4">
+                दसवटै स्वर चिनिएपछि पढ्न सिकाउन थाल्न सकिन्छ। सबैभन्दा सजिलो उपाय
+                बच्चाको आफ्नै नाम हो — नामको पहिलो अक्षर चिनेपछि "यो मेरो नाम हो"
+                भन्ने बुझाइ आउँछ, र पढाइ अर्थहीन अभ्यास रहँदैन। त्यसपछि मा, पि, ना र
+                बु जस्ता दुई अक्षरका साना शब्द पढाउनु राम्रो हुन्छ; चित्रसँग जोडिएका यी
+                शब्द बच्चाले आफैँ पढ्न सकेपछि आत्मविश्वास आफैँ बढ्छ। संख्या अभ्यास पनि
+                सँगै राख्न राम्रो — अक्षर र अङ्क दुवै एउटै दिनका साना अभ्यास हुन्।
+            </p>
+        </div>
+
+        <div class="mt-12">
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                बारम्बार सोधिने प्रश्नहरू (Frequently Asked Questions)
+            </h2>
+            <dl class="mt-4 space-y-5">
+                {GUIDE_FAQS.map((f) => (
+                    <div>
+                        <dt class="text-[15px] font-semibold text-ink dark:text-neutral-100">{f.question}</dt>
+                        <dd class="mt-1 text-[15px] leading-relaxed text-body dark:text-neutral-300">{f.answer}</dd>
+                    </div>
+                ))}
+            </dl>
+        </div>
+    </article>
+</Base>
+

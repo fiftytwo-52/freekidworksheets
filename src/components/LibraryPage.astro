@@ -36,8 +36,10 @@ const { items, totalPages } = paginate(langItems, page);
 
 // Page 1 lives at the bare path so there are no duplicate URLs (§9.2).
 const path = page === 1 ? config.path : `${config.path}/page/${page}`;
-const pageTitle =
-    page === 1 ? config.title : `${config.title} — page ${page}`;
+// config.title is kept short so every paginated <title> stays under 60 chars
+// including the site suffix (SEO TASK-13); config.h1 is the longer visible
+// heading.
+const pageTitle = page === 1 ? config.title : `${config.title} — page ${page}`;
 const description =
     page === 1
         ? config.blurb
@@ -47,7 +49,7 @@ const description =
 <Base pageTitle={pageTitle} description={description} path={path} lang={lang === 'en' ? undefined : lang}>
     <BrowseLayout
         kicker={config.kicker}
-        title={config.title}
+        title={config.h1 ?? config.title}
         blurb={config.blurb}
         empty={config.empty}
         {items}

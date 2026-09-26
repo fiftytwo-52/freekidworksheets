@@ -10,6 +10,7 @@ export const GET: APIRoute = async () => {
         slug: entry.slug,
         code: entry.data.code,
         title: entry.data.title,
+        shortTitle: entry.data.shortTitle ?? entry.data.title,
         category: entry.data.category,
         ageGroup: entry.data.ageGroup,
         date: entry.data.date.toISOString().slice(0, 10),

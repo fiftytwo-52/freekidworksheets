@@ -9,6 +9,12 @@
 //      robots.txt, ads.txt).
 //   5. sitemap-0.xml lists every worksheet slug (count matches collection).
 //   6. CSS/JS assets referenced by built HTML exist (no 404s on assets).
+//   7. (TASK-13) Category routes use ONLY lowercase hyphenated slugs in dist/,
+//      and every category page self-canonicals.
+//   8. (TASK-15) Every worksheet page embeds LearningResource + BreadcrumbList JSON-LD.
+//   9. (TASK-09/10) Worksheet pages ship 4+ related links and a breadcrumb.
+//   10. (TASK-11) No duplicate <title> / meta descriptions across the site.
+//   11. (TASK-16) No empty or filename alt texts anywhere in built HTML.
 import { readdir, readFile, stat } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
@@ -152,6 +158,7 @@ async function checkDist(slugs) {
     const expected = [
         'index.html',
         'nepali.html',
+        'nepali-alphabet-guide.html',
         'spanish.html',
         'worksheets.html',
         'search.html',
@@ -189,11 +196,14 @@ async function checkDist(slugs) {
     }
 
     // Category pages — at least the canonical categories with content.
+    // NOTE: the site builds with `format: 'file'`, so /category/math is emitted
+    // as dist/category/math.html, NOT a math/ directory. Only look for the
+    // page-1 files here; paginated pages live in <slug>/page/.
     const categoryDir = path.join(DIST, 'category');
     if (existsSync(categoryDir)) {
         const cats = (await readdir(categoryDir, { withFileTypes: true }))
-            .filter((d) => d.isDirectory())
-            .map((d) => d.name);
+            .filter((d) => d.isFile() && d.name.endsWith('.html'))
+            .map((d) => d.name.replace(/\.html$/, ''));
         if (cats.length > 0) {
             pass(`${cats.length} category pages (${cats.join(', ')})`);
         } else {
@@ -319,6 +329,198 @@ async function checkSearchIndex(slugs) {
 }
 
 // ---------------------------------------------------------------------------
+// 7. SEO output checks (TASK-09/10/11/13/15/16): category slugs, JSON-LD,
+//    related links + breadcrumbs, unique titles/descriptions, clean alt texts.
+// ---------------------------------------------------------------------------
+const LOWERCASE_CATEGORY_SLUGS = ['alphabet-tracing', 'math', 'coloring', 'writing'];
+
+function headTag(html, tag, attr, value) {
+    for (const m of html.matchAll(
+        new RegExp(`<${tag}[^>]*${attr}="([^"]*)"[^>]*content="([^"]*)"[^>]*>`, 'gi'),
+    )) {
+        if (m[1] === value) return m[2];
+    }
+    for (const m of html.matchAll(
+        new RegExp(`<${tag}[^>]*content="([^"]*)"[^>]*${attr}="([^"]*)"[^>]*>`, 'gi'),
+    )) {
+        if (m[2] === value) return m[1];
+    }
+    return null;
+}
+
+function allJsonLdTypes(html) {
+    const types = new Set();
+    for (const m of html.matchAll(
+        /<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi,
+    )) {
+        for (const t of m[1].matchAll(/"@type"\s*:\s*"([^"]+)"/g)) types.add(t[1]);
+    }
+    return types;
+}
+
+async function checkSeo(slugs) {
+    console.log('\n[6/6] SEO output');
+
+    // 7a. dist/category/* uses ONLY lowercase hyphenated slugs.
+    // `format: 'file'` emits /category/math as math.html AND a math/ dir for
+    // its paginated pages, so de-dupe the combined name list.
+    const categoryDir = path.join(DIST, 'category');
+    if (existsSync(categoryDir)) {
+        const top = [
+            ...new Set(
+                (await readdir(categoryDir, { withFileTypes: true }))
+                    .map((d) => (d.isDirectory() ? d.name : d.name.replace(/\.html$/, '')))
+                    .filter(Boolean),
+            ),
+        ].sort();
+        const bad = top.filter((name) => !LOWERCASE_CATEGORY_SLUGS.includes(name));
+        if (bad.length > 0) {
+            fail(`non-slug category dirs in dist: ${bad.join(', ')}`);
+        } else {
+            pass(`category routes use lowercase slugs (${top.join(', ')})`);
+        }
+
+        // Check that zero internal links point to old/uppercase category URLs (TASK-13).
+        const allHtmlFiles = (await walk(DIST)).filter((f) => f.endsWith('.html'));
+        let badCategoryLinks = 0;
+        for (const f of allHtmlFiles) {
+            const h = await readFile(f, 'utf8');
+            for (const m of h.matchAll(/href="(\/category\/[^"#?]+)"/g)) {
+                const target = m[1].replace(/^\/category\//, '').split('/')[0];
+                if (!LOWERCASE_CATEGORY_SLUGS.includes(target)) {
+                    badCategoryLinks += 1;
+                }
+            }
+        }
+        if (badCategoryLinks > 0) {
+            fail(`${badCategoryLinks} internal links point to non-canonical/uppercase category URLs`);
+        } else {
+            pass('zero internal links point to old/uppercase category URLs');
+        }
+    }
+
+    const worksheetFiles = slugs
+        .map((slug) => path.join(DIST, 'worksheet', `${slug}.html`))
+        .filter((file) => existsSync(file));
+
+    let relatedOk = true;
+    let crumbOk = true;
+    let jsonLdOk = true;
+    const titles = new Map();
+    const descriptions = new Map();
+    let dupTitle = 0;
+    let dupDesc = 0;
+    let pages = 0;
+
+    for (const file of worksheetFiles) {
+        const html = await readFile(file, 'utf8');
+        pages += 1;
+
+        // 7b. 4+ related worksheet links + visible breadcrumb in raw HTML.
+        const links = new Set(
+            [...html.matchAll(/href="(\/worksheet\/[^"]+)"/g)].map((m) => m[1]),
+        );
+        if (links.size < 4) {
+            fail(`${path.basename(file)}: only ${links.size} related /worksheet links`);
+            relatedOk = false;
+        }
+        if (!html.includes('aria-label="Breadcrumb"')) {
+            fail(`${path.basename(file)}: breadcrumb missing`);
+            crumbOk = false;
+        }
+
+        // 7c. LearningResource + BreadcrumbList JSON-LD present.
+        const types = allJsonLdTypes(html);
+        if (!types.has('LearningResource') || !types.has('BreadcrumbList')) {
+            fail(
+                `${path.basename(file)}: JSON-LD missing (has: ${[...types].join(', ') || 'none'})`,
+            );
+            jsonLdOk = false;
+        }
+
+        // 7d. Unique titles / meta descriptions.
+        const title = (html.match(/<title>([^<]*)<\/title>/) || [null, ''])[1].trim();
+        const desc =
+            headTag(html, 'meta', 'name', 'description') ||
+            headTag(html, 'meta', 'property', 'og:description') ||
+            '';
+        if (title) {
+            if (titles.has(title)) dupTitle += 1;
+            else titles.set(title, file);
+        }
+        if (desc) {
+            if (descriptions.has(desc)) dupDesc += 1;
+            else descriptions.set(desc, file);
+        }
+    }
+
+    if (relatedOk) pass(`${pages} worksheet pages: 4+ related /worksheet links each`);
+    if (crumbOk) pass(`${pages} worksheet pages: breadcrumb present`);
+    if (jsonLdOk) pass(`${pages} worksheet pages: LearningResource + BreadcrumbList JSON-LD`);
+    if (dupTitle > 0) fail(`${dupTitle} duplicate <title> values across worksheet pages`);
+    else pass(`${titles.size} unique <title> values`);
+    if (dupDesc > 0) warn(`${dupDesc} duplicate meta descriptions across worksheet pages`);
+    else pass(`${descriptions.size} unique meta descriptions`);
+
+    // 7e. No empty or filename alt texts anywhere (ignore inline <script> blocks,
+    //     which contain template strings rather than rendered markup).
+    const htmlFiles = (await walk(DIST)).filter((f) => f.endsWith('.html'));
+    let badAlt = 0;
+    for (const file of htmlFiles) {
+        const html = (await readFile(file, 'utf8')).replace(
+            /<script[\s\S]*?<\/script>/gi,
+            '',
+        );
+        for (const m of html.matchAll(/<img[^>]*alt="([^"]*)"[^>]*>/gi)) {
+            const alt = m[1].trim();
+            if (!alt || /\.(png|jpe?g|webp)$/i.test(alt)) badAlt += 1;
+        }
+    }
+    if (badAlt > 0) fail(`${badAlt} empty/filename alt attributes in built HTML`);
+    else pass(`${htmlFiles.length} pages: all <img> alt texts descriptive`);
+
+    // 7f. Site-wide <title> / meta description budgets (SEO TASK-13).
+    //     Titles must stay <= 60 chars including the site suffix; descriptions
+    //     land in the 100-165 range. noindex pages (/search, /404, /500) are
+    //     skipped, as are static files copied verbatim from public/.
+    const TITLE_MAX = 60;
+    const DESC_MIN = 100;
+    const DESC_MAX = 165;
+    let longTitle = 0;
+    let badDesc = 0;
+    let checked = 0;
+    for (const file of htmlFiles) {
+        const rel = `dist/${path.relative(DIST, file)}`;
+        // Static passthrough files (e.g. public/pinterest-324ef.html) are copied
+        // verbatim, not generated by Astro, and carry no SEO tags by design.
+        if (existsSync(path.join(ROOT, 'public', path.relative(DIST, file)))) continue;
+        const html = await readFile(file, 'utf8');
+        if (/<meta name="robots" content="noindex/.test(html)) continue;
+        checked += 1;
+
+        const title = (html.match(/<title>([^<]*)<\/title>/) || [null, ''])[1].trim();
+        if ([...title].length > TITLE_MAX) {
+            fail(
+                `${rel}: <title> is ${[...title].length} chars (max ${TITLE_MAX}) — ${title}`,
+            );
+            longTitle += 1;
+        }
+        if (!title.endsWith(' - freekidworksheets.com')) {
+            fail(`${rel}: <title> missing site suffix — ${title}`);
+            longTitle += 1;
+        }
+        const desc = headTag(html, 'meta', 'name', 'description') || '';
+        const dLen = [...desc].length;
+        if (dLen < DESC_MIN || dLen > DESC_MAX) {
+            fail(`${rel}: meta description is ${dLen} chars (want ${DESC_MIN}-${DESC_MAX})`);
+            badDesc += 1;
+        }
+    }
+    if (longTitle === 0) pass(`${checked} indexable pages: <title> <= ${TITLE_MAX} chars + suffix`);
+    if (badDesc === 0) pass(`${checked} indexable pages: meta descriptions in range`);
+}
+
+// ---------------------------------------------------------------------------
 async function main() {
     console.log('freekidworksheets.com — post-build verification (§16.2)\n');
 
@@ -327,6 +529,7 @@ async function main() {
     await checkSitemap(slugs);
     await checkAssets();
     await checkSearchIndex(slugs);
+    await checkSeo(slugs);
 
     console.log(
         `\nResult: ${failures} failure(s), ${warnings} warning(s)` +

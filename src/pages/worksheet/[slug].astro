@@ -8,22 +8,27 @@ import Base from '../../layouts/Base.astro';
 import RelatedGrid from '../../components/RelatedGrid.astro';
 import Icon from '../../components/Icon.astro';
 import { getRelated } from '../../lib/content';
-import { absoluteUrl, excerpt, learningResourceJsonLd } from '../../lib/seo';
+import { absoluteUrl, breadcrumbJsonLd, excerpt, learningResourceJsonLd } from '../../lib/seo';
+import { categoryPath } from '../../data/site';
 
 export async function getStaticPaths() {
     const entries = await getCollection('worksheets');
     return entries.map((entry) => ({ params: { slug: entry.slug }, props: { entry } }));
 }
-
 const { entry } = Astro.props;
 const { title, category, ageGroup, code, description, image, tags = [], language } = entry.data;
+const displayTitle = entry.data.shortTitle?.trim() || title;
 const path = `/worksheet/${entry.slug}`;
 const related = await getRelated(entry.slug);
 const isLandscape = image.width > image.height;
+const pageUrl = absoluteUrl(path);
+const categoryUrl = absoluteUrl(categoryPath(category));
 
 const metaDescription =
+    entry.data.metaDescription?.trim() ||
     excerpt(description) ||
     `${title} — free printable worksheet for ${ageGroup}.`;
+const aboutText = entry.data.about?.trim() || description;
 
 const pageKeywords = Array.from(
     new Set([
@@ -40,14 +45,18 @@ const pageKeywords = Array.from(
 ---
 
 <Base
-    pageTitle={title}
+    pageTitle={displayTitle}
     description={metaDescription}
     path={path}
     keywords={pageKeywords}
     ogImage={image.src}
+    ogImageMeta={{ width: image.width, height: image.height, type: 'image/png' }}
     printLandscape={isLandscape}
     lang={language === 'ne' || language === 'es' ? language : 'en'}
-    jsonLd={learningResourceJsonLd(entry, absoluteUrl(path))}
+    jsonLd={[
+        learningResourceJsonLd(entry, pageUrl, aboutText),
+        breadcrumbJsonLd(absoluteUrl('/'), absoluteUrl('/worksheets'), category, categoryUrl, title),
+    ]}
 >
     <div
         class="no-print mx-auto w-full max-w-4xl px-4 pt-8 sm:px-6 lg:px-8"
@@ -59,22 +68,22 @@ const pageKeywords = Array.from(
         >
             <ol class="flex flex-wrap items-center gap-2">
                 <li><a href="/" class="hover:text-pink-500 hover:underline">Home</a></li>
-                <li aria-hidden="true" class="text-neutral-300 dark:text-neutral-600">/</li>
+                <li aria-hidden="true" class="text-neutral-300 dark:text-neutral-600">›</li>
                 <li>
                     <a href="/worksheets" class="hover:text-pink-500 hover:underline">
                         Worksheets
                     </a>
                 </li>
-                <li aria-hidden="true" class="text-neutral-300 dark:text-neutral-600">/</li>
+                <li aria-hidden="true" class="text-neutral-300 dark:text-neutral-600">›</li>
                 <li>
                     <a
-                        href={`/category/${encodeURIComponent(category)}`}
+                        href={categoryPath(category)}
                         class="hover:text-pink-500 hover:underline"
                     >
                         {category}
                     </a>
                 </li>
-                <li aria-hidden="true" class="text-neutral-300 dark:text-neutral-600">/</li>
+                <li aria-hidden="true" class="text-neutral-300 dark:text-neutral-600">›</li>
                 <li
                     aria-current="page"
                     class="truncate font-bold text-neutral-900 dark:text-neutral-100"
@@ -140,10 +149,13 @@ const pageKeywords = Array.from(
         >
             <Image
                 src={image}
-                alt={title}
+                alt={`Free printable ${title.toLowerCase()} worksheet for ages ${ageGroup}`}
                 class="mx-auto h-auto w-full max-w-2xl rounded-lg object-contain"
                 loading="eager"
                 decoding="async"
+                fetchpriority="high"
+                widths={[640, 1024, 1400]}
+                sizes="(min-width: 1024px) 896px, 100vw"
             />
         </div>
     </section>
@@ -155,7 +167,7 @@ const pageKeywords = Array.from(
                 About this worksheet
             </h2>
             <p class="mt-3 text-base font-medium leading-relaxed text-neutral-700 dark:text-neutral-300">
-                {description}
+                {aboutText}
             </p>
         </div>
     </section>

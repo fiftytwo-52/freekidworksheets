@@ -5,6 +5,9 @@ category: "Coloring"
 ageGroup: "3-4"
 date: 2026-09-26
 description: "Dog coloring is a free printable english worksheet for children aged 3-4. This coloring activity supports guided practice at home, in class, or during independent learning. It is an original worksheet prepared for FreeKidWorksheets and is marked Original."
+about: "Dog coloring is a free printable coloring sheet for ages 3-4. Dog coloring is a free printable coloring worksheet for ages 3-4. Young learners color the shapes neatly while exploring a friendly the weather theme, and the clean A4 page prints sharply at home or in class, so the skill grows through guided practice rather than guessing. Print the clean A4 page at home or in class and let your child finish it independently."
+shortTitle: "Dog coloring worksheet for kids"
+metaDescription: "Dog coloring — free printable english colouring worksheet for kids ages 3-4. Fill each shape with colour with this clean A4 page. Download and print free."
 image: "./3227.png"
 tags: ["dog", "coloring", "3-4", "english", "kids worksheet"]
 language: "en"

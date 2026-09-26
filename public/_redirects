@@ -2,3 +2,18 @@
 # @astrojs/sitemap now emits sitemap-index.xml + sitemap-0.xml instead, so
 # permanently redirect crawlers that still know the old URL.
 /sitemap.xml /sitemap-index.xml 301
+
+# TASK-13: category URLs moved to lowercase hyphenated slugs.
+# Percent-encoded forms are decoded by Pages before matching, so these rules
+# catch both raw and encoded old links.
+/category/Alphabet%20&%20Tracing /category/alphabet-tracing 301
+/category/Alphabet%20%26%20Tracing /category/alphabet-tracing 301
+/category/Alphabet%2520%2526%2520Tracing /category/alphabet-tracing 301
+/category/Alphabet%2520%2526%2520Tracing/* /category/alphabet-tracing/:splat 301
+/category/Alphabet%20&%20Tracing/* /category/alphabet-tracing/:splat 301
+/category/Coloring /category/coloring 301
+/category/Coloring/* /category/coloring/:splat 301
+/category/Math /category/math 301
+/category/Math/* /category/math/:splat 301
+/category/Writing /category/writing 301
+/category/Writing/* /category/writing/:splat 301

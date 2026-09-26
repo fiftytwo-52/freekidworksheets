@@ -12,7 +12,7 @@ import { faqJsonLd, websiteJsonLd } from '../lib/seo';
 const spanishWorksheets = await getSpanishWorksheets();
 
 const DESCRIPTION =
-    'Fichas gratis en español para niños — grafomotricidad, grafomotricidad 3 años, fichas grafomotricidad para imprimir, dibujos para colorear, trazos y primeras letras. Descarga e imprime gratis.';
+    'Fichas gratis en español para niños: grafomotricidad, trazos, primeras letras y dibujos para colorear. Descarga e imprime gratis, sin registro.';
 
 const EYEBROW =
     'font-mono text-[11px] font-medium uppercase tracking-widest text-mute dark:text-neutral-500';
@@ -23,12 +23,12 @@ const PILL_SECONDARY =
 ---
 
 <Base
-    pageTitle="Fichas en Español para Niños — Grafomotricidad y Dibujos para Colorear"
+    pageTitle="Fichas en Español para Niños"
     description={DESCRIPTION}
     path="/spanish"
     keywords="grafomotricidad, grafomotricidad 3 años, fichas grafomotricidad, dibujos colorear, dibujos para colorear, fichas grafomotricidad para imprimir, grafomotricidad para niños, fichas en español para niños, spanish worksheets for kids"
     lang="es"
-    jsonLd={[websiteJsonLd(), faqJsonLd()]}
+    jsonLd={[...websiteJsonLd(), faqJsonLd()]}
 >
     <!-- 1. Hero — same wide 2-column layout as the English home, light blue tone -->
     <section class="border-b border-neutral-200/80 bg-gradient-to-br from-sky-200 via-blue-100 to-cyan-100 dark:border-neutral-800 dark:from-sky-950/70 dark:via-blue-950/60 dark:to-neutral-900">

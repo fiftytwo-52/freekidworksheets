@@ -23,6 +23,8 @@ interface Props {
     noindex?: boolean;
     /** og:image path (default: /assets/worksheets-icon.png). */
     ogImage?: string;
+    /** og:image detail: width/height/type used only when ogImage is a worksheet asset. */
+    ogImageMeta?: { width: number; height: number; type: string };
     /** Optional raw JSON-LD object(s) to serialize into script tags. */
     jsonLd?: Record<string, unknown> | Array<Record<string, unknown>>;
     /** When a worksheet image is landscape (print CSS). */
@@ -37,6 +39,7 @@ const {
     keywords = DEFAULT_KEYWORDS_STRING,
     noindex = false,
     ogImage = '/assets/worksheets-icon.png',
+    ogImageMeta = undefined,
     jsonLd,
     printLandscape = false,
     lang = 'en',
@@ -62,7 +65,7 @@ const adsenseScript = ADSENSE_PUBLISHER_ID
 ---
 
 <!doctype html>
-<html lang="en" class={printLandscape ? 'print-landscape' : undefined}>
+<html lang={lang} class={printLandscape ? 'print-landscape' : undefined}>
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -81,7 +84,17 @@ const adsenseScript = ADSENSE_PUBLISHER_ID
         <meta property="og:description" content={description} />
         <meta property="og:url" content={canonical} />
         <meta property="og:image" content={ogUrl} />
+        {ogImageMeta && (
+            <Fragment>
+                <meta property="og:image:width" content={String(ogImageMeta.width)} />
+                <meta property="og:image:height" content={String(ogImageMeta.height)} />
+                <meta property="og:image:type" content={ogImageMeta.type} />
+            </Fragment>
+        )}
         <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={ogUrl} />
 
         {noindex && <meta name="robots" content="noindex,follow" />}
 

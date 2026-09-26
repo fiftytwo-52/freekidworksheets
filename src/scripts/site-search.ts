@@ -38,7 +38,7 @@ function esc(s: string): string {
 function cardHtml(e: IndexEntry): string {
     const href = `/worksheet/${encodeURIComponent(e.slug)}`;
     const img = e.image
-        ? `<img src="${esc(e.image)}" alt="" loading="lazy" decoding="async" class="h-full w-full object-contain" />`
+        ? `<img src="${esc(e.image)}" alt="${esc('Free printable ' + e.title.toLowerCase() + ' worksheet for ages ' + e.ageGroup)}" loading="lazy" decoding="async" class="h-full w-full object-contain" />`
         : '';
     // Minimal card, matching WorksheetCard.astro: pure thumbnail + code badge,
     // with a hover overlay revealing title + category/age on pointer devices.

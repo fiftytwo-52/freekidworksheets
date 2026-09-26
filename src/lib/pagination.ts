@@ -6,6 +6,9 @@ export type PageItem = number | 'ellipsis';
  */
 export function pageWindow(current: number, total: number, radius = 2): PageItem[] {
     if (total <= 0) return [];
+    if (total <= 10) {
+        return Array.from({ length: total }, (_, i) => i + 1);
+    }
     const wanted = new Set<number>([1, total]);
     for (let p = current - radius; p <= current + radius; p++) {
         if (p >= 1 && p <= total) wanted.add(p);

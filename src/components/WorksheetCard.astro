@@ -24,12 +24,12 @@ const attrs = cardDataProps(entry);
     <a
         href={detailHref}
         class="block focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-500"
-        aria-label={title}
+        aria-label={entry.data.shortTitle ?? title}
     >
         <div class="relative aspect-[3/4] w-full bg-neutral-50 p-1.5 dark:bg-neutral-800/50">
             <Image
                 src={entry.data.image}
-                alt={title}
+                alt={`Free printable ${entry.data.title.toLowerCase()} worksheet for ages ${entry.data.ageGroup}`}
                 widths={[320, 480, 640]}
                 sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
                 loading="lazy"
@@ -41,7 +41,7 @@ const attrs = cardDataProps(entry);
                 class="pointer-events-none absolute inset-1.5 hidden flex-col justify-end rounded-lg bg-gradient-to-t from-neutral-900/90 via-neutral-900/40 to-transparent p-3 opacity-0 transition-opacity duration-200 group-hover:opacity-100 [@media(hover:hover)]:flex"
             >
                 <h3 class="line-clamp-3 text-sm font-bold leading-snug text-white">
-                    {title}
+                    {entry.data.shortTitle ?? title}
                 </h3>
                 <p class="mt-1 font-mono text-[10px] font-semibold uppercase tracking-wider text-pink-300">
                     {category} · {ageGroup} yrs

@@ -33,23 +33,32 @@ export const providerOrganization = {
     url: SITE_URL,
 };
 
-/** Home: WebSite + SearchAction (§11.1.8). */
+/** Home: WebSite + SearchAction + Organization (§11.1.8 / TASK-15). */
 export function websiteJsonLd() {
-    return {
-        '@context': 'https://schema.org',
-        '@type': 'WebSite',
-        name: 'Free Kid Worksheets',
-        alternateName: 'freekidworksheets.com',
-        url: SITE_URL,
-        potentialAction: {
-            '@type': 'SearchAction',
-            target: {
-                '@type': 'EntryPoint',
-                urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
+    return [
+        {
+            '@context': 'https://schema.org',
+            '@type': 'WebSite',
+            name: 'Free Kid Worksheets',
+            alternateName: 'freekidworksheets.com',
+            url: SITE_URL,
+            potentialAction: {
+                '@type': 'SearchAction',
+                target: {
+                    '@type': 'EntryPoint',
+                    urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
+                },
+                'query-input': 'required name=search_term_string',
             },
-            'query-input': 'required name=search_term_string',
         },
-    };
+        {
+            '@context': 'https://schema.org',
+            '@type': 'Organization',
+            name: 'Free Kid Worksheets',
+            url: SITE_URL,
+            logo: `${SITE_URL}/assets/worksheets-icon.png`,
+        },
+    ];
 }
 
 /** FAQPage JSON-LD mirroring FAQ sets from src/data/site.ts (§13.2).
@@ -68,10 +77,12 @@ export function faqJsonLd(
     };
 }
 
-/** Worksheet detail: LearningResource (§11.3.9). */
+/** Worksheet detail: LearningResource (§11.3.9). `about` overrides the visible
+ *  about copy used as the schema description (SEO TASK-15). */
 export function learningResourceJsonLd(
     entry: CollectionEntry<'worksheets'>,
     url: string,
+    about?: string,
 ) {
     const data = entry.data;
     const worksheetKeywords = [
@@ -87,7 +98,7 @@ export function learningResourceJsonLd(
         '@context': 'https://schema.org',
         '@type': 'LearningResource',
         name: data.title,
-        description: data.description,
+        description: (about || data.description).slice(0, 500),
         url,
         image: absoluteUrl(data.image.src),
         isAccessibleForFree: true,
@@ -99,5 +110,81 @@ export function learningResourceJsonLd(
         datePublished: data.date.toISOString().slice(0, 10),
         provider: providerOrganization,
         inLanguage: data.language,
+    };
+}
+
+/** Worksheet detail: visible trail Home › Worksheets › Category › Worksheet (TASK-10). */
+export function breadcrumbJsonLd(
+    homeUrl: string,
+    libraryUrl: string,
+    categoryName: string,
+    categoryUrl: string,
+    worksheetName: string,
+) {
+    return {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+            {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Home',
+                item: homeUrl,
+            },
+            {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'Worksheets',
+                item: libraryUrl,
+            },
+            {
+                '@type': 'ListItem',
+                position: 3,
+                name: categoryName,
+                item: categoryUrl,
+            },
+            {
+                '@type': 'ListItem',
+                position: 4,
+                name: worksheetName,
+            },
+        ],
+    };
+}
+
+/** Guide/article pages: Article schema (SEO TASK-20). */
+export function articleJsonLd(opts: {
+    name: string;
+    description: string;
+    url: string;
+    inLanguage: string;
+    datePublished: string;
+}) {
+    return {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: opts.name,
+        description: opts.description.slice(0, 300),
+        inLanguage: opts.inLanguage,
+        datePublished: opts.datePublished,
+        author: providerOrganization,
+        publisher: providerOrganization,
+        mainEntityOfPage: opts.url,
+    };
+}
+
+/** Flexible breadcrumb trail for any page: [{ name, url? }] (last item = current page). */
+export function breadcrumbListJsonLd(
+    trail: ReadonlyArray<{ name: string; url?: string }>,
+) {
+    return {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: trail.map((step, i) => ({
+            '@type': 'ListItem',
+            position: i + 1,
+            name: step.name,
+            ...(step.url ? { item: absoluteUrl(step.url) } : {}),
+        })),
     };
 }

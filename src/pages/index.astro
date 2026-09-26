@@ -29,7 +29,7 @@ const PILL_PRIMARY =
     pageTitle="Free Printable Worksheets for Kids"
     description={DESCRIPTION}
     path="/"
-    jsonLd={[websiteJsonLd(), faqJsonLd()]}
+    jsonLd={[...websiteJsonLd(), faqJsonLd()]}
 >
     <!-- 1. Hero — Wide 2-column layout with soft low-opacity gradient background -->
     <section class="border-b border-neutral-200/80 bg-gradient-to-br from-pink-200 via-purple-100 to-amber-100 dark:border-neutral-800 dark:from-pink-950/70 dark:via-purple-950/60 dark:to-neutral-900">
@@ -110,6 +110,40 @@ const PILL_PRIMARY =
                     </div>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <!-- 1b. Browse by category — body links so sitemap URLs stay within 3 clicks (TASK-19) -->
+    <section class="w-full max-w-none px-4 pb-2 sm:px-6 lg:px-8" aria-label="Browse by category">
+        <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
+            <a
+                href="/category/alphabet-tracing"
+                class="rounded-2xl border border-hairline bg-elevated p-4 transition-colors hover:border-pink-300 hover:bg-pink-50 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:bg-neutral-800"
+            >
+                <p class="text-sm font-bold text-neutral-900 dark:text-neutral-100">Alphabet & Tracing</p>
+                <p class="mt-1 text-xs text-muted dark:text-neutral-400">Trace letters, lines, words, and pictures.</p>
+            </a>
+            <a
+                href="/category/coloring"
+                class="rounded-2xl border border-hairline bg-elevated p-4 transition-colors hover:border-pink-300 hover:bg-pink-50 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:bg-neutral-800"
+            >
+                <p class="text-sm font-bold text-neutral-900 dark:text-neutral-100">Coloring</p>
+                <p class="mt-1 text-xs text-muted dark:text-neutral-400">Color pictures, shapes, and scenes.</p>
+            </a>
+            <a
+                href="/category/math"
+                class="rounded-2xl border border-hairline bg-elevated p-4 transition-colors hover:border-pink-300 hover:bg-pink-50 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:bg-neutral-800"
+            >
+                <p class="text-sm font-bold text-neutral-900 dark:text-neutral-100">Math</p>
+                <p class="mt-1 text-xs text-muted dark:text-neutral-400">Count, add, subtract, compare, order.</p>
+            </a>
+            <a
+                href="/category/writing"
+                class="rounded-2xl border border-hairline bg-elevated p-4 transition-colors hover:border-pink-300 hover:bg-pink-50 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:bg-neutral-800"
+            >
+                <p class="text-sm font-bold text-neutral-900 dark:text-neutral-100">Writing</p>
+                <p class="mt-1 text-xs text-muted dark:text-neutral-400">Match, sort, read, label, and write.</p>
+            </a>
         </div>
     </section>
 

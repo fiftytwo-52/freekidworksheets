@@ -117,6 +117,39 @@ export const CATEGORIES = [
     'Writing',
 ] as const;
 
+/**
+ * Lowercase hyphenated URL slug per canonical category (TASK-13).
+ * Keep in lock-step with CATEGORIES. Source of truth for every internal
+ * /category/* link, canonical tag, sitemap entry, and redirect rule.
+ */
+export const CATEGORY_SLUGS: Record<(typeof CATEGORIES)[number], string> = {
+    'Alphabet & Tracing': 'alphabet-tracing',
+    Math: 'math',
+    Coloring: 'coloring',
+    Writing: 'writing',
+};
+
+/** Full /category/* path for a canonical category name. */
+export function categoryPath(category: string): string {
+    const slug = (CATEGORY_SLUGS as Record<string, string>)[category];
+    return `/category/${slug || encodeURIComponent(category)}`;
+}
+
+/**
+ * Unique 150-250 word category intro copy rendered above the grid on
+ * /category/<slug> (SEO TASK-08). Keyed by canonical category name.
+ */
+export const CATEGORY_INTROS: Record<string, string> = {
+    'Alphabet & Tracing':
+        'This is where early writing begins. The Alphabet & Tracing library collects every printable sheet that asks a child to follow a dotted line, copy a letter, trace a number, or join a picture to its first sound. Start with simple vertical and horizontal strokes if your child is holding a pencil for the first time, then move on to curves, zigzags, and full letters once those strokes feel comfortable. Each page is a single A4 sheet, so you can print a handful and choose the ones that match what your child is learning at school this week. Most sheets suit ages 3 to 6, but older learners who need extra pencil practice can use them too. Print at 100% scale with no page shrink for the cleanest lines, and let your child work with a thick pencil or crayon first. Everything here is free to download and free to use at home, in class, or in a daycare setting.',
+    Coloring:
+        'Colouring does more than keep little hands busy — it builds grip strength, colour awareness, and the patience to finish a task. The Coloring library holds printable colouring sheets sorted by age, from simple outlines with big open shapes for nursery learners to busier scenes with small details that suit Grade 1 and Grade 2 children. Many sheets double as a small lesson: animals, weather, seasons, body parts, and everyday objects appear again and again so a child connects the picture with the word. Black-and-white sheets print cheaply on any home printer, while the colour versions look best on a full-colour printer or at a print shop. Print at 100% scale so the outlines stay crisp, and consider a spare sheet for blending practice. Colouring also works well as a wrap-up activity: hand out one sheet when a task finishes early, and children get quiet practice without another screen. Every sheet in this category is free to download and print as often as you like, at home or in the classroom.',
+    Math:
+        'The Maths collection covers the numbers children meet first: counting objects, writing digits, adding and subtracting small amounts, comparing which group is bigger, and spotting simple patterns. Sheets are grouped by age so a nursery learner can start with counting to five while a Grade 2 learner moves on to addition and subtraction within twenty. Each page keeps the working area generous — big boxes, clear rows, and enough space for a child to write without crossing into the next question. Most sheets use pictures alongside numerals, which helps learners who are still reading the question aloud. Print at 100% scale on plain A4 paper, and keep a few blank copies for repeat practice, since repetition is what makes these skills stick. A sheet a day, even for ten minutes, is enough to see steady progress. Everything in this category is free to download and print for home use, tutoring, or classroom work, with no signup or fee at any point.',
+    Writing:
+        'The Writing library is built for children who can already hold a pencil and are ready to form words, sentences, and short answers. It includes letter formation practice, tracing and copying words, missing-letter prompts, matching pictures to names, sequencing tasks, and simple comprehension sheets that ask a child to read a line and respond. Use it alongside the Alphabet & Tracing pages when a learner is between stages: tracing builds the shape of the letter, and these sheets ask for the letter on its own. Sheets are grouped by age, with the shorter word lists and larger writing lines aimed at ages 4 to 6 and the sentence and comprehension work suited to ages 6 to 8. Print at 100% scale on A4, and give your child a pencil grip or a short pencil if handwriting fatigue sets in. Every page here is free to download and print at home or at school.',
+};
+
 /** Canonical age-group list (values also used as route/data labels). */
 export const AGE_GROUPS = ['3-4', '5-6', '7-8', '9+'] as const;
 
@@ -136,57 +169,57 @@ export const FAQS = [
     {
         question: 'Are these kids worksheets really free to download and print?',
         answer:
-            'Yes — every kids worksheet on Free Kid Worksheets is 100% free forever. There is no catch, no registration, and no download limits. You can find kids worksheets free download and printable activity pages ready to download directly as high-resolution printable images for home or classroom learning.',
+            'Yes — every worksheet on Free Kid Worksheets is completely free. There are no subscriptions, hidden fees, watermarks, or download limits. Simply choose any activity page you like and print it directly at home or in school.',
     },
     {
         question: 'What subjects and learning topics are available on freekidworksheets.com?',
         answer:
-            'My library covers a wide selection of early education themes: english for kids worksheet, maths kids worksheet, shapes for kids worksheet, body parts for kids worksheet, weather for kids worksheet, drawing for kids worksheet, all about me kids worksheet, and emotions for kids worksheet or feelings for kids worksheet.',
+            'The library focuses on foundational early learning. You will find alphabet tracing and phonics, early counting and math, shapes, colors, body parts, weather, all-about-me prompts, and simple drawing activities.',
     },
     {
         question: 'Do you have nursery and kindergarten kids worksheets for early learning?',
         answer:
-            'Yes! I offer dedicated nursery kids worksheet collections, kids worksheet for nursery, and kids worksheets kindergarten. These include alphabet tracing, number counting, shape recognition, phonics, color by numbers, and motor skill exercises crafted specifically for toddlers and early learners aged 3 to 6.',
+            'Yes, a large part of the collection is created specifically for toddlers and early learners aged 3 to 6. These pages help young children practice holding a pencil, tracing lines and letters, recognizing numbers, and developing fine motor control.',
     },
     {
         question: 'Can I print or save kids worksheets as PDF?',
         answer:
-            'All worksheets are available as high-resolution, print-ready image files sized for standard A4 paper. You can download the image file directly, print it immediately using the Print button, or select "Save as PDF" in your browser print window. Whether you need a kids worksheet pdf, kids worksheets printable sheets, or kids worksheets nursery pdf free download resources, my image worksheets print with sharp, crisp lines.',
+            'Yes. Every sheet is sized for standard A4 paper and designed with clear outlines for clean printing. You can print directly from your browser, save the page as a PDF using your print dialog, or download the image file to print later.',
     },
     {
         question: 'Are these worksheets suitable for teachers, daycare centers, and homeschooling?',
         answer:
-            'Absolutely. Parents, teachers, and homeschool educators are welcome to download, print, and share my kids worksheet english, kids worksheet maths, and activity pages for unlimited personal and classroom teaching at no cost.',
+            'Yes, educators and homeschooling parents are welcome to print and distribute these materials freely. You can use them for daily classroom practice, morning warm-ups, homework packets, or daycare learning corners.',
     },
     {
         question: 'How do I search for a specific worksheet topic or code?',
         answer:
-            'Every worksheet features a unique 4 or 5-digit search code. You can search directly by code (e.g., 1001), subject, or keyword such as "kids worksheet maths", "shapes for kids worksheet", "emotions for kids worksheet", or "weather for kids worksheet" in the search bar.',
+            'Use the search bar at the top of any page to search by topic, skill, or keyword. Each worksheet also has a unique 4 or 5-digit search code printed on it (such as 1001), which you can type directly into the search bar to find that exact sheet again.',
     },
     {
         question: 'Do you offer free printable worksheets for kindergarten and preschool?',
         answer:
-            'Yes — my kindergarten worksheets and preschool collections are completely free. They include kindergarten math worksheets, alphabet tracing, phonics, counting, coloring, and fine-motor activities designed for early learners aged 3 to 6.',
+            'Yes, our preschool and kindergarten resources cover number sense, letter formation, coloring scenes, and simple cut-and-paste exercises. They are tailored to make early learning engaging, low-stress, and screen-free.',
     },
     {
         question: 'What kind of math worksheets are available?',
         answer:
-            'My math worksheets library covers counting, number tracing, addition, subtraction, comparing numbers, patterns, and problem-solving practice. You will find 1st grade math worksheets, 3rd grade math worksheets, 4th grade math worksheets, and kindergarten math worksheets — all free printable worksheets for kids.',
+            'Our math activities cover essential early math skills: counting objects, number tracing, basic addition and subtraction, comparing quantities, and recognizing simple patterns. They are designed for preschool through Grade 2 learners.',
     },
     {
         question: 'Are there worksheets organized by grade level?',
         answer:
-            'Yes. Every worksheet is tagged with an age group from nursery and LKG through UKG, grade 1, grade 2, and grade 3+. You can filter the free worksheets for kids library by grade to quickly find printable activity pages at the right difficulty level.',
+            'Yes. Every resource is organized by age group and grade level, from nursery and preschool up to Grade 2 and Grade 3+. You can use the age filters on any category or library page to find activities at the right difficulty level.',
     },
     {
         question: 'Do you have free Nepali worksheets for kids?',
         answer:
-            'Yes! I offer free Nepali worksheets (निःशुल्क नेपाली कार्यपत्रहरू) including Nepali alphabet consonant Ka Kha to Nga (क ख ग घ ङ) tracing, Nepali numbers (१–१०), word matching, and handwriting practice. There are Nepali worksheets for UKG, Nepali worksheets for grade 1, and Nepali worksheets for nursery and LKG — all free to download and print.',
+            'Yes! We offer a dedicated collection of Nepali worksheets (निःशुल्क नेपाली कार्यपत्रहरू) covering Nepali vowel and consonant tracing (क ख ग घ ङ), numbers (१–१०), word-picture matching, and handwriting practice for nursery through Class 1.',
     },
     {
         question: 'Can teachers use these free worksheets and printables in the classroom?',
         answer:
-            'Absolutely. These free worksheets and printables for kids are made for teachers, daycare centers, tutors, and homeschool families. Download, print, and share them for unlimited personal and classroom use — no subscription or attribution needed.',
+            'Absolutely. Teachers, tutors, and daycare providers can print as many copies as needed for their students without requiring any attribution or paid account.',
     },
 ] as const;
 
@@ -253,16 +286,22 @@ export const BROWSE_PAGES = {
         path: '/worksheets/nepali',
         language: 'ne',
         kicker: 'नेपाली कार्यपत्र पुस्तकालय',
-        title: 'नेपाली कार्यपत्रहरू (Nepali Worksheets)',
+        // <title> stays short (TASK-13): "नेपाली कार्यपत्र" + " - freekidworksheets.com"
+        // = 38 chars on page 1 and 48 on "— page 5". The visible H1 keeps the
+        // bilingual label below.
+        title: 'नेपाली कार्यपत्र',
+        h1: 'नेपाली कार्यपत्रहरू (Nepali Worksheets)',
         blurb:
-            'क ख ग ट्रेसिङ, गन्ती, शब्द मिलान र लेखन अभ्यास — सबै नेपाली कार्यपत्रहरू निःशुल्क डाउनलोड गर्नुहोस् र प्रिन्ट गर्नुहोस्।',
+            'क ख ग ट्रेसिङ, १ देखि १० सम्म गन्ती, शब्द मिलान र लेखन अभ्यास — यी सबै नेपाली कार्यपत्रहरू निःशुल्क डाउनलोड गरी A4 पानामा प्रिन्ट गर्न सकिन्छन्।',
         empty: 'कुनै कार्यपत्र भेटिएन (No worksheets match your filters).',
     },
     spanish: {
         path: '/worksheets/spanish',
         language: 'es',
         kicker: 'BIBLIOTECA DE FICHAS GRATIS',
-        title: 'Fichas en Español (Spanish Worksheets)',
+        // Short for <title> (TASK-13); the H1 keeps the bilingual label.
+        title: 'Fichas en Español',
+        h1: 'Fichas en Español (Spanish Worksheets)',
         blurb:
             'Explora todas las fichas gratis en español — grafomotricidad, trazos, primeras letras y dibujos para colorear, listas para descargar e imprimir.',
         empty: 'No se encontraron fichas (No worksheets match your filters).',
@@ -289,6 +328,10 @@ export const FOOTER_EXPLORE = [
     { href: '/nepali', label: 'Nepali Worksheets' },
     { href: '/spanish', label: 'Spanish Worksheets' },
     { href: '/worksheets', label: 'Worksheets Library' },
+    { href: '/category/alphabet-tracing', label: 'Alphabet & Tracing' },
+    { href: '/category/coloring', label: 'Coloring' },
+    { href: '/category/math', label: 'Math' },
+    { href: '/category/writing', label: 'Writing' },
     { href: '/search', label: 'Search the library' },
 ] as const;
 

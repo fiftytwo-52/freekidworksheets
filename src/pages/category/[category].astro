@@ -1,18 +1,22 @@
 ---
-// /category/{category} — page 1 of each category listing (§9.2 / §11.2).
-// The route param matches the canonical category name exactly, so the
-// `category === param` re-query in CategoryPage works (§9.3).
+// /category/{category} — page 1 of each category listing (§9.2 / §11.2 / TASK-13).
+// The route param is the lowercase hyphenated slug; CATEGORY_SLUGS maps it back
+// to the canonical frontmatter category name.
 import CategoryPage from '../../components/CategoryPage.astro';
-import { getCategories } from '../../lib/content';
+import { CATEGORIES, CATEGORY_SLUGS } from '../../data/site';
 
 export async function getStaticPaths() {
-    const categories = await getCategories();
-    return categories.map((category) => ({
-        params: { category },
+    return CATEGORIES.map((category) => ({
+        params: { category: CATEGORY_SLUGS[category] },
     }));
 }
 
-const { category } = Astro.params;
+const { category: slug } = Astro.params;
+const entry = Object.entries(CATEGORY_SLUGS).find(([, value]) => value === slug);
+if (!entry) {
+    return Astro.redirect('/worksheets', 301);
+}
+const category = entry[0];
 ---
 
-<CategoryPage category={category!} page={1} />
+<CategoryPage {category} page={1} />

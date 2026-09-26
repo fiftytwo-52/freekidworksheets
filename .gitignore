@@ -20,6 +20,8 @@ Thumbs.db
 !.vscode/extensions.json
 .idea/
 *.swp
+__pycache__/
+*.pyc
 
 # project rules
 RULES.md

@@ -15,6 +15,12 @@ export const collections = {
                     ageGroup: z.string(),
                     date: z.coerce.date(),
                     description: z.string().min(60).max(4000),
+                    /** Unique 140-160 char meta description (SEO TASK-11). */
+                    metaDescription: z.string().min(120).max(200).optional(),
+                    /** Compact unique title used for <title>/OG (SEO TASK-07/11). */
+                    shortTitle: z.string().min(10).max(60).optional(),
+                    /** Unique "About this worksheet" copy (SEO TASK-06). */
+                    about: z.string().min(120).max(700).optional(),
                     image: image(),
                     tags: z.array(z.string()).default([]),
                     language: z.enum(['en', 'ne', 'es', 'pt']).default('en'),

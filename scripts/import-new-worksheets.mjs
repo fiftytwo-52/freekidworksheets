@@ -144,6 +144,58 @@ const ACTIVITY_LABELS = {
     read: 'reading',
 };
 
+/** SEO title/meta/about kit (TASK-06/11). All worksheet pages share the same
+ *  free-printable template shape; only the per-sheet slot values differ. Titles
+ *  are unique site-wide; keep every title <= 40 chars so the <title> tag
+ *  (title + code + suffix) stays near 60 chars. */
+const TITLE_MAX = 40;
+
+/**
+ * Unique title helper shared by the batch importer and the one-off
+ * scripts/apply-seo-about.mjs sweep. Accepts any base title; numbered clones
+ * ("Apple tracing", "Apple tracing 2") keep every page's <title> unique.
+ */
+export function uniqueTitle(base, used) {
+    if (!used.has(base)) {
+        used.add(base);
+        return base;
+    }
+    let attempt = 2;
+    let candidate = base;
+    while (used.has(candidate)) {
+        const suffix = ` ${attempt}`;
+        candidate =
+            base.length + suffix.length <= TITLE_MAX
+                ? `${base}${suffix}`
+                : `${base.slice(0, TITLE_MAX - suffix.length).trimEnd()}${suffix}`;
+        attempt += 1;
+    }
+    used.add(candidate);
+    return candidate;
+}
+
+function sentenceTitle(record) {
+    const base = `${record.topic.charAt(0).toUpperCase() + record.topic.slice(1)} ${record.activity}`;
+    if (base.length <= TITLE_MAX) return base;
+    return base.slice(0, TITLE_MAX).trimEnd();
+}
+
+function shortTitle(title, code) {
+    const suffix = ` #${code}`;
+    return title.length + suffix.length <= 60 ? `${title}${suffix}` : title;
+}
+
+function metaDescription(record) {
+    const lead = `${record.title} — free printable ${record.languageLabel.toLowerCase()} ${record.category.toLowerCase()} worksheet for kids ages ${record.ageGroup}.`;
+    const tail = record.colorType === 'colorful' ? ' Full-colour A4 sheet. Download and print free.' : ' Black-and-white A4 sheet. Download and print free.';
+    return `${lead}${tail}`;
+}
+
+function metaAbout(record) {
+    const act = record.activity.toLowerCase();
+    return `${record.title} is a hands-on ${act} activity for young learners. Children complete every row or scene, building steady skills through guided practice. Print the clean A4 sheet for home or classroom use.`;
+}
+
 /** Tracker "Activity / Type" values, kept to the vocabulary already used in the tracker. */
 function trackerType(category, activity) {
     if (/^trace/.test(activity)) return 'tracing';

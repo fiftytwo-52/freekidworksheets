@@ -15,8 +15,13 @@ text = md_path.read_text()
 lines = text.splitlines()
 header_index = next(i for i, line in enumerate(lines) if line.startswith('| Code |'))
 separator_index = header_index + 1
+# Everything from the pins-log sentinel onward is preserved verbatim.
+sentinel_index = next(
+    (i for i, line in enumerate(lines) if line.strip() == '<!-- PINS-LOG -->'),
+    len(lines),
+)
 existing_rows = []
-for line in lines[separator_index + 1:]:
+for line in lines[separator_index + 1:sentinel_index]:
     if not line.startswith('|'):
         existing_rows.append(line)
         continue
@@ -24,23 +29,33 @@ for line in lines[separator_index + 1:]:
     if len(cells) >= 10 and cells[8] not in new_names:
         existing_rows.append(line)
 new_rows = [
-    '| {code} | {title} | {language} | {type} | {colour} | {origin} | {age} | {date} | {filename} | {status} |'.format(
+    '| {code} | {title} | {language} | {type} | {colour} | {origin} | {age} | {date} | {filename} | {status} | {pinterest} | {pin_id} | {board} | {pin_date} |'.format(
         code=r['code'], title=r['title'], language=r['language'], type=r['type'],
         colour=r['colour'], origin=r['origin'], age=r['ageGroup'], date=r['date'],
-        filename=r['originalName'], status=r['status'])
+        filename=r['originalName'], status=r['status'],
+        pinterest=r.get('pinterest', 'Not pinned'),
+        pin_id=r.get('pinId', '—'),
+        board=r.get('board', '—'),
+        pin_date=r.get('pinDate', '—'))
     for r in records
 ]
-md_path.write_text('\n'.join(lines[:separator_index + 1] + new_rows + existing_rows) + '\n')
+trailing = lines[sentinel_index:]
+md_path.write_text(
+    '\n'.join(lines[:separator_index + 1] + new_rows + existing_rows + trailing) + '\n')
 
 wb = load_workbook(xlsx_path)
 ws = wb['Worksheets']
 existing = list(ws.iter_rows(min_row=2, values_only=True))
 ws.delete_rows(2, ws.max_row)
 for r in records:
-    ws.append([r['code'], r['title'], r['language'], r['type'], r['colour'], r['origin'], r['ageGroup'], r['date'], r['originalName'], r['status']])
+    ws.append([r['code'], r['title'], r['language'], r['type'], r['colour'], r['origin'], r['ageGroup'], r['date'], r['originalName'], r['status'], r.get('pinterest', 'Not pinned'), r.get('pinId', '—'), r.get('board', '—'), r.get('pinDate', '—')])
 for row in existing:
     if len(row) >= 10 and row[8] not in new_names:
-        ws.append(list(row))
+        # Preserve existing Pinterest columns if present (cols 11-14)
+        row_list = list(row)
+        while len(row_list) < 14:
+            row_list.append('—')
+        ws.append(row_list)
 
 summary = wb['Summary']
 values = {row[0].value: row[1].value for row in summary.iter_rows(min_row=2, max_col=2) if row[0].value}
@@ -58,6 +73,8 @@ values['Next English code'] = max([int(r[0]) for r in all_rows if r[2] == 'Engli
 values['Next Nepali code'] = max([int(r[0]) for r in all_rows if r[2] == 'Nepali' and str(r[0]).isdigit()] or [4023]) + 1
 values['Next Portuguese code'] = max([int(r[0]) for r in all_rows if r[2] == 'Portuguese' and str(r[0]).isdigit()] or [50000]) + 1
 values['Unuploaded / pending publication'] = sum(1 for r in all_rows if str(r[9]).lower() != 'uploaded')
+values['Worksheets pinned on Pinterest'] = sum(
+    1 for r in all_rows if len(r) > 10 and str(r[10]).strip() == 'Pinned')
 for row in summary.iter_rows(min_row=2, max_col=2):
     if row[0].value in values:
         row[1].value = values[row[0].value]
