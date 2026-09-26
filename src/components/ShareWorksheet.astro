@@ -41,18 +41,17 @@ const subtext =
             </p>
         </div>
 
-        <div class="flex flex-wrap items-center gap-2" role="group" aria-label="Social sharing links">
+        <div class="flex items-center gap-2.5" role="group" aria-label="Social sharing options">
             <!-- Facebook -->
             <a
                 href={fbShareUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-white px-3.5 py-1.5 text-xs font-bold text-[#1877F2] shadow-2xs transition hover:scale-105 hover:border-[#1877F2]/40 hover:bg-[#1877F2]/10 active:scale-95 dark:border-neutral-700 dark:bg-neutral-800 dark:hover:bg-[#1877F2]/20"
+                class="flex h-9 w-9 items-center justify-center rounded-full border border-neutral-200 bg-white text-[#1877F2] shadow-2xs transition hover:scale-110 hover:border-[#1877F2]/40 hover:bg-[#1877F2]/10 active:scale-95 dark:border-neutral-700 dark:bg-neutral-800 dark:hover:bg-[#1877F2]/20"
                 aria-label="Share on Facebook"
                 title="Share on Facebook"
             >
-                <Icon name="facebook" class="h-3.5 w-3.5" />
-                <span>Facebook</span>
+                <Icon name="facebook" class="h-4.5 w-4.5" />
             </a>
 
             <!-- Twitter / X -->
@@ -60,12 +59,11 @@ const subtext =
                 href={twitterShareUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-white px-3.5 py-1.5 text-xs font-bold text-neutral-900 shadow-2xs transition hover:scale-105 hover:border-neutral-400 hover:bg-neutral-100 active:scale-95 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100 dark:hover:bg-neutral-700"
+                class="flex h-9 w-9 items-center justify-center rounded-full border border-neutral-200 bg-white text-neutral-900 shadow-2xs transition hover:scale-110 hover:border-neutral-400 hover:bg-neutral-100 active:scale-95 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100 dark:hover:bg-neutral-700"
                 aria-label="Share on Twitter"
                 title="Share on Twitter"
             >
-                <Icon name="twitter" class="h-3.5 w-3.5" />
-                <span>Twitter</span>
+                <Icon name="twitter" class="h-4 w-4" />
             </a>
 
             <!-- WhatsApp -->
@@ -73,26 +71,34 @@ const subtext =
                 href={whatsappShareUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-white px-3.5 py-1.5 text-xs font-bold text-[#25D366] shadow-2xs transition hover:scale-105 hover:border-[#25D366]/40 hover:bg-[#25D366]/10 active:scale-95 dark:border-neutral-700 dark:bg-neutral-800 dark:hover:bg-[#25D366]/20"
+                class="flex h-9 w-9 items-center justify-center rounded-full border border-neutral-200 bg-white text-[#25D366] shadow-2xs transition hover:scale-110 hover:border-[#25D366]/40 hover:bg-[#25D366]/10 active:scale-95 dark:border-neutral-700 dark:bg-neutral-800 dark:hover:bg-[#25D366]/20"
                 aria-label="Share on WhatsApp"
                 title="Share on WhatsApp"
             >
-                <Icon name="whatsapp" class="h-3.5 w-3.5" />
-                <span>WhatsApp</span>
+                <Icon name="whatsapp" class="h-4.5 w-4.5" />
             </a>
 
             <!-- Instagram / Copy Link -->
-            <button
-                type="button"
-                data-share-url={url}
-                data-share-title={shareTitle}
-                class="instagram-share-btn inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-white px-3.5 py-1.5 text-xs font-bold text-[#E4405F] shadow-2xs transition hover:scale-105 hover:border-[#E4405F]/40 hover:bg-[#E4405F]/10 active:scale-95 dark:border-neutral-700 dark:bg-neutral-800 dark:hover:bg-[#E4405F]/20 cursor-pointer"
-                aria-label="Share on Instagram or copy link"
-                title="Share on Instagram (copy link)"
-            >
-                <Icon name="instagram" class="h-3.5 w-3.5" />
-                <span class="btn-label">Instagram</span>
-            </button>
+            <div class="relative inline-flex">
+                <button
+                    type="button"
+                    data-share-url={url}
+                    data-share-title={shareTitle}
+                    class="instagram-share-btn flex h-9 w-9 items-center justify-center rounded-full border border-neutral-200 bg-white text-[#E4405F] shadow-2xs transition hover:scale-110 hover:border-[#E4405F]/40 hover:bg-[#E4405F]/10 active:scale-95 dark:border-neutral-700 dark:bg-neutral-800 dark:hover:bg-[#E4405F]/20 cursor-pointer"
+                    aria-label="Share on Instagram or copy link"
+                    title="Share on Instagram"
+                >
+                    <span class="icon-insta flex items-center justify-center">
+                        <Icon name="instagram" class="h-4.5 w-4.5" />
+                    </span>
+                    <span class="icon-check hidden items-center justify-center text-[#25D366]">
+                        <Icon name="check" class="h-4.5 w-4.5" />
+                    </span>
+                </button>
+                <span class="share-toast pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-neutral-900 px-2 py-0.5 text-[11px] font-medium text-white opacity-0 shadow-md transition-opacity duration-200 dark:bg-neutral-100 dark:text-neutral-900">
+                    Copied!
+                </span>
+            </div>
         </div>
     </div>
 </div>
@@ -106,7 +112,10 @@ const subtext =
             btn.addEventListener('click', async () => {
                 const url = btn.dataset.shareUrl || window.location.href;
                 const title = btn.dataset.shareTitle || document.title;
-                const label = btn.querySelector<HTMLSpanElement>('.btn-label');
+                const wrapper = btn.closest('div');
+                const toast = wrapper?.querySelector<HTMLSpanElement>('.share-toast');
+                const iconInsta = btn.querySelector<HTMLSpanElement>('.icon-insta');
+                const iconCheck = btn.querySelector<HTMLSpanElement>('.icon-check');
 
                 // Try native Web Share API first (supported on mobile browsers)
                 if (navigator.share) {
@@ -124,17 +133,30 @@ const subtext =
                 // Fallback: Copy link to clipboard for Instagram sharing
                 try {
                     await navigator.clipboard.writeText(url);
-                    if (label) {
-                        const original = label.textContent;
-                        label.textContent = 'Link copied!';
-                        btn.classList.add('bg-pink-100', 'dark:bg-pink-900/40');
-                        setTimeout(() => {
-                            label.textContent = original;
-                            btn.classList.remove('bg-pink-100', 'dark:bg-pink-900/40');
-                        }, 2500);
+                    if (iconInsta && iconCheck) {
+                        iconInsta.classList.add('hidden');
+                        iconCheck.classList.remove('hidden');
+                        iconCheck.classList.add('flex');
                     }
+                    if (toast) {
+                        toast.classList.remove('opacity-0');
+                        toast.classList.add('opacity-100');
+                    }
+                    btn.classList.add('border-[#25D366]/50', 'bg-green-50', 'dark:bg-green-950/30');
+
+                    setTimeout(() => {
+                        if (iconInsta && iconCheck) {
+                            iconInsta.classList.remove('hidden');
+                            iconCheck.classList.add('hidden');
+                            iconCheck.classList.remove('flex');
+                        }
+                        if (toast) {
+                            toast.classList.add('opacity-0');
+                            toast.classList.remove('opacity-100');
+                        }
+                        btn.classList.remove('border-[#25D366]/50', 'bg-green-50', 'dark:bg-green-950/30');
+                    }, 2200);
                 } catch {
-                    // Clipboard denied, open instagram in new window
                     window.open('https://www.instagram.com', '_blank', 'noopener,noreferrer');
                 }
             });
