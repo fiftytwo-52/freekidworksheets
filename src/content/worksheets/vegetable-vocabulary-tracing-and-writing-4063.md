@@ -5,7 +5,7 @@ category: "Alphabet & Tracing"
 ageGroup: "5-6"
 date: 2026-09-06
 description: "Vegetable - Vocabulary Tracing and Writing is a free printable nepali worksheet for children aged 5-6. This alphabet & tracing activity supports guided practice at home, in class, or during independent learning. It is an original worksheet prepared for FreeKidWorksheets and is marked Original."
-about: "यो कार्यपत्रमा बालबालिका पजल हल गरेर अभ्यास पूरा गर्छन्। यो 5-6 उमेरका बालबालिकाका लागि उपयुक्त छ र प्रारम्भिक सिकाइ सीप विकासमा सघाउँछ। कीरा विषयवस्तुमा आधारित A4 पाना घर वा कक्षामा प्रिन्ट गर्नुहोस्।"
+about: "यो कार्यपत्रमा बालबालिकाले आलु, गोलभेँडा, गाजर जस्ता विभिन्न तरकारीका नामहरू ट्रेसिङ गर्छन् र लेख्ने अभ्यास गर्छन्। यसले तरकारीको पहिचान, शब्द भण्डार र शुद्ध लेखन सीप विकास गर्छ। ५-६ उमेरका UKG कक्षाका बालबालिकाका लागि उपयुक्त श्वेत-श्याम A4 कार्यपत्र हो, घर वा कक्षामा प्रिन्ट गर्नुहोस्।"
 shortTitle: "Vegetable - Vocabulary Tracing and"
 metaDescription: "Vegetable - Vocabulary Tracing and — निःशुल्क नेपाली अक्षर र लेखन कार्यपत्र (5-6 वर्षका बालबालिकाका लागि)। घर वा कक्षामा सजिलै प्रिन्ट गर्नुहोस्।"
 image: "./4063.jpg"
