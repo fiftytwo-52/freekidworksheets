@@ -151,8 +151,41 @@ def save_history(history: dict) -> None:
         json.dump(history, fh, indent=2, ensure_ascii=False)
 
 
+def update_external_tracking(code: str, pin_id: str, board_name: str, pin_date: str) -> None:
+    tracking_candidates = [
+        "/home/fiftytwo/Desktop/GaNesh Khatiwada/Do not Delete/Code base/Newsheet-for-freekidworksheets/worksheet-upload-tracking.md",
+        os.path.abspath(os.path.join(HERE, "..", "..", "Newsheet-for-freekidworksheets", "worksheet-upload-tracking.md")),
+        os.path.abspath(os.path.join(HERE, "..", "worksheet-upload-tracking.md")),
+    ]
+    for target in tracking_candidates:
+        if os.path.exists(target):
+            try:
+                with open(target, "r", encoding="utf-8") as fh:
+                    lines = fh.readlines()
+                updated = False
+                new_lines = []
+                for line in lines:
+                    parts = [p.strip() for p in line.split("|")]
+                    if len(parts) >= 15 and parts[1] == str(code):
+                        line = re.sub(
+                            r"\|\s*Not pinned\s*\|\s*—\s*\|\s*—\s*\|\s*—\s*\|",
+                            f"| Pinned | {pin_id} | {board_name} | {pin_date} |",
+                            line,
+                        )
+                        updated = True
+                    new_lines.append(line)
+                if updated:
+                    with open(target, "w", encoding="utf-8") as fh:
+                        fh.writelines(new_lines)
+                    print(f"Updated tracking ledger: {target}")
+            except Exception as e:
+                print(f"Note: Could not update tracking ledger {target}: {e}")
+
+
 def record_pinned(code: str, slug: str, pin_id: str, board_id: str,
                   board_name: str, title: str, link: str) -> None:
+    now_iso = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    today_str = datetime.date.today().isoformat()
     hist = load_history()
     hist[str(code)] = {
         "code": str(code),
@@ -162,9 +195,10 @@ def record_pinned(code: str, slug: str, pin_id: str, board_id: str,
         "board_name": board_name,
         "title": title,
         "link": link,
-        "pinned_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        "pinned_at": now_iso,
     }
     save_history(hist)
+    update_external_tracking(code, pin_id, board_name, today_str)
 
 
 def is_pinned(code: str, slug: str = "", hist: dict | None = None) -> dict | None:
@@ -387,7 +421,7 @@ def create_pin(base_url: str, image: str, board: str, title: str,
         "title": title[:100],
         "description": description,
         "link": link,
-        "image_source": image_source(image),
+        "media_source": image_source(image),
     })
 
 
@@ -408,18 +442,26 @@ def with_tags(description: str, tags: str) -> str:
 # ---------------------------------------------------------------------------
 
 def get_base_url(args: argparse.Namespace) -> str:
-    # Production is default since the account has Standard access
+    # If explicitly --prod, use PROD
+    if getattr(args, "prod", False):
+        return PROD
+    # If explicitly --sandbox, use SANDBOX
     if getattr(args, "sandbox", False):
         return SANDBOX
-    return PROD
-
+    # Check token's is_sandbox flag
+    try:
+        token = load_token()
+        if token.get("is_sandbox"):
+            return SANDBOX
+    except Exception:
+        pass
+    return SANDBOX
 
 def cmd_me(args: argparse.Namespace) -> int:
     base = get_base_url(args)
     user_info = api("GET", f"{base}/user_account")
     print(json.dumps(user_info, indent=2))
     return 0
-
 
 def cmd_boards(args: argparse.Namespace) -> int:
     base = get_base_url(args)

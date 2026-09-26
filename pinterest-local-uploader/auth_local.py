@@ -70,14 +70,15 @@ def save_json(path: str, data: dict) -> None:
     os.chmod(path, 0o600)
 
 
-def exchange_code(app_id: str, app_secret: str, code: str) -> dict:
+def exchange_code(app_id: str, app_secret: str, code: str, sandbox: bool = False) -> dict:
+    base = "https://api-sandbox.pinterest.com/v5" if sandbox else "https://api.pinterest.com/v5"
     payload = urllib.parse.urlencode({
         "grant_type": "authorization_code",
         "code": code,
         "redirect_uri": REDIRECT_URI,
     }).encode()
     req = urllib.request.Request(
-        "https://api.pinterest.com/v5/oauth/token", data=payload, method="POST")
+        f"{base}/oauth/token", data=payload, method="POST")
     basic = base64.b64encode(f"{app_id}:{app_secret}".encode()).decode()
     req.add_header("Authorization", f"Basic {basic}")
     req.add_header("Content-Type", "application/x-www-form-urlencoded")
@@ -86,6 +87,11 @@ def exchange_code(app_id: str, app_secret: str, code: str) -> dict:
 
 
 def main() -> int:
+    import argparse
+    parser = argparse.ArgumentParser(description="One-time Pinterest login")
+    parser.add_argument("--sandbox", action="store_true", help="authenticate against Pinterest Sandbox")
+    args = parser.parse_args()
+
     cfg = load_config()
     app_id = cfg.get("app_id") or input(f"App ID [{APP_ID}]: ").strip() or APP_ID
     app_secret = cfg.get("app_secret") or input("App secret (paste, it stays on your machine): ").strip()
@@ -106,7 +112,7 @@ def main() -> int:
         "state": os.urandom(8).hex(),
     })
     url = f"https://www.pinterest.com/oauth/?{params}"
-    print("\nOpening Pinterest login in your browser...")
+    print(f"\nOpening Pinterest login in your browser ({'SANDBOX' if args.sandbox else 'PRODUCTION'})...")
     print("If it doesn't open, paste this URL manually:\n")
     print(url + "\n")
     webbrowser.open(url)
@@ -120,10 +126,11 @@ def main() -> int:
         print("Timed out waiting for the Pinterest login (2 min). Run again.")
         return 1
 
-    token = exchange_code(app_id, app_secret, _result["code"])
+    token = exchange_code(app_id, app_secret, _result["code"], sandbox=args.sandbox)
     token["expires_at"] = time.time() + int(token.get("expires_in", 2592000)) - 300
+    token["is_sandbox"] = args.sandbox
     save_json(TOKEN_FILE, token)
-    print("\nLogged in! Token saved to ~/.pinterest/token.json")
+    print(f"\nLogged in! {'Sandbox ' if args.sandbox else ''}Token saved to ~/.pinterest/token.json")
     print("Try:  python3 pin_local.py boards")
     return 0
 
