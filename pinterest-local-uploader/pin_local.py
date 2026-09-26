@@ -592,8 +592,16 @@ def cmd_worksheet(args: argparse.Namespace) -> int:
         return 0
 
     base = get_base_url(args)
-    print(f"Posting worksheet {ws['code']} ({ws['title']}) to board '{pin_data['board_name']}'...")
-    pin = create_pin(base, pin_data["image"], pin_data["board_id"],
+    board_id = pin_data["board_id"]
+    board_name = pin_data["board_name"]
+
+    # In Sandbox environment, use sandbox board unless an explicit board override was passed
+    if base == SANDBOX and not getattr(args, "board", None):
+        board_id = "1127096312935342580"
+        board_name = "Sandbox Test Worksheets"
+
+    print(f"Posting worksheet {ws['code']} ({ws['title']}) to board '{board_name}'...")
+    pin = create_pin(base, pin_data["image"], board_id,
                      pin_data["title"], pin_data["description"], pin_data["link"])
 
     pin_id = pin.get("id")
@@ -601,8 +609,8 @@ def cmd_worksheet(args: argparse.Namespace) -> int:
     print(f"Pin URL: https://www.pinterest.com/pin/{pin_id}/")
 
     # Record in history
-    record_pinned(ws["code"], ws["slug"], pin_id, pin_data["board_id"],
-                  pin_data["board_name"], pin_data["title"], pin_data["link"])
+    record_pinned(ws["code"], ws["slug"], pin_id, board_id,
+                  board_name, pin_data["title"], pin_data["link"])
     print(f"Recorded in {HISTORY_FILE}")
     return 0
 
