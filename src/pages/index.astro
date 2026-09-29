@@ -11,7 +11,38 @@ import { faqJsonLd, websiteJsonLd } from '../lib/seo';
 
 // Build-time data for English feed
 const all = await getEnglishWorksheets();
-const featured = all.slice(0, 16); // 16 latest english worksheets = 4 rows of 4 cards; more via /worksheets pagination
+// Top 3 newest worksheets first, followed by 13 shuffled worksheets across the library
+// to ensure a diverse variety across subjects and categories on the homepage.
+const top3 = all.slice(0, 3);
+const remainder = [...all.slice(3)];
+for (let i = remainder.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [remainder[i], remainder[j]] = [remainder[j], remainder[i]];
+}
+
+// Balance category diversity for the remaining 13 slots so no single topic dominates
+const featuredRemainder: typeof remainder = [];
+const categoryCounts = new Map<string, number>();
+
+for (const sheet of remainder) {
+    if (featuredRemainder.length >= 13) break;
+    const cat = sheet.data.category || 'other';
+    const count = categoryCounts.get(cat) || 0;
+    if (count < 4) {
+        featuredRemainder.push(sheet);
+        categoryCounts.set(cat, count + 1);
+    }
+}
+if (featuredRemainder.length < 13) {
+    for (const sheet of remainder) {
+        if (featuredRemainder.length >= 13) break;
+        if (!featuredRemainder.includes(sheet)) {
+            featuredRemainder.push(sheet);
+        }
+    }
+}
+
+const featured = [...top3, ...featuredRemainder];
 // Whole-library total (all languages) for the hero "N+ Worksheets available" stat.
 const totalWorksheets = (await getAllWorksheets()).length;
 
