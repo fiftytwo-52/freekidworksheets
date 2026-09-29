@@ -167,6 +167,80 @@ def save_history(history: dict) -> None:
         json.dump(history, fh, indent=2, ensure_ascii=False)
 
 
+def sync_all_external_tracking(hist: dict) -> None:
+    if not hist:
+        return
+    # 1. Update Markdown tracker once
+    tracking_candidates = [
+        "/home/fiftytwo/Desktop/GaNesh Khatiwada/Do not Delete/Code base/Newsheet-for-freekidworksheets/worksheet-upload-tracking.md",
+        os.path.abspath(os.path.join(HERE, "..", "..", "Newsheet-for-freekidworksheets", "worksheet-upload-tracking.md")),
+        os.path.abspath(os.path.join(HERE, "..", "worksheet-upload-tracking.md")),
+    ]
+    for target in tracking_candidates:
+        if os.path.exists(target):
+            try:
+                with open(target, "r", encoding="utf-8") as fh:
+                    lines = fh.readlines()
+                updated = False
+                new_lines = []
+                for line in lines:
+                    parts = [p.strip() for p in line.split("|")]
+                    if len(parts) >= 15 and parts[1] in hist:
+                        item = hist[parts[1]]
+                        pin_id = item["pin_id"]
+                        board_name = item["board_name"]
+                        pin_date = item.get("pinned_at", "")[:10] or datetime.date.today().isoformat()
+                        subbed = re.sub(
+                            r"\|\s*Not pinned\s*\|\s*—\s*\|\s*—\s*\|\s*—\s*\|",
+                            f"| Pinned | {pin_id} | {board_name} | {pin_date} |",
+                            line,
+                        )
+                        if subbed != line:
+                            line = subbed
+                            updated = True
+                    new_lines.append(line)
+                if updated:
+                    with open(target, "w", encoding="utf-8") as fh:
+                        fh.writelines(new_lines)
+            except Exception as e:
+                print(f"Note: Could not batch update tracking ledger {target}: {e}")
+
+    # 2. Update Excel tracker once
+    xlsx_candidates = [
+        "/home/fiftytwo/Desktop/GaNesh Khatiwada/Do not Delete/Code base/Newsheet-for-freekidworksheets/worksheets-tracker.xlsx",
+        os.path.abspath(os.path.join(HERE, "..", "..", "Newsheet-for-freekidworksheets", "worksheets-tracker.xlsx")),
+        os.path.abspath(os.path.join(HERE, "..", "worksheets-tracker.xlsx")),
+    ]
+    for xlsx_path in xlsx_candidates:
+        if os.path.exists(xlsx_path):
+            try:
+                import openpyxl
+                wb = openpyxl.load_workbook(xlsx_path)
+                ws = wb["Worksheets"]
+                matched = False
+                for r in range(2, ws.max_row + 1):
+                    val = ws.cell(r, 1).value
+                    if val is not None and str(val).strip() in hist:
+                        item = hist[str(val).strip()]
+                        if ws.cell(r, 11).value != "Pinned":
+                            ws.cell(r, 11).value = "Pinned"
+                            ws.cell(r, 12).value = str(item["pin_id"])
+                            ws.cell(r, 13).value = str(item["board_name"])
+                            ws.cell(r, 14).value = str(item.get("pinned_at", "")[:10] or datetime.date.today().isoformat())
+                            matched = True
+                if matched:
+                    if "Summary" in wb.sheetnames:
+                        summary = wb["Summary"]
+                        all_rows = list(ws.iter_rows(min_row=2, values_only=True))
+                        pinned_count = sum(1 for r in all_rows if len(r) > 10 and str(r[10]).strip() == "Pinned")
+                        for row in summary.iter_rows(min_row=2, max_col=2):
+                            if row[0].value == "Worksheets pinned on Pinterest":
+                                row[1].value = pinned_count
+                    wb.save(xlsx_path)
+            except Exception as e:
+                print(f"Note: Could not batch update Excel tracker {xlsx_path}: {e}")
+
+
 def update_external_tracking(code: str, pin_id: str, board_name: str, pin_date: str) -> None:
     # 1. Update Markdown tracker
     tracking_candidates = [
@@ -796,8 +870,7 @@ def cmd_upload_all(args: argparse.Namespace) -> int:
 
     # 1. Sync any existing pinned worksheets from history into Excel tracker
     hist = load_history()
-    for code, item in hist.items():
-        update_external_tracking(code, item["pin_id"], item["board_name"], item.get("pinned_at", "")[:10] or datetime.date.today().isoformat())
+    sync_all_external_tracking(hist)
 
     # 2. Read tracking ledger to find all unpinned sheets
     tracking_candidates = [

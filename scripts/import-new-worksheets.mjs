@@ -144,30 +144,21 @@ const ACTIVITY_LABELS = {
     read: 'reading',
 };
 
-/** SEO title/meta/about kit (TASK-06/11). All worksheet pages share the same
- *  free-printable template shape; only the per-sheet slot values differ. Titles
- *  are unique site-wide; keep every title <= 40 chars so the <title> tag
- *  (title + code + suffix) stays near 60 chars. */
-const TITLE_MAX = 40;
+/** SEO title/meta/about kit (TASK-06/11). */
+const SHORT_TITLE_MAX = 36;
 
-/**
- * Unique title helper shared by the batch importer and the one-off
- * scripts/apply-seo-about.mjs sweep. Accepts any base title; numbered clones
- * ("Apple tracing", "Apple tracing 2") keep every page's <title> unique.
- */
-export function uniqueTitle(base, used) {
-    if (!used.has(base)) {
-        used.add(base);
-        return base;
+export function uniqueShortTitle(base, code, used) {
+    let candidate = base.length <= SHORT_TITLE_MAX ? base : base.slice(0, SHORT_TITLE_MAX).trimEnd();
+    if (!used.has(candidate)) {
+        used.add(candidate);
+        return candidate;
     }
+    const suffix = ` ${code}`;
+    candidate = `${base.slice(0, SHORT_TITLE_MAX - suffix.length).trimEnd()}${suffix}`;
     let attempt = 2;
-    let candidate = base;
     while (used.has(candidate)) {
-        const suffix = ` ${attempt}`;
-        candidate =
-            base.length + suffix.length <= TITLE_MAX
-                ? `${base}${suffix}`
-                : `${base.slice(0, TITLE_MAX - suffix.length).trimEnd()}${suffix}`;
+        const altSuffix = ` ${attempt}`;
+        candidate = `${base.slice(0, SHORT_TITLE_MAX - altSuffix.length).trimEnd()}${altSuffix}`;
         attempt += 1;
     }
     used.add(candidate);
@@ -176,24 +167,28 @@ export function uniqueTitle(base, used) {
 
 function sentenceTitle(record) {
     const base = `${record.topic.charAt(0).toUpperCase() + record.topic.slice(1)} ${record.activity}`;
-    if (base.length <= TITLE_MAX) return base;
-    return base.slice(0, TITLE_MAX).trimEnd();
-}
-
-function shortTitle(title, code) {
-    const suffix = ` #${code}`;
-    return title.length + suffix.length <= 60 ? `${title}${suffix}` : title;
+    if (base.length <= SHORT_TITLE_MAX) return base;
+    return base.slice(0, SHORT_TITLE_MAX).trimEnd();
 }
 
 function metaDescription(record) {
-    const lead = `${record.title} — free printable ${record.languageLabel.toLowerCase()} ${record.category.toLowerCase()} worksheet for kids ages ${record.ageGroup}.`;
-    const tail = record.colorType === 'colorful' ? ' Full-colour A4 sheet. Download and print free.' : ' Black-and-white A4 sheet. Download and print free.';
-    return `${lead}${tail}`;
+    const lead = `${record.title} — free printable ${record.languageLabel.toLowerCase()} ${record.category.toLowerCase()} worksheet for ages ${record.ageGroup}.`;
+    const tail = ' Download the clean A4 sheet and print free.';
+    let desc = `${lead}${tail}`;
+    if (desc.length > 165) {
+        const maxLead = 165 - tail.length;
+        const trimmedLead = `${record.title.slice(0, maxLead - 50).trimEnd()}… — free printable ${record.languageLabel.toLowerCase()} ${record.category.toLowerCase()} worksheet for ages ${record.ageGroup}.`;
+        desc = `${trimmedLead}${tail}`;
+    }
+    if (desc.length < 120) {
+        desc = `${record.title} is a free printable ${record.languageLabel.toLowerCase()} ${record.category.toLowerCase()} worksheet for kids ages ${record.ageGroup}. Download clean A4 and print free.`;
+    }
+    return desc;
 }
 
 function metaAbout(record) {
     const act = record.activity.toLowerCase();
-    return `${record.title} is a hands-on ${act} activity for young learners. Children complete every row or scene, building steady skills through guided practice. Print the clean A4 sheet for home or classroom use.`;
+    return `${record.title} is a free printable ${act} worksheet for young learners ages ${record.ageGroup}. Children complete every section to build key early skills through guided practice. Print the clean A4 sheet at home or in class for independent learning.`;
 }
 
 /** Tracker "Activity / Type" values, kept to the vocabulary already used in the tracker. */
@@ -237,6 +232,7 @@ function parseFilename(name) {
 /** Reads the published collection for the next free codes and the existing description set. */
 function readExistingContent() {
     const descriptions = new Set();
+    const shortTitles = new Set();
     const highestCode = {};
     for (const file of readdirSync(contentDir).filter((name) => name.endsWith('.md'))) {
         const raw = readFileSync(path.join(contentDir, file), 'utf8');
@@ -248,13 +244,15 @@ function readExistingContent() {
         };
         const description = field('description');
         if (description) descriptions.add(description);
+        const st = field('shortTitle') || field('title');
+        if (st) shortTitles.add(st);
         const code = Number.parseInt(field('code') ?? '', 10);
         const language = field('language') ?? 'en';
         if (!Number.isNaN(code)) {
             highestCode[language] = Math.max(highestCode[language] ?? 0, code);
         }
     }
-    return { descriptions, highestCode };
+    return { descriptions, shortTitles, highestCode };
 }
 
 /** Sentence-case title: "<Topic> <activity label>", collapsing a topic that repeats the activity. */
@@ -330,7 +328,7 @@ function readTrackedFilenames() {
 // ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
-const { descriptions: publishedDescriptions, highestCode } = readExistingContent();
+const { descriptions: publishedDescriptions, shortTitles: publishedShortTitles, highestCode } = readExistingContent();
 const alreadyTracked = readTrackedFilenames();
 const nextCode = {};
 for (const [token, meta] of Object.entries(LANGUAGES)) {
@@ -379,6 +377,7 @@ for (const originalName of sourceFiles) {
 // Descriptions must be unique site-wide (tests/verify.mjs fails on duplicates), so colour twins
 // and any other clash get an explicit suffix.
 const usedDescriptions = new Set(publishedDescriptions);
+const usedShortTitles = new Set(publishedShortTitles);
 for (const record of records) {
     let attempt = 0;
     while (usedDescriptions.has(record.description) || record.description.length < 60) {
@@ -392,6 +391,9 @@ for (const record of records) {
         if (attempt >= 3) break;
     }
     usedDescriptions.add(record.description);
+    record.shortTitle = uniqueShortTitle(record.title, record.code, usedShortTitles);
+    record.metaDescription = metaDescription(record);
+    record.about = metaAbout(record);
     record.slug = slugFor(record.title, record.code);
     record.imageName = `${record.code}${record.extension}`;
 }
@@ -407,6 +409,9 @@ for (const record of records) {
         `ageGroup: "${record.ageGroup}"`,
         `date: ${record.date}`,
         `description: ${JSON.stringify(record.description)}`,
+        `about: ${JSON.stringify(record.about)}`,
+        `shortTitle: ${JSON.stringify(record.shortTitle)}`,
+        `metaDescription: ${JSON.stringify(record.metaDescription)}`,
         `image: "./${record.imageName}"`,
         `tags: [${tagsFor(record).map((tag) => JSON.stringify(tag)).join(', ')}]`,
         `language: "${record.language}"`,
