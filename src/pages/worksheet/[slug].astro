@@ -19,6 +19,9 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { title, category, ageGroup, code, description, image, tags = [], language } = entry.data;
 const displayTitle = entry.data.shortTitle?.trim() || title;
+// Avoid "worksheet worksheet" when the title already contains the word.
+const titleLower = title.toLowerCase();
+const altText = `Free printable ${titleLower}${titleLower.includes('worksheet') ? '' : ' worksheet'} for ages ${ageGroup}`;
 const path = `/worksheet/${entry.slug}`;
 const related = await getRelated(entry.slug);
 const isLandscape = image.width > image.height;
@@ -150,7 +153,7 @@ const pageKeywords = Array.from(
         >
             <Image
                 src={image}
-                alt={`Free printable ${title.toLowerCase()} worksheet for ages ${ageGroup}`}
+                alt={altText}
                 class="mx-auto h-auto w-full max-w-2xl rounded-lg object-contain"
                 loading="eager"
                 decoding="async"

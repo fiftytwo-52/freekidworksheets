@@ -37,8 +37,12 @@ function esc(s: string): string {
 
 function cardHtml(e: IndexEntry): string {
     const href = `/worksheet/${encodeURIComponent(e.slug)}`;
+    // Avoid "worksheet worksheet" when the title already contains the word.
+    const titleLower = e.title.toLowerCase();
+    const altText =
+        'Free printable ' + titleLower + (titleLower.includes('worksheet') ? '' : ' worksheet') + ' for ages ' + e.ageGroup;
     const img = e.image
-        ? `<img src="${esc(e.image)}" alt="${esc('Free printable ' + e.title.toLowerCase() + ' worksheet for ages ' + e.ageGroup)}" loading="lazy" decoding="async" class="h-full w-full object-contain" />`
+        ? `<img src="${esc(e.image)}" alt="${esc(altText)}" loading="lazy" decoding="async" class="h-full w-full object-contain" />`
         : '';
     // Minimal card, matching WorksheetCard.astro: pure thumbnail + code badge,
     // with a hover overlay revealing title + category/age on pointer devices.

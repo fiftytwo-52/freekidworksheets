@@ -15,6 +15,9 @@ const { entry } = Astro.props;
 const { title, code, category, ageGroup } = entry.data;
 const detailHref = `/worksheet/${entry.slug}`;
 const attrs = cardDataProps(entry);
+// Avoid "worksheet worksheet" when the title already contains the word.
+const titleLower = title.toLowerCase();
+const altText = `Free printable ${titleLower}${titleLower.includes('worksheet') ? '' : ' worksheet'} for ages ${ageGroup}`;
 ---
 
 <article
@@ -29,7 +32,7 @@ const attrs = cardDataProps(entry);
         <div class="relative aspect-[3/4] w-full bg-neutral-50 p-1.5 dark:bg-neutral-800/50">
             <Image
                 src={entry.data.image}
-                alt={`Free printable ${entry.data.title.toLowerCase()} worksheet for ages ${entry.data.ageGroup}`}
+                alt={altText}
                 widths={[320, 480, 640]}
                 sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
                 loading="lazy"
