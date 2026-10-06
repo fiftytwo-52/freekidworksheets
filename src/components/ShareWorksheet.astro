@@ -99,6 +99,27 @@ const subtext =
                     Copied!
                 </span>
             </div>
+
+            <!-- Copy Link -->
+            <div class="relative inline-flex">
+                <button
+                    type="button"
+                    data-copy-url={url}
+                    class="copy-link-btn flex h-9 w-9 items-center justify-center rounded-full border border-neutral-200 bg-white text-neutral-600 shadow-2xs transition hover:scale-110 hover:border-neutral-400 hover:bg-neutral-100 active:scale-95 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 cursor-pointer"
+                    aria-label="Copy link"
+                    title="Copy link"
+                >
+                    <span class="icon-link flex items-center justify-center">
+                        <Icon name="link" class="h-4.5 w-4.5" />
+                    </span>
+                    <span class="icon-check hidden items-center justify-center text-[#25D366]">
+                        <Icon name="check" class="h-4.5 w-4.5" />
+                    </span>
+                </button>
+                <span class="copy-toast pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-neutral-900 px-2 py-0.5 text-[11px] font-medium text-white opacity-0 shadow-md transition-opacity duration-200 dark:bg-neutral-100 dark:text-neutral-900">
+                    Copied!
+                </span>
+            </div>
         </div>
     </div>
 </div>
@@ -164,5 +185,68 @@ const subtext =
     }
 
     setupShareButtons();
+    setupCopyLinkButtons();
     document.addEventListener('astro:page-load', setupShareButtons);
+    document.addEventListener('astro:page-load', setupCopyLinkButtons);
+
+    function setupCopyLinkButtons() {
+        document.querySelectorAll<HTMLButtonElement>('.copy-link-btn').forEach((btn) => {
+            if (btn.dataset.initialized) return;
+            btn.dataset.initialized = 'true';
+
+            btn.addEventListener('click', async () => {
+                const url = btn.dataset.copyUrl || window.location.href;
+                const wrapper = btn.closest('div');
+                const toast = wrapper?.querySelector<HTMLSpanElement>('.copy-toast');
+                const iconLink = btn.querySelector<HTMLSpanElement>('.icon-link');
+                const iconCheck = btn.querySelector<HTMLSpanElement>('.icon-check');
+
+                let copied = false;
+                try {
+                    await navigator.clipboard.writeText(url);
+                    copied = true;
+                } catch {
+                    // Fallback for older browsers / non-secure contexts
+                    try {
+                        const ta = document.createElement('textarea');
+                        ta.value = url;
+                        ta.style.position = 'fixed';
+                        ta.style.opacity = '0';
+                        document.body.appendChild(ta);
+                        ta.select();
+                        copied = document.execCommand('copy');
+                        document.body.removeChild(ta);
+                    } catch {
+                        copied = false;
+                    }
+                }
+
+                if (!copied) return;
+
+                if (iconLink && iconCheck) {
+                    iconLink.classList.add('hidden');
+                    iconCheck.classList.remove('hidden');
+                    iconCheck.classList.add('flex');
+                }
+                if (toast) {
+                    toast.classList.remove('opacity-0');
+                    toast.classList.add('opacity-100');
+                }
+                btn.classList.add('border-[#25D366]/50', 'bg-green-50', 'dark:bg-green-950/30');
+
+                setTimeout(() => {
+                    if (iconLink && iconCheck) {
+                        iconLink.classList.remove('hidden');
+                        iconCheck.classList.add('hidden');
+                        iconCheck.classList.remove('flex');
+                    }
+                    if (toast) {
+                        toast.classList.add('opacity-0');
+                        toast.classList.remove('opacity-100');
+                    }
+                    btn.classList.remove('border-[#25D366]/50', 'bg-green-50', 'dark:bg-green-950/30');
+                }, 2200);
+            });
+        });
+    }
 </script>
