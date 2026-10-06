@@ -2,7 +2,7 @@
 // /worksheet/[slug] — worksheet detail page (§11.3).
 // h1 + meta line, large A4 image (print target #print-worksheet),
 // description, download/print actions, related grid, LearningResource JSON-LD.
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import RelatedGrid from '../../components/RelatedGrid.astro';
@@ -27,6 +27,13 @@ const related = await getRelated(entry.slug);
 const isLandscape = image.width > image.height;
 const pageUrl = absoluteUrl(path);
 const categoryUrl = absoluteUrl(categoryPath(category));
+
+// Dedicated lightweight share image: WhatsApp/Facebook scrapers reject the
+// full-size PNG og:image (often 400KB+; WhatsApp caps previews ~300KB),
+// showing "unsupported image". A 1000px-wide JPEG stays well under the limit.
+const ogWidth = 1000;
+const ogHeight = Math.round((image.height / image.width) * ogWidth);
+const ogAsset = await getImage({ src: image, width: ogWidth, format: 'jpeg', quality: 78 });
 
 const metaDescription =
     entry.data.metaDescription?.trim() ||
@@ -53,8 +60,8 @@ const pageKeywords = Array.from(
     description={metaDescription}
     path={path}
     keywords={pageKeywords}
-    ogImage={image.src}
-    ogImageMeta={{ width: image.width, height: image.height, type: 'image/png' }}
+    ogImage={ogAsset.src}
+    ogImageMeta={{ width: ogWidth, height: ogHeight, type: 'image/jpeg' }}
     printLandscape={isLandscape}
     lang={language === 'ne' || language === 'es' ? language : 'en'}
     jsonLd={[
