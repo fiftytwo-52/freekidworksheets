@@ -41,8 +41,12 @@ const SUNA_FAQS = [
         answer: 'Yes. In tally mode, choose a step size of 1, 2, 5 or 10 — auto-count mode has its own step control too, plus a pause-between-numbers timer so you can slow the pace down for young learners. You can also set a target number and watch the progress bar fill as you count toward it.',
     },
     {
+        question: 'What is the Shapes toggle?',
+        answer: 'In auto-count mode, turn on Shapes and Suna shows a group of tappable icons matching each number it speaks — three apples when it says three, up to groups of 19. Children can tap an icon to make it fall away. Beyond 19, the big numeral stands alone.',
+    },
+    {
         question: 'Is Suna available in other languages?',
-        answer: 'Yes. The whole Suna app — buttons, games and instructions — works in English, Nepali (नेपाली) and Brazilian Portuguese. Tap the flag in the top bar to switch languages.',
+        answer: 'Yes. The whole Suna app — buttons, counters and instructions — works in English, Nepali (नेपाली) and Brazilian Portuguese. Tap the flag in the top bar to switch languages. In Nepali mode the numbers also display and speak in Nepali.',
     },
 ];
 
@@ -270,7 +274,6 @@ const webAppJsonLd = {
             class="flex min-h-0 flex-1 flex-col"
         >
             <div id="auto-stage" class="relative flex min-h-0 flex-1 flex-col items-center justify-center overflow-hidden px-4">
-                <div id="auto-shapes" class="pointer-events-none absolute inset-0 z-0" aria-hidden="true"></div>
                 <div
                     id="auto-display"
                     class="relative z-10 font-mono font-bold tabular-nums text-ink select-none dark:text-neutral-100"
@@ -278,6 +281,7 @@ const webAppJsonLd = {
                     aria-live="polite"
                     aria-label="Number being spoken" data-i18n-aria="autoDisplay"
                 >–</div>
+                <div id="auto-shapes" class="relative z-10 flex min-h-[96px] w-full max-w-md flex-wrap items-center justify-center gap-1.5 px-2 py-1" aria-hidden="true"></div>
                 <p id="auto-status" data-i18n="autoReady" class="relative z-10 mt-2 min-h-[1.5rem] text-center text-sm text-mute dark:text-neutral-500">
                     Set a range and press play.
                 </p>
@@ -430,7 +434,7 @@ const webAppJsonLd = {
                 <div class="grid gap-3 sm:grid-cols-2">
                     <div class="rounded-xl border border-hairline bg-elevated p-4 dark:border-neutral-800 dark:bg-neutral-900">
                         <h3 class="text-sm font-semibold text-ink dark:text-neutral-100" data-i18n="howAutoH">Auto-count for class</h3>
-                        <p class="mt-1.5 text-sm leading-relaxed text-body dark:text-neutral-400" data-i18n="howAutoP">Enter any range, pick a voice and press play. Suna recites every number on a giant display — turn on Shapes and tappable icons burst and float around for kids to pop as they count. Voices come from your device.</p>
+                        <p class="mt-1.5 text-sm leading-relaxed text-body dark:text-neutral-400" data-i18n="howAutoP">Enter any range, pick a voice and press play. Suna recites every number on a giant display — turn on Shapes and a matching group of tappable icons appears for each number (up to 19); kids tap an icon and it falls away. Voices come from your device.</p>
                     </div>
                     <div class="rounded-xl border border-hairline bg-elevated p-4 dark:border-neutral-800 dark:bg-neutral-900">
                         <h3 class="text-sm font-semibold text-ink dark:text-neutral-100" data-i18n="howTallyH">Tally counter</h3>
@@ -461,27 +465,26 @@ const webAppJsonLd = {
         #suna-app.suna-clean header,
         #suna-app.suna-clean .suna-tabs,
         #suna-app.suna-clean .suna-controls { display: none !important; }
-        /* floating shapes (tappable icons in auto mode) */
+        /* shapes: tappable icon groups matching the spoken number */
+        #auto-shapes:empty { display: none; }
         .suna-shape {
-            position: absolute;
             padding: 0;
             background: none;
             border: none;
             cursor: pointer;
-            pointer-events: auto;
             -webkit-tap-highlight-color: transparent;
-            animation: suna-burst 0.3s ease, suna-float var(--float-dur, 4s) ease-in-out var(--float-delay, 0s) infinite;
+            animation: suna-burst 0.3s ease backwards;
+            transition: transform 0.3s ease;
         }
+        .suna-shape:hover { transform: scale(1.12); }
         .suna-shape svg { display: block; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.15)); }
-        .suna-shape.popping { animation: suna-popout 0.18s ease forwards; }
+        .suna-shape.falling { animation: suna-fall-hide 0.55s ease-in forwards; pointer-events: none; }
         @keyframes suna-burst { from { transform: scale(0); } to { transform: scale(1); } }
-        @keyframes suna-float {
-            0%, 100% { translate: 0 0; }
-            50% { translate: 0 -14px; }
+        @keyframes suna-fall-hide {
+            to { transform: translateY(70dvh) rotate(20deg); opacity: 0; }
         }
-        @keyframes suna-popout { to { transform: scale(0); opacity: 0; } }
         @media (prefers-reduced-motion: reduce) {
-            .suna-shape { animation: suna-burst 0.3s ease; }
+            .suna-shape.falling { animation-duration: 0.01s; }
         }
     </style>
 
@@ -552,7 +555,7 @@ const webAppJsonLd = {
 
                     aboutSuna: 'About Suna',
                     howAutoH: 'Auto-count for class',
-                    howAutoP: 'Enter any range, pick a voice and press play. Suna recites every number on a giant display — turn on Shapes and tappable icons burst and float around for kids to pop as they count. Voices come from your device.',
+                    howAutoP: 'Enter any range, pick a voice and press play. Suna recites every number on a giant display — turn on Shapes and a matching group of tappable icons appears for each number (up to 19); kids tap an icon and it falls away. Voices come from your device.',
                     howTallyH: 'Tally counter',
                     howTallyP: 'Tap the big button (or press spacebar) to count anything. Set a step size, add a target, switch on read-aloud — your count autosaves in this browser.',
                     homeBtn: 'Back to Free Kids Worksheets home', cleanBtn: 'Hide controls for a clean display',
@@ -590,7 +593,7 @@ const webAppJsonLd = {
 
                     aboutSuna: 'Suna बारे',
                     howAutoH: 'कक्षाका लागि स्वतः गणना',
-                    howAutoP: 'कुनै पनि सीमा राख्नुहोस्, आवाज छान्नुहोस् र बजाऊ थिच्नुहोस्। Suna ठूलो देवनागरी सङ्ख्यामा हरेक सङ्ख्या नेपालीमा बोल्छ — Shapes खोल्नुहोस् र बच्चाहरूले गन्दा ट्याप गर्ने आइकनहरू तैरन्छन्।',
+                    howAutoP: 'कुनै पनि सीमा राख्नुहोस्, आवाज छान्नुहोस् र बजाऊ थिच्नुहोस्। Suna ठूलो देवनागरी सङ्ख्यामा हरेक सङ्ख्या नेपालीमा बोल्छ — Shapes खोल्नुहोस् र हरेक सङ्ख्याअनुसार ट्याप गर्ने आइकनहरूको समूह देखिन्छ (१९ सम्म); आइकन थिच्दा त्यो खस्छ।',
                     howTallyH: 'ट्याली काउन्टर',
                     howTallyP: 'जे पनि गन्न ठूलो बटन थिच्नुहोस् (वा स्पेस)। कदम छान्नुहोस्, लक्ष्य राख्नुहोस्, बोल्ने सुविधा खोल्नुहोस् — तपाईंको गणना यही ब्राउजरमा सेभ हुन्छ।',
                     homeBtn: 'गृहपृष्ठमा फर्कनुहोस्', cleanBtn: 'सफा डिस्प्लेका लागि नियन्त्रण लुकाऊ',
@@ -628,7 +631,7 @@ const webAppJsonLd = {
 
                     aboutSuna: 'Sobre o Suna',
                     howAutoH: 'Contagem automática para a aula',
-                    howAutoP: 'Digite um intervalo, escolha uma voz e aperte o play. O Suna recita cada número em tela cheia — ative as Figuras e ícones flutuam para as crianças tocarem enquanto contam. As vozes vêm do seu aparelho.',
+                    howAutoP: 'Digite um intervalo, escolha uma voz e aperte o play. O Suna recita cada número em tela cheia — ative as Figuras e um grupo de ícones tocáveis aparece para cada número (até 19); ao tocar, o ícone cai. As vozes vêm do seu aparelho.',
                     howTallyH: 'Contador manual',
                     howTallyP: 'Toque no botão grande (ou aperte espaço) para contar qualquer coisa. Escolha o passo, defina uma meta, ative a leitura em voz alta — sua contagem é salva neste navegador.',
                     homeBtn: 'Voltar à página inicial', cleanBtn: 'Ocultar controles',
@@ -959,7 +962,7 @@ const webAppJsonLd = {
                 if (!autoState.playing || autoState.paused) return;
                 var n = autoState.current;
                 autoDisplay.textContent = fmtNum(n);
-                spawnShape();
+                renderShapeGroup(n);
                 var total = Math.ceil((autoState.to - autoState.from + 1) / autoState.step);
                 var done = Math.floor((n - autoState.from) / autoState.step) + 1;
                 setAutoStatus('autoCounting', done, total);
@@ -1017,43 +1020,46 @@ const webAppJsonLd = {
             });
             autoStop.addEventListener('click', stopAuto);
 
-            /* ---------------- shapes: floating tappable icons in auto mode ---------------- */
+            /* ---------------- shapes: icon group matching the spoken number ---------------- */
             var SHAPE_ICONS = ['suna-ic-apple', 'suna-ic-banana', 'suna-ic-orange', 'suna-ic-strawberry',
                 'suna-ic-star', 'suna-ic-heart', 'suna-ic-ball', 'suna-ic-dog',
                 'suna-ic-cat', 'suna-ic-fish', 'suna-ic-flower', 'suna-ic-balloon'];
             var shapesToggle = document.getElementById('auto-shapes-toggle');
             var shapesLayer = document.getElementById('auto-shapes');
-            var SHAPE_MAX = 24;
+            var SHAPE_GROUP_MAX = 19; // object groups only read well up to 19
 
             function clearShapes() { shapesLayer.innerHTML = ''; }
 
-            function spawnShape() {
+            // Show exactly n icons as one countable group; beyond 19 the numeral stands alone.
+            function renderShapeGroup(n) {
+                clearShapes();
                 if (!shapesToggle || !shapesToggle.checked) return;
-                while (shapesLayer.children.length >= SHAPE_MAX) {
-                    shapesLayer.removeChild(shapesLayer.firstChild);
-                }
+                if (n < 1 || n > SHAPE_GROUP_MAX) return;
                 var id = SHAPE_ICONS[Math.floor(Math.random() * SHAPE_ICONS.length)];
-                var size = 40 + Math.floor(Math.random() * 32); // 40..72px
-                var b = document.createElement('button');
-                b.type = 'button';
-                b.className = 'suna-shape';
-                b.style.left = (3 + Math.random() * 82) + '%';
-                b.style.top = (4 + Math.random() * 76) + '%';
-                b.style.width = size + 'px';
-                b.style.height = size + 'px';
-                b.style.setProperty('--float-dur', (3 + Math.random() * 3).toFixed(2) + 's');
-                b.style.setProperty('--float-delay', (-Math.random() * 4).toFixed(2) + 's');
-                b.innerHTML = '<svg viewBox="0 0 48 48" width="100%" height="100%" aria-hidden="true"><use href="#' + id + '"/></svg>';
-                b.setAttribute('aria-label', T('shapeTap'));
-                b.addEventListener('click', function () {
-                    b.classList.add('popping');
-                    setTimeout(function () { b.remove(); }, 200);
-                });
-                shapesLayer.appendChild(b);
+                var size = n <= 4 ? 72 : n <= 9 ? 60 : n <= 14 ? 48 : 40;
+                for (var i = 0; i < n; i++) {
+                    (function (index) {
+                        var b = document.createElement('button');
+                        b.type = 'button';
+                        b.className = 'suna-shape';
+                        b.style.width = size + 'px';
+                        b.style.height = size + 'px';
+                        b.style.animationDelay = (index * 0.035) + 's';
+                        b.innerHTML = '<svg viewBox="0 0 48 48" width="100%" height="100%" aria-hidden="true"><use href="#' + id + '"/></svg>';
+                        b.setAttribute('aria-label', T('shapeTap'));
+                        b.addEventListener('click', function () {
+                            if (b.classList.contains('falling')) return;
+                            b.classList.add('falling');
+                            setTimeout(function () { b.remove(); }, 600);
+                        });
+                        shapesLayer.appendChild(b);
+                    })(i);
+                }
             }
             if (shapesToggle) {
                 shapesToggle.addEventListener('change', function () {
-                    if (!shapesToggle.checked) clearShapes();
+                    if (!shapesToggle.checked) { clearShapes(); return; }
+                    if (autoState.playing && !autoState.paused) renderShapeGroup(autoState.current);
                 });
             }
             document.addEventListener('visibilitychange', function () {
