@@ -1,0 +1,699 @@
+---
+// /suna — "Suna – The Counter": free online counter with voice.
+// Two modes in one tool:
+//   1. Tally mode  — big tap button / spacebar, step size, target + progress,
+//                    optional read-aloud of every count.
+//   2. Auto-count mode (teacher mode) — set a range, pick a voice, press play;
+//                    the app counts aloud with a giant visual display.
+// Speech uses the Web Speech API (speechSynthesis) — no backend, no mic,
+// no account. Nepali voice packs (ka/kha) ship in phase 2 with recorded audio.
+import Base from '../layouts/Base.astro';
+import Faq from '../components/Faq.astro';
+import { breadcrumbListJsonLd, faqJsonLd } from '../lib/seo';
+
+const PATH = '/suna';
+const TITLE = 'Suna: Free Online Counter with Voice';
+const DESCRIPTION =
+    'Suna is a free online counter that counts out loud. Tap to tally with a voice, or set any range and let it auto-count 1 to 100 for your class — no app, no signup.';
+const KEYWORDS =
+    'online counter, free online counter, tally counter, counter with voice, count aloud, classroom counter, suna counter, digital counter, count to 100';
+
+const SUNA_FAQS = [
+    {
+        question: 'What is Suna – The Counter?',
+        answer: 'Suna is a free online counter from Free Kids Worksheets. It works as a tap-to-tally counter and as an auto-counting teacher tool that reads numbers aloud in a voice you choose. It runs entirely in your browser — nothing to install and no account needed.',
+    },
+    {
+        question: 'How does the voice counting work?',
+        answer: 'Your browser reads each number aloud using its built-in voices. Pick any installed voice from the dropdown, adjust the speed, and press play. Voices vary by device — phones, tablets and computers each ship their own set.',
+    },
+    {
+        question: 'Can I use Suna as a classroom counting tool?',
+        answer: 'Yes — that is what auto-count mode is for. Set any range (for example 1 to 50), choose a clear voice, and press play. Each number appears huge on screen while it is spoken, so the whole class can follow along.',
+    },
+    {
+        question: 'Does the tally counter save my count?',
+        answer: 'Your current count is saved in this browser automatically, so a refresh or a closed tab will not lose it. Clearing your browser data will reset it.',
+    },
+    {
+        question: 'Is Suna free? Do I need an account?',
+        answer: 'Completely free, no account, no download. Open the page and start counting.',
+    },
+    {
+        question: 'Can I count by 2s, 5s or 10s?',
+        answer: 'Yes. In tally mode, choose a step size of 1, 2, 5 or 10. You can also set a target number and watch the progress bar fill as you count toward it.',
+    },
+];
+
+const webAppJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: 'Suna – The Counter',
+    url: 'https://freekidworksheets.com/suna',
+    applicationCategory: 'EducationalApplication',
+    operatingSystem: 'Any (web browser)',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    description: DESCRIPTION,
+    inLanguage: 'en',
+};
+---
+
+<Base
+    pageTitle={TITLE}
+    description={DESCRIPTION}
+    path={PATH}
+    keywords={KEYWORDS}
+    jsonLd={[
+        webAppJsonLd,
+        breadcrumbListJsonLd([{ name: 'Home', url: '/' }, { name: 'Suna – The Counter' }]),
+        faqJsonLd(SUNA_FAQS),
+    ]}
+>
+    <div class="mx-auto w-full max-w-4xl px-4 pt-10 pb-16 sm:px-6">
+        <nav
+            aria-label="Breadcrumb"
+            class="font-mono text-[11px] uppercase tracking-widest text-mute dark:text-neutral-500"
+        >
+            <a href="/" class="hover:text-pink-600">Home</a>
+            <span aria-hidden="true"> › </span>
+            <span class="normal-case tracking-normal">Suna – The Counter</span>
+        </nav>
+
+        <div class="mt-3 text-center">
+            <p
+                class="font-mono text-[11px] font-medium uppercase tracking-widest text-mute dark:text-neutral-500"
+            >
+                Free online tool
+            </p>
+            <h1
+                class="mt-2 text-3xl font-semibold tracking-tight text-ink sm:text-4xl dark:text-neutral-100"
+            >
+                Suna – The Counter
+            </h1>
+            <p class="mx-auto mt-3 max-w-2xl text-base leading-relaxed text-body dark:text-neutral-400">
+                A counter that <strong class="font-semibold text-ink dark:text-neutral-100">counts out loud</strong>.
+                Tap to tally, or set any range and let Suna recite it for your class —
+                pick the voice, press play, done.
+            </p>
+        </div>
+
+        <!-- Mode tabs -->
+        <div
+            class="mx-auto mt-8 flex max-w-md items-center justify-center gap-2"
+            role="tablist"
+            aria-label="Counter modes"
+        >
+            <button
+                type="button"
+                id="tab-tally"
+                role="tab"
+                aria-selected="true"
+                aria-controls="panel-tally"
+                class="suna-tab rounded-full px-5 py-2.5 text-sm font-semibold transition-colors"
+            >
+                Tally counter
+            </button>
+            <button
+                type="button"
+                id="tab-auto"
+                role="tab"
+                aria-selected="false"
+                aria-controls="panel-auto"
+                class="suna-tab rounded-full px-5 py-2.5 text-sm font-semibold transition-colors"
+            >
+                Auto-count for class
+            </button>
+        </div>
+
+        <!-- ============ TALLY MODE ============ -->
+        <section
+            id="panel-tally"
+            role="tabpanel"
+            aria-labelledby="tab-tally"
+            class="mx-auto mt-6 max-w-2xl rounded-2xl border border-hairline bg-elevated p-6 shadow-sm sm:p-8 dark:border-neutral-800 dark:bg-neutral-900"
+        >
+            <div class="text-center">
+                <div
+                    id="tally-display"
+                    class="font-mono font-bold tabular-nums text-ink select-none dark:text-neutral-100"
+                    style="font-size: clamp(4.5rem, 18vw, 8rem); line-height: 1;"
+                    aria-live="polite"
+                    aria-label="Current count"
+                >
+                    0
+                </div>
+                <div class="mt-3">
+                    <div
+                        class="h-2 w-full overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-800"
+                        role="progressbar"
+                        aria-label="Progress toward target"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                        aria-valuenow="0"
+                        id="tally-progress"
+                    >
+                        <div
+                            id="tally-progress-fill"
+                            class="h-full w-0 rounded-full bg-pink-500 transition-all duration-200"
+                        ></div>
+                    </div>
+                    <p id="tally-target-label" class="mt-1.5 text-xs text-mute dark:text-neutral-500">
+                        No target set
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-6 grid grid-cols-3 items-stretch gap-3">
+                <button
+                    type="button"
+                    id="tally-minus"
+                    class="suna-btn rounded-xl border border-hairline bg-elevated px-4 py-4 text-2xl font-bold text-body transition-colors hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
+                    aria-label="Subtract one step"
+                >
+                    −
+                </button>
+                <button
+                    type="button"
+                    id="tally-plus"
+                    class="suna-btn rounded-xl bg-pink-600 px-4 py-4 text-2xl font-bold text-white shadow-sm transition-transform transition-colors hover:bg-pink-700 active:scale-[0.98]"
+                    aria-label="Add one step (or press spacebar)"
+                >
+                    + Tap
+                </button>
+                <button
+                    type="button"
+                    id="tally-reset"
+                    class="suna-btn rounded-xl border border-hairline bg-elevated px-4 py-4 text-sm font-semibold text-body transition-colors hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
+                    aria-label="Reset counter to zero"
+                >
+                    Reset
+                </button>
+            </div>
+            <p class="mt-2 text-center text-xs text-mute dark:text-neutral-500">
+                Tip: press <kbd class="rounded border border-hairline bg-neutral-100 px-1.5 py-0.5 font-mono text-[11px] dark:border-neutral-700 dark:bg-neutral-800">Space</kbd> anywhere to count up.
+            </p>
+
+            <div class="mt-6 grid gap-4 border-t border-hairline pt-6 sm:grid-cols-2 dark:border-neutral-800">
+                <div>
+                    <label for="tally-step" class="mb-1.5 block text-sm font-medium text-ink dark:text-neutral-200">
+                        Count by
+                    </label>
+                    <select
+                        id="tally-step"
+                        class="suna-select w-full rounded-lg border border-hairline bg-elevated px-3 py-2.5 text-sm text-ink dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
+                    >
+                        <option value="1" selected>1s</option>
+                        <option value="2">2s</option>
+                        <option value="5">5s</option>
+                        <option value="10">10s</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="tally-target" class="mb-1.5 block text-sm font-medium text-ink dark:text-neutral-200">
+                        Target (optional)
+                    </label>
+                    <input
+                        id="tally-target"
+                        type="number"
+                        min="1"
+                        placeholder="e.g. 100"
+                        class="suna-input w-full rounded-lg border border-hairline bg-elevated px-3 py-2.5 text-sm text-ink dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
+                    />
+                </div>
+                <div class="sm:col-span-2">
+                    <label class="flex cursor-pointer items-center justify-between gap-3">
+                        <span class="text-sm font-medium text-ink dark:text-neutral-200">
+                            Read each count aloud
+                            <span class="block text-xs font-normal text-mute dark:text-neutral-500">
+                                Speaks every number as you tap — handy for young learners.
+                            </span>
+                        </span>
+                        <input
+                            id="tally-speak"
+                            type="checkbox"
+                            class="h-5 w-5 shrink-0 accent-pink-600"
+                        />
+                    </label>
+                </div>
+                <div class="sm:col-span-2">
+                    <label for="voice-select" class="mb-1.5 block text-sm font-medium text-ink dark:text-neutral-200">
+                        Voice
+                    </label>
+                    <select
+                        id="voice-select"
+                        class="suna-select w-full rounded-lg border border-hairline bg-elevated px-3 py-2.5 text-sm text-ink dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
+                    >
+                        <option value="">Loading voices…</option>
+                    </select>
+                    <p class="mt-1 text-xs text-mute dark:text-neutral-500">
+                        Voices come from your device — phones, tablets and computers each offer different ones.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ AUTO-COUNT MODE ============ -->
+        <section
+            id="panel-auto"
+            role="tabpanel"
+            aria-labelledby="tab-auto"
+            hidden
+            class="mx-auto mt-6 max-w-2xl rounded-2xl border border-hairline bg-elevated p-6 shadow-sm sm:p-8 dark:border-neutral-800 dark:bg-neutral-900"
+        >
+            <div class="text-center">
+                <div
+                    id="auto-display"
+                    class="font-mono font-bold tabular-nums text-ink select-none dark:text-neutral-100"
+                    style="font-size: clamp(4.5rem, 18vw, 8rem); line-height: 1;"
+                    aria-live="polite"
+                    aria-label="Number being spoken"
+                >
+                    –
+                </div>
+                <p id="auto-status" class="mt-2 min-h-[1.5rem] text-sm text-mute dark:text-neutral-500">
+                    Set a range and press play.
+                </p>
+            </div>
+
+            <div class="mx-auto mt-6 grid max-w-md grid-cols-2 gap-4">
+                <div>
+                    <label for="auto-from" class="mb-1.5 block text-sm font-medium text-ink dark:text-neutral-200">
+                        Count from
+                    </label>
+                    <input
+                        id="auto-from"
+                        type="number"
+                        value="1"
+                        min="0"
+                        max="9999"
+                        class="suna-input w-full rounded-lg border border-hairline bg-elevated px-3 py-2.5 text-center text-lg font-semibold text-ink dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
+                    />
+                </div>
+                <div>
+                    <label for="auto-to" class="mb-1.5 block text-sm font-medium text-ink dark:text-neutral-200">
+                        Count to
+                    </label>
+                    <input
+                        id="auto-to"
+                        type="number"
+                        value="20"
+                        min="0"
+                        max="9999"
+                        class="suna-input w-full rounded-lg border border-hairline bg-elevated px-3 py-2.5 text-center text-lg font-semibold text-ink dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
+                    />
+                </div>
+            </div>
+
+            <div class="mx-auto mt-4 flex max-w-md items-center justify-center gap-3">
+                <button
+                    type="button"
+                    id="auto-play"
+                    class="suna-btn flex-1 rounded-xl bg-pink-600 px-4 py-3.5 text-base font-bold text-white shadow-sm transition-transform transition-colors hover:bg-pink-700 active:scale-[0.98]"
+                >
+                    ▶ Play
+                </button>
+                <button
+                    type="button"
+                    id="auto-stop"
+                    class="suna-btn rounded-xl border border-hairline bg-elevated px-5 py-3.5 text-base font-semibold text-body transition-colors hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
+                >
+                    Stop
+                </button>
+            </div>
+
+            <div class="mx-auto mt-6 grid max-w-md gap-4 border-t border-hairline pt-6 dark:border-neutral-800">
+                <div>
+                    <label for="voice-select-auto" class="mb-1.5 block text-sm font-medium text-ink dark:text-neutral-200">
+                        Voice
+                    </label>
+                    <select
+                        id="voice-select-auto"
+                        class="suna-select w-full rounded-lg border border-hairline bg-elevated px-3 py-2.5 text-sm text-ink dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
+                    >
+                        <option value="">Loading voices…</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="auto-rate" class="mb-1.5 flex items-center justify-between text-sm font-medium text-ink dark:text-neutral-200">
+                        <span>Speaking speed</span>
+                        <span id="auto-rate-label" class="font-mono text-xs text-mute dark:text-neutral-500">1.0×</span>
+                    </label>
+                    <input
+                        id="auto-rate"
+                        type="range"
+                        min="0.5"
+                        max="1.5"
+                        step="0.1"
+                        value="1"
+                        class="w-full accent-pink-600"
+                    />
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ HOW TO USE ============ -->
+        <section class="mx-auto mt-14 max-w-3xl">
+            <div class="text-center">
+                <p class="font-mono text-[11px] font-medium uppercase tracking-widest text-mute dark:text-neutral-500">
+                    How it works
+                </p>
+                <h2 class="mt-2 text-2xl font-semibold tracking-tight text-ink sm:text-3xl dark:text-neutral-100">
+                    Two tools, one page
+                </h2>
+            </div>
+            <div class="mt-6 grid gap-4 sm:grid-cols-2">
+                <div class="rounded-xl border border-hairline bg-elevated p-5 dark:border-neutral-800 dark:bg-neutral-900">
+                    <h3 class="font-semibold text-ink dark:text-neutral-100">Tally counter</h3>
+                    <p class="mt-2 text-sm leading-relaxed text-body dark:text-neutral-400">
+                        Tap the big button (or press spacebar) to count anything — attendance,
+                        laps, stitches, scores. Set a step size, add a target with a progress
+                        bar, and switch on read-aloud so every tap is spoken for young learners.
+                        Your count autosaves in this browser.
+                    </p>
+                </div>
+                <div class="rounded-xl border border-hairline bg-elevated p-5 dark:border-neutral-800 dark:bg-neutral-900">
+                    <h3 class="font-semibold text-ink dark:text-neutral-100">Auto-count for class</h3>
+                    <p class="mt-2 text-sm leading-relaxed text-body dark:text-neutral-400">
+                        Teachers and parents: enter any range, pick a clear voice and press play.
+                        Suna recites every number with a giant on-screen display — perfect for
+                        circle time, number drills, or calm-down counting routines.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <Faq faqs={SUNA_FAQS} heading="Counter questions, answered" />
+
+        <p class="mx-auto mt-10 max-w-3xl text-center text-xs text-mute dark:text-neutral-500">
+            Suna – The Counter is part of
+            <a href="/" class="underline hover:text-pink-600">Free Kids Worksheets</a> —
+            free printables and playful learning tools for early learners.
+        </p>
+    </div>
+
+    <style>
+        .suna-tab {
+            border: 1px solid transparent;
+            color: var(--color-mute, #6b7280);
+        }
+        .suna-tab[aria-selected='true'] {
+            background: #db2777;
+            color: #fff;
+        }
+        .suna-tab[aria-selected='false']:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        kbd {
+            font-family: ui-monospace, monospace;
+        }
+    </style>
+
+    <script>
+        (function () {
+            'use strict';
+
+            /* ---------------- tabs ---------------- */
+            var tabTally = document.getElementById('tab-tally');
+            var tabAuto = document.getElementById('tab-auto');
+            var panelTally = document.getElementById('panel-tally');
+            var panelAuto = document.getElementById('panel-auto');
+
+            function selectTab(which) {
+                var isTally = which === 'tally';
+                tabTally.setAttribute('aria-selected', String(isTally));
+                tabAuto.setAttribute('aria-selected', String(!isTally));
+                panelTally.hidden = !isTally;
+                panelAuto.hidden = isTally;
+                if (!isTally) {
+                    // leaving tally mode: stop any speech
+                    stopSpeech();
+                } else {
+                    stopAuto();
+                }
+            }
+            tabTally.addEventListener('click', function () { selectTab('tally'); });
+            tabAuto.addEventListener('click', function () { selectTab('auto'); });
+
+            /* ---------------- speech helpers ---------------- */
+            var synth = window.speechSynthesis || null;
+            var voiceSelects = [
+                document.getElementById('voice-select'),
+                document.getElementById('voice-select-auto'),
+            ];
+            var currentVoice = null;
+
+            function englishFirst(a, b) {
+                var al = (a.lang || '').toLowerCase();
+                var bl = (b.lang || '').toLowerCase();
+                var ae = al.indexOf('en') === 0 ? 0 : 1;
+                var be = bl.indexOf('en') === 0 ? 0 : 1;
+                if (ae !== be) return ae - be;
+                return (a.name || '').localeCompare(b.name || '');
+            }
+
+            function populateVoices() {
+                if (!synth) {
+                    voiceSelects.forEach(function (sel) {
+                        sel.innerHTML = '<option value="">Voice not supported in this browser</option>';
+                    });
+                    return;
+                }
+                var voices = synth.getVoices().slice().sort(englishFirst);
+                if (!voices.length) return;
+                voiceSelects.forEach(function (sel) {
+                    var prev = sel.value;
+                    sel.innerHTML = '';
+                    voices.forEach(function (v, i) {
+                        var opt = document.createElement('option');
+                        opt.value = String(i);
+                        opt.textContent = v.name + ' (' + v.lang + ')' + (v.default ? ' — default' : '');
+                        sel.appendChild(opt);
+                    });
+                    // restore selection or pick a sensible default (first English)
+                    var idx = voices.findIndex(function (v) { return String(voices.indexOf(v)) === prev; });
+                    sel.value = idx >= 0 ? String(idx) : '0';
+                });
+                syncVoiceFromSelect(voiceSelects[0]);
+            }
+
+            function allVoices() {
+                if (!synth) return [];
+                return synth.getVoices().slice().sort(englishFirst);
+            }
+
+            function syncVoiceFromSelect(sel) {
+                var voices = allVoices();
+                var v = voices[parseInt(sel.value, 10)];
+                currentVoice = v || null;
+                // keep both selects in sync
+                voiceSelects.forEach(function (s) {
+                    if (s !== sel) s.value = sel.value;
+                });
+            }
+
+            voiceSelects.forEach(function (sel) {
+                sel.addEventListener('change', function () { syncVoiceFromSelect(sel); });
+            });
+
+            if (synth) {
+                populateVoices();
+                if (typeof synth.onvoiceschanged !== 'undefined') {
+                    synth.onvoiceschanged = populateVoices;
+                }
+            }
+
+            function stopSpeech() {
+                if (synth) {
+                    try { synth.cancel(); } catch (e) {}
+                }
+            }
+
+            function speakNumber(n, rate, onend) {
+                if (!synth) { if (onend) onend(); return; }
+                stopSpeech();
+                var u = new SpeechSynthesisUtterance(String(n));
+                if (currentVoice) u.voice = currentVoice;
+                u.rate = rate || 1;
+                u.onend = function () { if (onend) onend(); };
+                u.onerror = function () { if (onend) onend(); };
+                synth.speak(u);
+            }
+
+            /* ---------------- tally mode ---------------- */
+            var tallyDisplay = document.getElementById('tally-display');
+            var tallyPlus = document.getElementById('tally-plus');
+            var tallyMinus = document.getElementById('tally-minus');
+            var tallyReset = document.getElementById('tally-reset');
+            var tallyStep = document.getElementById('tally-step');
+            var tallyTarget = document.getElementById('tally-target');
+            var tallySpeak = document.getElementById('tally-speak');
+            var tallyProgress = document.getElementById('tally-progress');
+            var tallyProgressFill = document.getElementById('tally-progress-fill');
+            var tallyTargetLabel = document.getElementById('tally-target-label');
+
+            var count = 0;
+            try {
+                var saved = localStorage.getItem('suna-tally-count');
+                if (saved !== null && !isNaN(parseInt(saved, 10))) count = parseInt(saved, 10);
+            } catch (e) {}
+
+            function renderTally(announce) {
+                tallyDisplay.textContent = String(count);
+                try { localStorage.setItem('suna-tally-count', String(count)); } catch (e) {}
+                var target = parseInt(tallyTarget.value, 10);
+                if (target > 0) {
+                    var pct = Math.max(0, Math.min(100, (count / target) * 100));
+                    tallyProgressFill.style.width = pct + '%';
+                    tallyProgress.setAttribute('aria-valuenow', String(Math.round(pct)));
+                    if (count >= target) {
+                        tallyTargetLabel.textContent = 'Target reached: ' + target + ' 🎉';
+                    } else {
+                        tallyTargetLabel.textContent = count + ' of ' + target;
+                    }
+                } else {
+                    tallyProgressFill.style.width = '0%';
+                    tallyProgress.setAttribute('aria-valuenow', '0');
+                    tallyTargetLabel.textContent = 'No target set';
+                }
+                if (announce && tallySpeak.checked) {
+                    speakNumber(count, 1);
+                }
+            }
+
+            function bump(dir) {
+                var step = parseInt(tallyStep.value, 10) || 1;
+                var before = count;
+                count = Math.max(0, count + dir * step);
+                var target = parseInt(tallyTarget.value, 10);
+                renderTally(true);
+                if (target > 0 && before < target && count >= target) {
+                    // little celebration on reaching the target
+                    setTimeout(function () { speakNumber('Target reached! ' + target, 1); }, 350);
+                }
+            }
+
+            tallyPlus.addEventListener('click', function () { bump(1); });
+            tallyMinus.addEventListener('click', function () { bump(-1); });
+            tallyReset.addEventListener('click', function () {
+                stopSpeech();
+                count = 0;
+                renderTally(false);
+            });
+            tallyTarget.addEventListener('input', function () { renderTally(false); });
+            tallyStep.addEventListener('change', function () { renderTally(false); });
+
+            document.addEventListener('keydown', function (e) {
+                if (panelTally.hidden) return;
+                var tag = (e.target && e.target.tagName) || '';
+                if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
+                if (e.code === 'Space') {
+                    e.preventDefault();
+                    bump(1);
+                }
+            });
+
+            renderTally(false);
+
+            /* ---------------- auto-count mode ---------------- */
+            var autoDisplay = document.getElementById('auto-display');
+            var autoStatus = document.getElementById('auto-status');
+            var autoFrom = document.getElementById('auto-from');
+            var autoTo = document.getElementById('auto-to');
+            var autoPlay = document.getElementById('auto-play');
+            var autoStop = document.getElementById('auto-stop');
+            var autoRate = document.getElementById('auto-rate');
+            var autoRateLabel = document.getElementById('auto-rate-label');
+
+            var autoState = { playing: false, paused: false, current: 0, from: 1, to: 20 };
+
+            autoRate.addEventListener('input', function () {
+                autoRateLabel.textContent = parseFloat(autoRate.value).toFixed(1) + '×';
+            });
+
+            function setAutoStatus(msg) {
+                autoStatus.textContent = msg;
+            }
+
+            function renderAuto(n) {
+                autoDisplay.textContent = String(n);
+            }
+
+            function stopAuto() {
+                autoState.playing = false;
+                autoState.paused = false;
+                stopSpeech();
+                autoPlay.innerHTML = '▶ Play';
+                setAutoStatus('Set a range and press play.');
+            }
+
+            function stepAuto() {
+                if (!autoState.playing || autoState.paused) return;
+                var n = autoState.current;
+                renderAuto(n);
+                var total = autoState.to - autoState.from + 1;
+                var done = n - autoState.from + 1;
+                setAutoStatus('Counting… ' + done + ' of ' + total);
+                var rate = parseFloat(autoRate.value) || 1;
+                speakNumber(n, rate, function () {
+                    if (!autoState.playing || autoState.paused) return;
+                    if (n >= autoState.to) {
+                        autoState.playing = false;
+                        autoPlay.innerHTML = '▶ Play';
+                        setAutoStatus('Finished counting to ' + autoState.to + '. 🎉');
+                        return;
+                    }
+                    autoState.current = n + 1;
+                    stepAuto();
+                });
+            }
+
+            autoPlay.addEventListener('click', function () {
+                if (autoState.playing && !autoState.paused) {
+                    // pause
+                    autoState.paused = true;
+                    stopSpeech();
+                    autoPlay.innerHTML = '⏸ Paused — tap to resume';
+                    setAutoStatus('Paused at ' + autoState.current + '.');
+                    return;
+                }
+                if (autoState.playing && autoState.paused) {
+                    // resume
+                    autoState.paused = false;
+                    autoPlay.innerHTML = '⏸ Pause';
+                    stepAuto();
+                    return;
+                }
+                // fresh start
+                var from = parseInt(autoFrom.value, 10);
+                var to = parseInt(autoTo.value, 10);
+                if (isNaN(from)) from = 1;
+                if (isNaN(to)) to = 20;
+                if (from > to) {
+                    var tmp = from; from = to; to = tmp;
+                    autoFrom.value = String(from);
+                    autoTo.value = String(to);
+                }
+                if (to - from > 999) {
+                    setAutoStatus('Please keep the range under 1,000 numbers.');
+                    return;
+                }
+                autoState = { playing: true, paused: false, current: from, from: from, to: to };
+                autoPlay.innerHTML = '⏸ Pause';
+                stepAuto();
+            });
+
+            autoStop.addEventListener('click', stopAuto);
+
+            // stop speech if the user leaves the page
+            document.addEventListener('visibilitychange', function () {
+                if (document.hidden) {
+                    stopSpeech();
+                    if (autoState.playing) {
+                        autoState.paused = true;
+                        autoPlay.innerHTML = '⏸ Paused — tap to resume';
+                    }
+                }
+            });
+        })();
+    </script>
+</Base>
