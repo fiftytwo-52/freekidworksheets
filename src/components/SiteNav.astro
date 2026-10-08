@@ -95,12 +95,15 @@ const ICON_BUTTON =
                 {NAV_LINKS.map((link) => {
                     const href = link.href === '/worksheets' ? LIBRARY_HREF : link.href;
                     const active = isActive(href);
+                    const isExternal = 'external' in link && link.external;
                     return (
                         <li>
                             <a
                                 href={href}
                                 data-nav-link
                                 aria-current={active ? 'page' : undefined}
+                                target={isExternal ? '_blank' : undefined}
+                                rel={isExternal ? 'noopener' : undefined}
                                 class:list={[
                                     DESKTOP_LINK,
                                     active ? DESKTOP_LINK_ACTIVE : DESKTOP_LINK_IDLE,
@@ -240,12 +243,15 @@ const ICON_BUTTON =
             {NAV_LINKS.map((link) => {
                 const href = link.href === '/worksheets' ? LIBRARY_HREF : link.href;
                 const active = isActive(href);
+                const isExternal = 'external' in link && link.external;
                 return (
                     <li>
                         <a
                             href={href}
                             data-nav-link
                             aria-current={active ? 'page' : undefined}
+                            target={isExternal ? '_blank' : undefined}
+                            rel={isExternal ? 'noopener' : undefined}
                             class:list={[
                                 MOBILE_LINK,
                                 active ? MOBILE_LINK_ACTIVE : MOBILE_LINK_IDLE,

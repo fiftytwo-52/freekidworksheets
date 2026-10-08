@@ -43,10 +43,13 @@ const brand = 'freekidworksheets';
                         const href = link.href.startsWith('/category/')
                             ? categoryPath(decodeURIComponent(link.href.slice('/category/'.length)))
                             : link.href;
+                        const isExternal = 'external' in link && link.external;
                         return (
                             <li>
                                 <a
                                     href={href}
+                                    target={isExternal ? '_blank' : undefined}
+                                    rel={isExternal ? 'noopener' : undefined}
                                     class="text-body transition-colors hover:text-ink dark:text-neutral-400 dark:hover:text-neutral-100"
                                 >
                                     {link.label}

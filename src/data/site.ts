@@ -313,6 +313,7 @@ export const NAV_LINKS = [
     { href: '/', label: 'Home', icon: 'home' },
     { href: '/worksheets', label: 'Worksheets', icon: 'grid' },
     { href: '/suna', label: 'Suna Counter', icon: 'hash' },
+    { href: 'https://pairpaint.com', label: 'pairPaint', icon: 'pencil', external: true },
     { href: '/about', label: 'About', icon: 'info' },
     { href: '/contact', label: 'Contact', icon: 'mail' },
 ] as const;
@@ -334,6 +335,7 @@ export const FOOTER_EXPLORE = [
     { href: '/category/math', label: 'Math' },
     { href: '/category/writing', label: 'Writing' },
     { href: '/suna', label: 'Suna – The Counter' },
+    { href: 'https://pairpaint.com', label: 'pairPaint – Kids Drawing App', external: true },
     { href: '/search', label: 'Search the library' },
 ] as const;
 
