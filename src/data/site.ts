@@ -312,8 +312,8 @@ export const BROWSE_PAGES = {
 export const NAV_LINKS = [
     { href: '/', label: 'Home', icon: 'home' },
     { href: '/worksheets', label: 'Worksheets', icon: 'grid' },
-    { href: '/suna', label: 'Suna Counter', icon: 'hash' },
-    { href: 'https://pairpaint.com', label: 'pairPaint', icon: 'pencil', external: true },
+    { href: '/suna', label: 'Suna Counter', icon: 'hash', brand: 'suna' },
+    { href: 'https://pairpaint.com', label: 'pairPaint', icon: 'pencil', external: true, brand: 'pairpaint' },
     { href: '/about', label: 'About', icon: 'info' },
     { href: '/contact', label: 'Contact', icon: 'mail' },
 ] as const;

@@ -7,6 +7,7 @@
 // highlighted from the current path.
 import Brand from './Brand.astro';
 import Icon from './Icon.astro';
+import BrandIcon from './BrandIcon.astro';
 import Flag from './Flag.astro';
 import SocialFollow from './SocialFollow.astro';
 import { LANGUAGE_LINKS, NAV_LINKS } from '../data/site';
@@ -120,13 +121,17 @@ const ICON_BUTTON =
                                     active ? DESKTOP_LINK_ACTIVE : DESKTOP_LINK_IDLE,
                                 ]}
                             >
-                                <Icon
-                                    name={link.icon as 'home'}
-                                    class={[
-                                        'h-4 w-4',
-                                        active ? ICON_ACTIVE : ICON_IDLE,
-                                    ].join(' ')}
-                                />
+                                {'brand' in link ? (
+                                    <BrandIcon brand={link.brand} class="h-4 w-4" />
+                                ) : (
+                                    <Icon
+                                        name={link.icon as 'home'}
+                                        class={[
+                                            'h-4 w-4',
+                                            active ? ICON_ACTIVE : ICON_IDLE,
+                                        ].join(' ')}
+                                    />
+                                )}
                                 {link.label}
                             </a>
                         </li>
@@ -268,13 +273,17 @@ const ICON_BUTTON =
                                 active ? MOBILE_LINK_ACTIVE : MOBILE_LINK_IDLE,
                             ]}
                         >
-                            <Icon
-                                name={link.icon as 'home'}
-                                class={[
-                                    'h-5 w-5',
-                                    active ? ICON_ACTIVE : ICON_IDLE,
-                                ].join(' ')}
-                            />
+                            {'brand' in link ? (
+                                <BrandIcon brand={link.brand} class="h-5 w-5" />
+                            ) : (
+                                <Icon
+                                    name={link.icon as 'home'}
+                                    class={[
+                                        'h-5 w-5',
+                                        active ? ICON_ACTIVE : ICON_IDLE,
+                                    ].join(' ')}
+                                />
+                            )}
                             {link.label}
                         </a>
                     </li>
