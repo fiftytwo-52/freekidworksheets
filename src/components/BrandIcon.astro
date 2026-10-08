@@ -1,18 +1,25 @@
 ---
 // BrandIcon.astro — inline brand marks for nav links (Suna megaphone, pairPaint drop).
 // Inline SVG (not <img>) so the markup stays decorative without tripping alt-text checks.
+// NOTE: each instance gets unique clipPath/gradient IDs — the component renders
+// twice per page (desktop nav + mobile drawer) and duplicate IDs break SVG
+// url(#...) references on mobile browsers (clip silently stops applying).
 interface Props {
     brand: 'suna' | 'pairpaint';
     class?: string;
 }
 const { brand, class: className = 'h-4 w-4' } = Astro.props;
+const _n = (globalThis as any).__brandIconSeq = (((globalThis as any).__brandIconSeq as number) || 0) + 1;
+const uid = 'bi' + _n;
+const dropId = 'pp-drop-' + uid;
+const gradId = 'suna-body-' + uid;
 ---
 
 {
     brand === 'suna' && (
         <svg class={className} viewBox="0 0 96 96" aria-hidden="true" focusable="false">
             <defs>
-                <linearGradient id="suna-nav-body" x1="0" y1="0" x2="1" y2="1">
+                <linearGradient id={gradId} x1="0" y1="0" x2="1" y2="1">
                     <stop offset="0" stop-color="#f9a8d4" />
                     <stop offset="1" stop-color="#ec4899" />
                 </linearGradient>
@@ -21,7 +28,7 @@ const { brand, class: className = 'h-4 w-4' } = Astro.props;
             <path d="M70 38 Q76 50 70 62" fill="none" stroke="#f472b6" stroke-width="4" stroke-linecap="round" />
             <path d="M78 31 Q88 50 78 69" fill="none" stroke="#f9a8d4" stroke-width="4" stroke-linecap="round" />
             <rect x="25" y="58" width="11" height="24" rx="5.5" fill="#be185d" />
-            <polygon points="22,40 58,27 58,73 22,60" fill="url(#suna-nav-body)" />
+            <polygon points="22,40 58,27 58,73 22,60" fill={`url(#${gradId})`} />
             <rect x="55" y="23" width="10" height="54" rx="5" fill="#be185d" />
             <rect x="57.5" y="27" width="5" height="46" rx="2.5" fill="#9d174d" opacity="0.55" />
             <path d="M31 47 Q35 43 39 47" fill="none" stroke="#831843" stroke-width="2.6" stroke-linecap="round" />
@@ -36,12 +43,12 @@ const { brand, class: className = 'h-4 w-4' } = Astro.props;
     brand === 'pairpaint' && (
         <svg class={className} viewBox="0 0 64 64" aria-hidden="true" focusable="false">
             <defs>
-                <clipPath id="pp-nav-drop">
+                <clipPath id={dropId}>
                     <path d="M32 8C32 8 14 28 14 40a18 18 0 0 0 36 0C50 28 32 8 32 8Z" />
                 </clipPath>
             </defs>
             <rect width="64" height="64" rx="15" fill="#FFD23F" />
-            <g clip-path="url(#pp-nav-drop)">
+            <g clip-path={`url(#${dropId})`}>
                 <rect x="0" y="0" width="32" height="64" fill="#FF5A5F" />
                 <rect x="32" y="0" width="32" height="64" fill="#3D8BFF" />
             </g>
