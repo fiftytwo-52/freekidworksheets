@@ -5,14 +5,15 @@
 // no account. `bare` layout: no site nav/footer, no page scroll.
 import Base from '../layouts/Base.astro';
 import Faq from '../components/Faq.astro';
+import Flag from '../components/Flag.astro';
 import { breadcrumbListJsonLd, faqJsonLd } from '../lib/seo';
 
 const PATH = '/suna';
 const TITLE = 'Suna: Free Online Counter with Voice';
 const DESCRIPTION =
-    'Suna is a free online counter that counts out loud. Set any range and let it auto-count 1 to 100 for your class, or tap to tally — no app, no signup.';
+    'Suna is a free online counter with voice in English, Nepali and Portuguese. Auto-count any range for your class, or tap to tally — no app, no signup.';
 const KEYWORDS =
-    'online counter, free online counter, tally counter, counter with voice, count aloud, classroom counter, suna counter, digital counter, count to 100';
+    'online counter, free online counter, tally counter, counter with voice, count aloud, classroom counter, suna counter, digital counter, count to 100, contador online, contagem em voz alta, नेपाली काउन्टर, online tasbih counter';
 
 const SUNA_FAQS = [
     {
@@ -37,7 +38,11 @@ const SUNA_FAQS = [
     },
     {
         question: 'Can I count by 2s, 5s or 10s?',
-        answer: 'Yes. In tally mode, choose a step size of 1, 2, 5 or 10. You can also set a target number and watch the progress bar fill as you count toward it.',
+        answer: 'Yes. In tally mode, choose a step size of 1, 2, 5 or 10 — auto-count mode has its own step control too, plus a pause-between-numbers timer so you can slow the pace down for young learners. You can also set a target number and watch the progress bar fill as you count toward it.',
+    },
+    {
+        question: 'Is Suna available in other languages?',
+        answer: 'Yes. The whole Suna app — buttons, games and instructions — works in English, Nepali (नेपाली) and Brazilian Portuguese. Tap the flag in the top bar to switch languages.',
     },
 ];
 
@@ -50,7 +55,7 @@ const webAppJsonLd = {
     operatingSystem: 'Any (web browser)',
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
     description: DESCRIPTION,
-    inLanguage: 'en',
+    inLanguage: ['en', 'ne', 'pt-BR'],
 };
 ---
 
@@ -79,10 +84,36 @@ const webAppJsonLd = {
                 />
                 <div class="leading-tight">
                     <p class="text-base font-bold tracking-tight text-ink dark:text-neutral-100">Suna</p>
-                    <p class="text-[11px] text-mute dark:text-neutral-500">The Counter</p>
+                    <p class="text-[11px] text-mute dark:text-neutral-500" data-i18n="subtitle">The Counter</p>
                 </div>
             </div>
             <div class="flex items-center gap-2">
+                <a
+                    href="/"
+                    class="grid h-9 w-9 place-items-center rounded-full border border-hairline bg-elevated text-mute transition-colors hover:bg-neutral-100 hover:text-ink dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+                    aria-label="Back to Free Kids Worksheets home" data-i18n-aria="homeBtn"
+                    title="Home"
+                >
+                    <svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h5v-6h4v6h5V9.5"/></svg>
+                </a>
+                <details class="relative" id="suna-lang-switcher">
+                    <summary
+                        class="flex h-9 cursor-pointer list-none items-center gap-1 rounded-full border border-hairline bg-elevated px-2.5 text-mute transition-colors hover:bg-neutral-100 hover:text-ink dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 [&::-webkit-details-marker]:hidden"
+                        aria-label="Switch language" title="Language"
+                    >
+                        <span id="suna-lang-flag" class="flex">
+                            <span data-flag="en"><Flag code="en" /></span>
+                            <span data-flag="ne" hidden><Flag code="ne" /></span>
+                            <span data-flag="pt-br" hidden><Flag code="pt-br" /></span>
+                        </span>
+                        <svg viewBox="0 0 24 24" class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                    </summary>
+                    <ul class="absolute left-0 top-full z-50 mt-2 w-44 overflow-hidden rounded-xl border border-hairline bg-elevated py-1 shadow-lg dark:border-neutral-700 dark:bg-neutral-900">
+                        <li><button type="button" data-suna-lang="en" class="flex w-full items-center gap-2.5 px-4 py-2 text-sm font-medium text-body transition-colors hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800"><Flag code="en" />English</button></li>
+                        <li><button type="button" data-suna-lang="ne" class="flex w-full items-center gap-2.5 px-4 py-2 text-sm font-medium text-body transition-colors hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800"><Flag code="ne" />नेपाली</button></li>
+                        <li><button type="button" data-suna-lang="pt-br" class="flex w-full items-center gap-2.5 px-4 py-2 text-sm font-medium text-body transition-colors hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800"><Flag code="pt-br" />Português (BR)</button></li>
+                    </ul>
+                </details>
                 <a
                     href="https://pairpaint.com"
                     target="_blank"
@@ -95,9 +126,18 @@ const webAppJsonLd = {
                 </a>
                 <button
                     type="button"
+                    id="suna-clean-toggle"
+                    class="grid h-9 w-9 place-items-center rounded-full border border-hairline bg-elevated text-mute transition-colors hover:bg-neutral-100 hover:text-ink dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+                    aria-label="Hide controls for a clean display" data-i18n-aria="cleanBtn"
+                    title="Clean display (hide controls)"
+                >
+                    <svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c6.5 0 9.5 8 9.5 8a17.6 17.6 0 0 1-2.16 3.19M6.61 6.61A17.5 17.5 0 0 0 2.5 12S5.5 20 12 20a9.6 9.6 0 0 0 4.39-1.06"/><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="m2 2 20 20"/></svg>
+                </button>
+                <button
+                    type="button"
                     id="suna-fullscreen"
                     class="grid h-9 w-9 place-items-center rounded-full border border-hairline bg-elevated text-mute transition-colors hover:bg-neutral-100 hover:text-ink dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
-                    aria-label="Toggle fullscreen"
+                    aria-label="Toggle fullscreen" data-i18n-aria="fsBtn"
                     title="Fullscreen"
                 >
                     <svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
@@ -106,7 +146,7 @@ const webAppJsonLd = {
                     type="button"
                     id="suna-info-open"
                     class="grid h-9 w-9 place-items-center rounded-full border border-hairline bg-elevated text-mute transition-colors hover:bg-neutral-100 hover:text-ink dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
-                    aria-label="How to use Suna"
+                    aria-label="How to use Suna" data-i18n-aria="infoBtn"
                     title="How to use"
                 >
                     <svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.3a2.6 2.6 0 1 1 3.6 2.4c-.9.4-1.1 1-1.1 1.8"/><path d="M12 17h.01"/></svg>
@@ -115,7 +155,7 @@ const webAppJsonLd = {
         </header>
 
         <!-- ===== mode switch ===== -->
-        <div class="flex shrink-0 justify-center" role="tablist" aria-label="Counter modes">
+        <div class="suna-tabs flex shrink-0 justify-center" role="tablist" aria-label="Counter modes">
             <div class="inline-flex rounded-full border border-hairline bg-elevated p-1 dark:border-neutral-800 dark:bg-neutral-900">
                 <button
                     type="button"
@@ -123,7 +163,7 @@ const webAppJsonLd = {
                     role="tab"
                     aria-selected="true"
                     aria-controls="panel-auto"
-                    class="suna-tab rounded-full px-5 py-2 text-sm font-semibold transition-colors"
+                    class="suna-tab rounded-full px-4 py-2 text-sm font-semibold transition-colors sm:px-5" data-i18n="tabAuto"
                 >
                     Auto-count
                 </button>
@@ -133,9 +173,19 @@ const webAppJsonLd = {
                     role="tab"
                     aria-selected="false"
                     aria-controls="panel-tally"
-                    class="suna-tab rounded-full px-5 py-2 text-sm font-semibold transition-colors"
+                    class="suna-tab rounded-full px-4 py-2 text-sm font-semibold transition-colors sm:px-5" data-i18n="tabTally"
                 >
                     Tally
+                </button>
+                <button
+                    type="button"
+                    id="tab-play"
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="panel-play"
+                    class="suna-tab rounded-full px-4 py-2 text-sm font-semibold transition-colors sm:px-5" data-i18n="tabPlay"
+                >
+                    🎮 Play
                 </button>
             </div>
         </div>
@@ -153,41 +203,61 @@ const webAppJsonLd = {
                     class="font-mono font-bold tabular-nums text-ink select-none dark:text-neutral-100"
                     style="font-size: clamp(5rem, 26dvh, 11rem); line-height: 1;"
                     aria-live="polite"
-                    aria-label="Number being spoken"
+                    aria-label="Number being spoken" data-i18n-aria="autoDisplay"
                 >–</div>
-                <p id="auto-status" class="mt-2 min-h-[1.5rem] text-center text-sm text-mute dark:text-neutral-500">
+                <p id="auto-status" data-i18n="autoReady" class="mt-2 min-h-[1.5rem] text-center text-sm text-mute dark:text-neutral-500">
                     Set a range and press play.
                 </p>
             </div>
-            <div class="shrink-0 px-4 pb-5">
-                <div class="mx-auto grid max-w-md grid-cols-[1fr_1fr_auto] items-end gap-2.5">
+            <div class="suna-controls shrink-0 px-4 pb-5">
+                <div class="mx-auto grid max-w-md grid-cols-4 items-end gap-2">
                     <div>
-                        <label for="auto-from" class="mb-1 block text-[11px] font-medium uppercase tracking-wider text-mute dark:text-neutral-500">From</label>
+                        <label for="auto-from" class="mb-1 block text-[10px] font-medium uppercase tracking-wider text-mute dark:text-neutral-500" data-i18n="from">From</label>
                         <input id="auto-from" type="number" value="1" min="0" max="9999"
-                            class="w-full rounded-xl border border-hairline bg-elevated px-3 py-2.5 text-center text-lg font-bold text-ink dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100" />
+                            class="w-full rounded-xl border border-hairline bg-elevated px-2 py-2.5 text-center text-base font-bold text-ink dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100" />
                     </div>
                     <div>
-                        <label for="auto-to" class="mb-1 block text-[11px] font-medium uppercase tracking-wider text-mute dark:text-neutral-500">To</label>
+                        <label for="auto-to" class="mb-1 block text-[10px] font-medium uppercase tracking-wider text-mute dark:text-neutral-500" data-i18n="to">To</label>
                         <input id="auto-to" type="number" value="20" min="0" max="9999"
-                            class="w-full rounded-xl border border-hairline bg-elevated px-3 py-2.5 text-center text-lg font-bold text-ink dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100" />
+                            class="w-full rounded-xl border border-hairline bg-elevated px-2 py-2.5 text-center text-base font-bold text-ink dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100" />
                     </div>
-                    <div class="flex gap-2">
-                        <button type="button" id="auto-play"
-                            class="rounded-xl bg-pink-600 px-6 py-2.5 text-base font-bold text-white shadow-sm transition-transform transition-colors hover:bg-pink-700 active:scale-[0.98]"
-                        >▶ Play</button>
-                        <button type="button" id="auto-stop" aria-label="Stop"
-                            class="rounded-xl border border-hairline bg-elevated px-4 py-2.5 text-base font-bold text-body transition-colors hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800"
-                        >■</button>
+                    <div>
+                        <label for="auto-step" class="mb-1 block text-[10px] font-medium uppercase tracking-wider text-mute dark:text-neutral-500" data-i18n="step">By</label>
+                        <select id="auto-step"
+                            class="w-full rounded-xl border border-hairline bg-elevated px-2 py-2.5 text-center text-base font-bold text-ink dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100">
+                            <option value="1" selected>1</option>
+                            <option value="2">2</option>
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="auto-gap" class="mb-1 block text-[10px] font-medium uppercase tracking-wider text-mute dark:text-neutral-500" data-i18n="gap">Gap</label>
+                        <select id="auto-gap"
+                            class="w-full rounded-xl border border-hairline bg-elevated px-2 py-2.5 text-center text-base font-bold text-ink dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100">
+                            <option value="0">0s</option>
+                            <option value="0.5" selected>0.5s</option>
+                            <option value="1">1s</option>
+                            <option value="2">2s</option>
+                        </select>
                     </div>
                 </div>
+                <div class="mx-auto mt-2.5 flex max-w-md gap-2.5">
+                    <button type="button" id="auto-play"
+                        class="flex-1 rounded-xl bg-pink-600 px-4 py-3 text-base font-bold text-white shadow-sm transition-transform transition-colors hover:bg-pink-700 active:scale-[0.98]"
+                        data-i18n="play">▶ Play</button>
+                    <button type="button" id="auto-stop" aria-label="Stop" data-i18n-aria="stop"
+                        class="rounded-xl border border-hairline bg-elevated px-5 py-3 text-base font-bold text-body transition-colors hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800"
+                    >■</button>
+                </div>
                 <div class="mx-auto mt-2.5 grid max-w-md grid-cols-2 gap-2.5">
-                    <select id="voice-select-auto" aria-label="Voice"
+                    <select id="voice-select-auto" aria-label="Voice" data-i18n-aria="voice"
                         class="rounded-xl border border-hairline bg-elevated px-3 py-2 text-sm text-ink dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100">
                         <option value="">Loading voices…</option>
                     </select>
                     <label class="flex items-center gap-2 rounded-xl border border-hairline bg-elevated px-3 py-2 dark:border-neutral-700 dark:bg-neutral-900">
-                        <span class="text-[11px] font-medium uppercase tracking-wider text-mute dark:text-neutral-500">Speed</span>
-                        <input id="auto-rate" type="range" min="0.5" max="1.5" step="0.1" value="1" class="w-full accent-pink-600" aria-label="Speaking speed" />
+                        <span class="text-[10px] font-medium uppercase tracking-wider text-mute dark:text-neutral-500" data-i18n="speed">Speed</span>
+                        <input id="auto-rate" type="range" min="0.5" max="1.5" step="0.1" value="1" class="w-full accent-pink-600" aria-label="Speaking speed" data-i18n-aria="speed" />
                         <span id="auto-rate-label" class="font-mono text-xs text-mute dark:text-neutral-500">1.0×</span>
                     </label>
                 </div>
@@ -208,24 +278,24 @@ const webAppJsonLd = {
                     class="font-mono font-bold tabular-nums text-ink select-none dark:text-neutral-100"
                     style="font-size: clamp(5rem, 26dvh, 11rem); line-height: 1;"
                     aria-live="polite"
-                    aria-label="Current count"
+                    aria-label="Current count" data-i18n-aria="tallyDisplay"
                 >0</div>
                 <div class="mt-3 w-full max-w-xs">
                     <div id="tally-progress" class="h-2 w-full overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-800"
                         role="progressbar" aria-label="Progress toward target" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
                         <div id="tally-progress-fill" class="h-full w-0 rounded-full bg-pink-500 transition-all duration-200"></div>
                     </div>
-                    <p id="tally-target-label" class="mt-1.5 text-center text-xs text-mute dark:text-neutral-500">No target set</p>
+                    <p id="tally-target-label" class="mt-1.5 text-center text-xs text-mute dark:text-neutral-500" data-i18n="noTarget">No target set</p>
                 </div>
             </div>
-            <div class="shrink-0 px-4 pb-5">
+            <div class="suna-controls shrink-0 px-4 pb-5">
                 <div class="mx-auto grid max-w-md grid-cols-[auto_1fr_auto] items-stretch gap-2.5">
-                    <button type="button" id="tally-minus" aria-label="Subtract one step"
+                    <button type="button" id="tally-minus" aria-label="Subtract one step" data-i18n-aria="tallyMinus"
                         class="rounded-xl border border-hairline bg-elevated px-5 text-2xl font-bold text-body transition-colors hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800">−</button>
-                    <button type="button" id="tally-plus" aria-label="Add one step (or press spacebar)"
+                    <button type="button" id="tally-plus" aria-label="Add one step (or press spacebar)" data-i18n-aria="tallyPlus"
                         class="rounded-xl bg-pink-600 py-3.5 text-xl font-bold text-white shadow-sm transition-transform transition-colors hover:bg-pink-700 active:scale-[0.98]">+ Tap</button>
-                    <button type="button" id="tally-reset" aria-label="Reset counter to zero"
-                        class="rounded-xl border border-hairline bg-elevated px-4 text-sm font-semibold text-body transition-colors hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800">Reset</button>
+                    <button type="button" id="tally-reset" aria-label="Reset counter to zero" data-i18n-aria="tallyReset"
+                        class="rounded-xl border border-hairline bg-elevated px-4 text-sm font-semibold text-body transition-colors hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800" data-i18n="reset">Reset</button>
                 </div>
                 <div class="mx-auto mt-2.5 grid max-w-md grid-cols-3 gap-2.5">
                     <select id="tally-step" aria-label="Count by"
@@ -235,7 +305,7 @@ const webAppJsonLd = {
                         <option value="5">5s</option>
                         <option value="10">10s</option>
                     </select>
-                    <input id="tally-target" type="number" min="1" placeholder="Target"
+                    <input id="tally-target" type="number" min="1" placeholder="Target" data-i18n-ph="targetPh"
                         aria-label="Target number"
                         class="rounded-xl border border-hairline bg-elevated px-2 py-2 text-center text-sm font-semibold text-ink dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100" />
                     <select id="voice-select" aria-label="Voice"
@@ -245,10 +315,91 @@ const webAppJsonLd = {
                 </div>
                 <label class="mx-auto mt-2.5 flex max-w-md cursor-pointer items-center justify-center gap-2 text-sm text-body dark:text-neutral-400">
                     <input id="tally-speak" type="checkbox" class="h-4 w-4 accent-pink-600" />
-                    Read each count aloud
+                    data-i18n="readAloud">Read each count aloud
                 </label>
             </div>
         </section>
+
+        <!-- ===== PLAY (interactive tap games) ===== -->
+        <section
+            id="panel-play"
+            role="tabpanel"
+            aria-labelledby="tab-play"
+            hidden
+            class="relative flex min-h-0 flex-1 flex-col"
+        >
+            <div class="suna-controls flex shrink-0 items-center justify-center gap-3 px-4 pt-1">
+                <div class="inline-flex rounded-full border border-hairline bg-elevated p-1 dark:border-neutral-800 dark:bg-neutral-900">
+                    <button type="button" id="play-mode-count"
+                        class="play-subtab rounded-full bg-pink-600 px-4 py-1.5 text-xs font-bold text-white transition-colors"
+                     data-i18n="playCount">Tap &amp; count</button>
+                    <button type="button" id="play-mode-hear"
+                        class="play-subtab rounded-full px-4 py-1.5 text-xs font-bold text-mute transition-colors dark:text-neutral-400"
+                     data-i18n="playHear">Hear &amp; tap</button>
+                </div>
+                <div class="flex items-center gap-1 text-sm font-bold text-ink dark:text-neutral-100" title="Stars earned">
+                    <span aria-hidden="true">⭐</span>
+                    <span id="play-score">0</span>
+                </div>
+            </div>
+
+            <!-- game: tap & count -->
+            <div id="play-count-wrap" class="flex min-h-0 flex-1 flex-col">
+                <p id="play-count-status" data-i18n="countTapAlong" class="shrink-0 px-4 pt-2 text-center text-sm font-medium text-body dark:text-neutral-300">
+                    Tap each one and count along!
+                </p>
+                <div class="flex min-h-0 flex-1 items-center justify-center overflow-hidden px-4">
+                    <div id="play-count-grid" class="flex max-w-lg flex-wrap items-center justify-center gap-2 sm:gap-3" role="group" aria-label="Objects to count"></div>
+                </div>
+                <div class="suna-controls shrink-0 px-4 pb-5">
+                    <div class="mx-auto flex max-w-md items-center justify-center gap-2.5">
+                        <select id="voice-select-play" aria-label="Voice"
+                            class="rounded-xl border border-hairline bg-elevated px-3 py-2 text-sm text-ink dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100">
+                            <option value="">Voices…</option>
+                        </select>
+                        <button type="button" id="play-count-next"
+                            class="rounded-xl border border-hairline bg-elevated px-5 py-2 text-sm font-bold text-body transition-colors hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800"
+                         data-i18n="newRound">New round ↻</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- game: hear & tap -->
+            <div id="play-hear-wrap" hidden class="flex min-h-0 flex-1 flex-col">
+                <p id="play-hear-status" data-i18n="hearListen" class="shrink-0 px-4 pt-2 text-center text-sm font-medium text-body dark:text-neutral-300">
+                    Listen… then tap the number you hear!
+                </p>
+                <div class="flex min-h-0 flex-1 items-center justify-center px-4">
+                    <div id="play-hear-options" class="flex items-center justify-center gap-3 sm:gap-5" role="group" aria-label="Number choices"></div>
+                </div>
+                <div class="suna-controls shrink-0 px-4 pb-5">
+                    <div class="mx-auto flex max-w-md items-center justify-center gap-2.5">
+                        <button type="button" id="play-hear-replay"
+                            class="rounded-xl bg-pink-600 px-6 py-2.5 text-sm font-bold text-white shadow-sm transition-transform transition-colors hover:bg-pink-700 active:scale-[0.98]"
+                         data-i18n="hearAgain">🔊 Hear it again</button>
+                        <button type="button" id="play-hear-next"
+                            class="rounded-xl border border-hairline bg-elevated px-5 py-2.5 text-sm font-bold text-body transition-colors hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800"
+                         data-i18n="skip">Skip →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- celebration overlay -->
+            <div id="play-celebrate" hidden class="pointer-events-none absolute inset-0 z-40 flex items-center justify-center">
+                <div class="suna-pop rounded-3xl border border-hairline bg-elevated/95 px-8 py-6 text-center shadow-2xl dark:border-neutral-700 dark:bg-neutral-900/95">
+                    <div class="text-5xl" aria-hidden="true">🎉</div>
+                    <p id="play-celebrate-msg" class="mt-2 text-xl font-bold text-ink dark:text-neutral-100">Great job!</p>
+                </div>
+            </div>
+            <div id="play-confetti" class="pointer-events-none absolute inset-0 z-40 overflow-hidden" aria-hidden="true"></div>
+        </section>
+
+        <!-- clean-mode restore button -->
+        <button type="button" id="suna-restore" hidden
+            class="fixed bottom-4 right-4 z-50 grid h-11 w-11 place-items-center rounded-full border border-hairline bg-elevated/80 text-mute opacity-60 shadow-lg backdrop-blur transition-opacity hover:opacity-100 dark:border-neutral-700 dark:bg-neutral-900/80 dark:text-neutral-400"
+            aria-label="Show controls again" data-i18n-aria="restoreBtn" title="Show controls">
+            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
 
         <!-- ===== info overlay (how-to + FAQ; keeps content in DOM for SEO) ===== -->
         <div id="suna-info" hidden class="fixed inset-0 z-[60]">
@@ -257,7 +408,7 @@ const webAppJsonLd = {
                 <div class="mb-4 flex items-center justify-between">
                     <div class="flex items-center gap-2.5">
                         <img src="/assets/suna-icon.svg" alt="Suna mascot" class="h-9 w-9" width="36" height="36" />
-                        <h2 class="text-lg font-bold text-ink dark:text-neutral-100">About Suna</h2>
+                        <h2 class="text-lg font-bold text-ink dark:text-neutral-100" data-i18n="aboutSuna">About Suna</h2>
                     </div>
                     <button type="button" id="suna-info-close"
                         class="grid h-9 w-9 place-items-center rounded-full border border-hairline text-mute hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-400 dark:hover:bg-neutral-800"
@@ -267,12 +418,12 @@ const webAppJsonLd = {
                 </div>
                 <div class="grid gap-3 sm:grid-cols-2">
                     <div class="rounded-xl border border-hairline bg-elevated p-4 dark:border-neutral-800 dark:bg-neutral-900">
-                        <h3 class="text-sm font-semibold text-ink dark:text-neutral-100">Auto-count for class</h3>
-                        <p class="mt-1.5 text-sm leading-relaxed text-body dark:text-neutral-400">Enter any range, pick a clear voice and press play. Suna recites every number with a giant display — perfect for circle time and number drills. Voices come from your device.</p>
+                        <h3 class="text-sm font-semibold text-ink dark:text-neutral-100" data-i18n="howAutoH">Auto-count for class</h3>
+                        <p class="mt-1.5 text-sm leading-relaxed text-body dark:text-neutral-400" data-i18n="howAutoP">Enter any range, pick a clear voice and press play. Suna recites every number with a giant display — perfect for circle time and number drills. Voices come from your device.</p>
                     </div>
                     <div class="rounded-xl border border-hairline bg-elevated p-4 dark:border-neutral-800 dark:bg-neutral-900">
-                        <h3 class="text-sm font-semibold text-ink dark:text-neutral-100">Tally counter</h3>
-                        <p class="mt-1.5 text-sm leading-relaxed text-body dark:text-neutral-400">Tap the big button (or press spacebar) to count anything. Set a step size, add a target, switch on read-aloud — your count autosaves in this browser.</p>
+                        <h3 class="text-sm font-semibold text-ink dark:text-neutral-100" data-i18n="howTallyH">Tally counter</h3>
+                        <p class="mt-1.5 text-sm leading-relaxed text-body dark:text-neutral-400" data-i18n="howTallyP">Tap the big button (or press spacebar) to count anything. Set a step size, add a target, switch on read-aloud — your count autosaves in this browser.</p>
                     </div>
                 </div>
                 <div class="suna-faq-slim">
@@ -294,6 +445,58 @@ const webAppJsonLd = {
         .suna-faq-slim section { margin-top: 1.75rem; }
         .suna-faq-slim h2 { font-size: 1.15rem !important; }
         #suna-info[hidden] { display: none; }
+        /* clean display mode: only the big number stays */
+        #suna-app.suna-clean header,
+        #suna-app.suna-clean .suna-tabs,
+        #suna-app.suna-clean .suna-controls { display: none !important; }
+        /* tap-game object buttons */
+        .play-obj {
+            font-size: clamp(2.2rem, 9dvh, 3.8rem);
+            line-height: 1;
+            padding: 0.35em;
+            border-radius: 1rem;
+            transition: transform 0.15s ease, opacity 0.2s ease, background 0.2s ease;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .play-obj:hover { transform: scale(1.12); }
+        .play-obj:active { transform: scale(0.94); }
+        .play-obj.tapped { opacity: 0.35; transform: scale(0.9); background: rgba(219,39,119,0.12); }
+        .play-opt {
+            min-width: 4.2rem;
+            font-size: clamp(2.6rem, 12dvh, 4.5rem);
+            font-weight: 800;
+            font-family: ui-monospace, monospace;
+            padding: 0.3em 0.5em;
+            border-radius: 1.25rem;
+            border: 2px solid var(--color-hairline, #e5e5e5);
+            cursor: pointer;
+            transition: transform 0.15s ease, border-color 0.2s ease, background 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .play-opt:hover { transform: scale(1.08); border-color: #db2777; }
+        .play-opt.correct { border-color: #16a34a; background: rgba(22,163,74,0.12); transform: scale(1.1); }
+        @keyframes suna-wiggle {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+        .play-opt.wrong { animation: suna-wiggle 0.35s ease 2; border-color: #dc2626; }
+        @keyframes suna-pop {
+            0% { transform: scale(0.6); opacity: 0; }
+            60% { transform: scale(1.08); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .suna-pop { animation: suna-pop 0.35s ease; }
+        .confetti-bit {
+            position: absolute;
+            top: -12px;
+            font-size: 1.1rem;
+            animation: suna-fall linear forwards;
+        }
+        @keyframes suna-fall {
+            to { transform: translateY(105dvh) rotate(340deg); }
+        }
     </style>
 
     <script>
@@ -303,19 +506,234 @@ const webAppJsonLd = {
             /* ---------------- tabs (auto-count is primary) ---------------- */
             var tabTally = document.getElementById('tab-tally');
             var tabAuto = document.getElementById('tab-auto');
+            var tabPlay = document.getElementById('tab-play');
             var panelTally = document.getElementById('panel-tally');
             var panelAuto = document.getElementById('panel-auto');
+            var panelPlay = document.getElementById('panel-play');
 
             function selectTab(which) {
-                var isAuto = which === 'auto';
-                tabAuto.setAttribute('aria-selected', String(isAuto));
-                tabTally.setAttribute('aria-selected', String(!isAuto));
-                panelAuto.hidden = !isAuto;
-                panelTally.hidden = isAuto;
-                if (isAuto) { stopSpeech(); } else { stopAuto(); }
+                var tabs = { auto: [tabAuto, panelAuto], tally: [tabTally, panelTally], play: [tabPlay, panelPlay] };
+                Object.keys(tabs).forEach(function (k) {
+                    var on = k === which;
+                    tabs[k][0].setAttribute('aria-selected', String(on));
+                    tabs[k][1].hidden = !on;
+                });
+                stopSpeech();
+                if (which !== 'auto') stopAuto();
             }
             tabTally.addEventListener('click', function () { selectTab('tally'); });
             tabAuto.addEventListener('click', function () { selectTab('auto'); });
+            tabPlay.addEventListener('click', function () { selectTab('play'); });
+
+            /* ---------------- clean display mode ---------------- */
+            var sunaApp = document.getElementById('suna-app');
+            var restoreBtn = document.getElementById('suna-restore');
+            document.getElementById('suna-clean-toggle').addEventListener('click', function () {
+                sunaApp.classList.add('suna-clean');
+                restoreBtn.hidden = false;
+            });
+            restoreBtn.addEventListener('click', function () {
+                sunaApp.classList.remove('suna-clean');
+                restoreBtn.hidden = true;
+            });
+
+            /* ---------------- i18n: en / ne / pt-br ---------------- */
+            var SUNA_STR = {
+                en: {
+                    subtitle: 'The Counter',
+                    tabAuto: 'Auto-count', tabTally: 'Tally', tabPlay: '🎮 Play',
+                    from: 'From', to: 'To', step: 'By', gap: 'Gap',
+                    play: '▶ Play', pause: '⏸ Pause', pausedResume: '⏸ Paused — tap to resume',
+                    stop: 'Stop', voice: 'Voice', speed: 'Speed',
+                    autoReady: 'Set a range and press play.',
+                    autoCounting: function (d, t) { return 'Counting… ' + d + ' of ' + t; },
+                    autoPausedAt: function (n) { return 'Paused at ' + n + '.'; },
+                    autoFinished: function (n) { return 'Finished counting to ' + n + '. 🎉'; },
+                    autoRangeError: 'Please keep the count under 1,000 numbers.',
+                    autoDisplay: 'Number being spoken', tallyDisplay: 'Current count',
+                    tallyMinus: 'Subtract one step', tallyPlus: 'Add one step (or press spacebar)', tallyReset: 'Reset counter to zero',
+                    reset: 'Reset', targetPh: 'Target', readAloud: 'Read each count aloud',
+                    noTarget: 'No target set',
+                    targetReached: function (n) { return 'Target reached: ' + n + ' 🎉'; },
+                    targetSpoken: function (n) { return 'Target reached! ' + n; },
+                    progressOf: function (c, t) { return c + ' of ' + t; },
+                    voicesLoading: 'Loading voices…', voicesShort: 'Voices…', voicesNone: 'No voice support',
+                    playCount: 'Tap & count', playHear: 'Hear & tap',
+                    newRound: 'New round ↻', hearAgain: '🔊 Hear it again', skip: 'Skip →',
+                    countTapAlong: 'Tap each one and count along!',
+                    countKeepGoing: function (t) { return 'Keep going… ' + t + ' tapped'; },
+                    countDone: function (n) { return 'You counted to ' + n + '! 🎉'; },
+                    hearListen: 'Listen… then tap the number you hear!',
+                    hearTryAgain: 'Oops — try again! Listen…',
+                    spokenTryAgain: 'Try again!',
+                    celebrateCounted: function (n) { return 'Amazing! You counted to ' + n + '!'; },
+                    celebrateCorrect: function (n) { return 'Correct! That was ' + n + '!'; },
+                    aboutSuna: 'About Suna',
+                    howAutoH: 'Auto-count for class',
+                    howAutoP: 'Enter any range, pick a clear voice and press play. Suna recites every number with a giant display — perfect for circle time and number drills. Voices come from your device.',
+                    howTallyH: 'Tally counter',
+                    howTallyP: 'Tap the big button (or press spacebar) to count anything. Set a step size, add a target, switch on read-aloud — your count autosaves in this browser.',
+                    homeBtn: 'Back to Free Kids Worksheets home', cleanBtn: 'Hide controls for a clean display',
+                    fsBtn: 'Toggle fullscreen', infoBtn: 'How to use Suna', restoreBtn: 'Show controls again',
+                    countMe: 'Count me',
+                    numberN: function (n) { return 'Number ' + n; }
+                },
+                ne: {
+                    subtitle: 'काउन्टर',
+                    tabAuto: 'स्वतः गणना', tabTally: 'ट्याली', tabPlay: '🎮 खेल',
+                    from: 'देखि', to: 'सम्म', step: 'अन्तर', gap: 'पर्खाइ',
+                    play: '▶ बजाऊ', pause: '⏸ रोक', pausedResume: '⏸ रोकियो — थिचेर जारी राख',
+                    stop: 'रोक', voice: 'आवाज', speed: 'गति',
+                    autoReady: 'सीमा राखेर बजाऊ थिच्नुहोस्।',
+                    autoCounting: function (d, t) { return 'गन्दै… ' + d + ' / ' + t; },
+                    autoPausedAt: function (n) { return n + ' मा रोकियो।'; },
+                    autoFinished: function (n) { return n + ' सम्म गनियो। 🎉'; },
+                    autoRangeError: 'कृपया १,००० भन्दा कम सङ्ख्या राख्नुहोस्।',
+                    autoDisplay: 'बोलिएको सङ्ख्या', tallyDisplay: 'हालको गणना',
+                    tallyMinus: 'एक कदम घटाऊ', tallyPlus: 'एक कदम थप (वा स्पेस थिच)', tallyReset: 'काउन्टर शून्य गर',
+                    reset: 'रिसेट', targetPh: 'लक्ष्य', readAloud: 'प्रत्येक गणना बोल',
+                    noTarget: 'लक्ष्य छैन',
+                    targetReached: function (n) { return 'लक्ष्य पूरा: ' + n + ' 🎉'; },
+                    targetSpoken: function (n) { return 'लक्ष्य पूरा! ' + n; },
+                    progressOf: function (c, t) { return c + ' / ' + t; },
+                    voicesLoading: 'आवाजहरू लोड हुँदै…', voicesShort: 'आवाज…', voicesNone: 'आवाज छैन',
+                    playCount: 'थिच र गन', playHear: 'सुन र थिच',
+                    newRound: 'नयाँ राउन्ड ↻', hearAgain: '🔊 फेरि सुन', skip: 'छोड →',
+                    countTapAlong: 'प्रत्येकलाई थिचेर गन्दै जाऊ!',
+                    countKeepGoing: function (t) { return 'जारी राख… ' + t + ' थिचियो'; },
+                    countDone: function (n) { return n + ' सम्म गन्यौ! 🎉'; },
+                    hearListen: 'सुन… अनि सुनेको सङ्ख्या थिच!',
+                    hearTryAgain: 'अफ्स — फेरि प्रयास गर! सुन…',
+                    spokenTryAgain: 'फेरि प्रयास गर!',
+                    celebrateCounted: function (n) { return 'स्याबास! ' + n + ' सम्म गन्यौ!'; },
+                    celebrateCorrect: function (n) { return 'सही! त्यो ' + n + ' थियो!'; },
+                    aboutSuna: 'Suna बारे',
+                    howAutoH: 'कक्षाका लागि स्वतः गणना',
+                    howAutoP: 'कुनै पनि सीमा राख्नुहोस्, स्पष्ट आवाज छान्नुहोस् र बजाऊ थिच्नुहोस्। Suna ठूलो डिस्प्लेमा हरेक सङ्ख्या बोल्छ — सर्कल टाइम र सङ्ख्या अभ्यासका लागि उत्तम। आवाजहरू तपाईंको डिभाइसबाट आउँछन्।',
+                    howTallyH: 'ट्याली काउन्टर',
+                    howTallyP: 'जे पनि गन्न ठूलो बटन थिच्नुहोस् (वा स्पेस)। कदम छान्नुहोस्, लक्ष्य राख्नुहोस्, बोल्ने सुविधा खोल्नुहोस् — तपाईंको गणना यही ब्राउजरमा सेभ हुन्छ।',
+                    homeBtn: 'गृहपृष्ठमा फर्कनुहोस्', cleanBtn: 'सफा डिस्प्लेका लागि नियन्त्रण लुकाऊ',
+                    fsBtn: 'पूर्ण स्क्रिन', infoBtn: 'Suna कसरी प्रयोग गर्ने', restoreBtn: 'नियन्त्रण फेरि देखाऊ',
+                    countMe: 'मलाई गन',
+                    numberN: function (n) { return 'सङ्ख्या ' + n; }
+                },
+                'pt-br': {
+                    subtitle: 'O Contador',
+                    tabAuto: 'Contagem auto', tabTally: 'Contador', tabPlay: '🎮 Jogar',
+                    from: 'De', to: 'Até', step: 'Passo', gap: 'Pausa',
+                    play: '▶ Tocar', pause: '⏸ Pausar', pausedResume: '⏸ Pausado — toque para continuar',
+                    stop: 'Parar', voice: 'Voz', speed: 'Velocidade',
+                    autoReady: 'Defina um intervalo e aperte o play.',
+                    autoCounting: function (d, t) { return 'Contando… ' + d + ' de ' + t; },
+                    autoPausedAt: function (n) { return 'Pausado em ' + n + '.'; },
+                    autoFinished: function (n) { return 'Contagem até ' + n + ' concluída! 🎉'; },
+                    autoRangeError: 'Use um intervalo menor que 1.000 números.',
+                    autoDisplay: 'Número sendo falado', tallyDisplay: 'Contagem atual',
+                    tallyMinus: 'Diminuir um passo', tallyPlus: 'Aumentar um passo (ou espaço)', tallyReset: 'Zerar o contador',
+                    reset: 'Zerar', targetPh: 'Meta', readAloud: 'Falar cada contagem',
+                    noTarget: 'Sem meta',
+                    targetReached: function (n) { return 'Meta alcançada: ' + n + ' 🎉'; },
+                    targetSpoken: function (n) { return 'Meta alcançada! ' + n; },
+                    progressOf: function (c, t) { return c + ' de ' + t; },
+                    voicesLoading: 'Carregando vozes…', voicesShort: 'Vozes…', voicesNone: 'Sem voz',
+                    playCount: 'Toque e conte', playHear: 'Ouça e toque',
+                    newRound: 'Nova rodada ↻', hearAgain: '🔊 Ouvir de novo', skip: 'Pular →',
+                    countTapAlong: 'Toque em cada um e conte junto!',
+                    countKeepGoing: function (t) { return 'Continue… ' + t + ' tocados'; },
+                    countDone: function (n) { return 'Você contou até ' + n + '! 🎉'; },
+                    hearListen: 'Ouça… e toque no número que ouviu!',
+                    hearTryAgain: 'Ops — tente de novo! Ouça…',
+                    spokenTryAgain: 'Tente de novo!',
+                    celebrateCounted: function (n) { return 'Demais! Você contou até ' + n + '!'; },
+                    celebrateCorrect: function (n) { return 'Certo! Era o ' + n + '!'; },
+                    aboutSuna: 'Sobre o Suna',
+                    howAutoH: 'Contagem automática para a aula',
+                    howAutoP: 'Digite um intervalo, escolha uma voz clara e aperte o play. O Suna recita cada número em tela cheia — perfeito para a rodinha e treinos de números. As vozes vêm do seu aparelho.',
+                    howTallyH: 'Contador manual',
+                    howTallyP: 'Toque no botão grande (ou aperte espaço) para contar qualquer coisa. Escolha o passo, defina uma meta, ative a leitura em voz alta — sua contagem é salva neste navegador.',
+                    homeBtn: 'Voltar à página inicial', cleanBtn: 'Ocultar controles',
+                    fsBtn: 'Tela cheia', infoBtn: 'Como usar o Suna', restoreBtn: 'Mostrar controles',
+                    countMe: 'Conte comigo',
+                    numberN: function (n) { return 'Número ' + n; }
+                }
+            };
+
+            var sunaLang = 'en';
+            try { sunaLang = localStorage.getItem('suna-lang') || 'en'; } catch (e) {}
+            if (!SUNA_STR[sunaLang]) sunaLang = 'en';
+
+            function T(key) {
+                var v = SUNA_STR[sunaLang][key];
+                if (v === undefined) v = SUNA_STR.en[key];
+                return v === undefined ? key : v;
+            }
+            function Ts(key) {
+                var v = T(key);
+                var args = Array.prototype.slice.call(arguments, 1);
+                return typeof v === 'function' ? v.apply(null, args) : v;
+            }
+
+            var autoStatusState = { key: 'autoReady', args: [] };
+            var countStatusState = { key: 'countTapAlong', args: [] };
+            var hearStatusState = { key: 'hearListen', args: [] };
+
+            function renderStatus(el, state) {
+                el.textContent = Ts.apply(null, [state.key].concat(state.args));
+            }
+            function setStatus(el, state, key) {
+                var args = Array.prototype.slice.call(arguments, 3);
+                state.key = key;
+                state.args = args;
+                renderStatus(el, state);
+            }
+
+            function refreshVoicePlaceholders() {
+                var pairs = [
+                    ['voice-select', 'voicesShort'],
+                    ['voice-select-auto', 'voicesLoading'],
+                    ['voice-select-play', 'voicesShort']
+                ];
+                pairs.forEach(function (pair) {
+                    var sel = document.getElementById(pair[0]);
+                    if (sel && sel.options.length === 1 && sel.options[0].value === '') {
+                        sel.options[0].textContent = T(pair[1]);
+                    }
+                });
+            }
+
+            function applySunaLang() {
+                document.querySelectorAll('[data-i18n]').forEach(function (el) {
+                    var v = T(el.getAttribute('data-i18n'));
+                    if (typeof v === 'string') el.textContent = v;
+                });
+                document.querySelectorAll('[data-i18n-ph]').forEach(function (el) {
+                    var v = T(el.getAttribute('data-i18n-ph'));
+                    if (typeof v === 'string') el.setAttribute('placeholder', v);
+                });
+                document.querySelectorAll('[data-i18n-aria]').forEach(function (el) {
+                    var v = T(el.getAttribute('data-i18n-aria'));
+                    if (typeof v === 'string') el.setAttribute('aria-label', v);
+                });
+                document.querySelectorAll('#suna-lang-flag [data-flag]').forEach(function (el) {
+                    el.hidden = el.getAttribute('data-flag') !== sunaLang;
+                });
+                document.documentElement.setAttribute('lang', sunaLang === 'pt-br' ? 'pt-BR' : sunaLang);
+                refreshVoicePlaceholders();
+                renderStatus(autoStatus, autoStatusState);
+                renderStatus(countStatus, countStatusState);
+                renderStatus(hearStatus, hearStatusState);
+                renderTally(false);
+                try { localStorage.setItem('suna-lang', sunaLang); } catch (e) {}
+            }
+
+            document.querySelectorAll('[data-suna-lang]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    sunaLang = btn.getAttribute('data-suna-lang');
+                    var details = document.getElementById('suna-lang-switcher');
+                    if (details) details.removeAttribute('open');
+                    applySunaLang();
+                });
+            });
 
             /* ---------------- fullscreen ---------------- */
             var fsBtn = document.getElementById('suna-fullscreen');
@@ -347,6 +765,7 @@ const webAppJsonLd = {
             var voiceSelects = [
                 document.getElementById('voice-select'),
                 document.getElementById('voice-select-auto'),
+                document.getElementById('voice-select-play'),
             ];
             var currentVoice = null;
 
@@ -365,7 +784,7 @@ const webAppJsonLd = {
             function populateVoices() {
                 if (!synth) {
                     voiceSelects.forEach(function (sel) {
-                        sel.innerHTML = '<option value="">No voice support</option>';
+                        sel.innerHTML = '<option value="">' + T('voicesNone') + '</option>';
                     });
                     return;
                 }
@@ -437,11 +856,11 @@ const webAppJsonLd = {
                     var pct = Math.max(0, Math.min(100, (count / target) * 100));
                     tallyProgressFill.style.width = pct + '%';
                     tallyProgress.setAttribute('aria-valuenow', String(Math.round(pct)));
-                    tallyTargetLabel.textContent = count >= target ? ('Target reached: ' + target + ' 🎉') : (count + ' of ' + target);
+                    tallyTargetLabel.textContent = count >= target ? Ts('targetReached', target) : Ts('progressOf', count, target);
                 } else {
                     tallyProgressFill.style.width = '0%';
                     tallyProgress.setAttribute('aria-valuenow', '0');
-                    tallyTargetLabel.textContent = 'No target set';
+                    tallyTargetLabel.textContent = T('noTarget');
                 }
                 if (announce && tallySpeak.checked) speakNumber(count, 1);
             }
@@ -452,7 +871,7 @@ const webAppJsonLd = {
                 var target = parseInt(tallyTarget.value, 10);
                 renderTally(true);
                 if (target > 0 && before < target && count >= target) {
-                    setTimeout(function () { speakNumber('Target reached! ' + target, 1); }, 350);
+                    setTimeout(function () { speakNumber(Ts('targetSpoken', target), 1); }, 350);
                 }
             }
             document.getElementById('tally-plus').addEventListener('click', function () { bump(1); });
@@ -480,54 +899,68 @@ const webAppJsonLd = {
             var autoRate = document.getElementById('auto-rate');
             var autoRateLabel = document.getElementById('auto-rate-label');
 
-            var autoState = { playing: false, paused: false, current: 0, from: 1, to: 20 };
+            var autoStep = document.getElementById('auto-step');
+            var autoGap = document.getElementById('auto-gap');
+
+            var autoState = { playing: false, paused: false, current: 0, from: 1, to: 20, step: 1 };
 
             autoRate.addEventListener('input', function () {
                 autoRateLabel.textContent = parseFloat(autoRate.value).toFixed(1) + '×';
             });
-            function setAutoStatus(msg) { autoStatus.textContent = msg; }
+            function setAutoStatus(key) {
+                var args = Array.prototype.slice.call(arguments, 1);
+                setStatus(autoStatus, autoStatusState, key, ...args);
+            }
             function stopAuto() {
                 autoState.playing = false;
                 autoState.paused = false;
                 stopSpeech();
-                autoPlay.innerHTML = '▶ Play';
-                setAutoStatus('Set a range and press play.');
+                autoPlay.textContent = T('play');
+                setAutoStatus('autoReady');
             }
             function stepAuto() {
                 if (!autoState.playing || autoState.paused) return;
                 var n = autoState.current;
                 autoDisplay.textContent = String(n);
-                var total = autoState.to - autoState.from + 1;
-                setAutoStatus('Counting… ' + (n - autoState.from + 1) + ' of ' + total);
+                var total = Math.ceil((autoState.to - autoState.from + 1) / autoState.step);
+                var done = Math.floor((n - autoState.from) / autoState.step) + 1;
+                setAutoStatus('autoCounting', done, total);
                 var rate = parseFloat(autoRate.value) || 1;
+                var gapMs = (parseFloat(autoGap.value) || 0) * 1000;
                 speakNumber(n, rate, function () {
                     if (!autoState.playing || autoState.paused) return;
-                    if (n >= autoState.to) {
+                    var next = n + autoState.step;
+                    if (next > autoState.to) {
                         autoState.playing = false;
-                        autoPlay.innerHTML = '▶ Play';
-                        setAutoStatus('Finished counting to ' + autoState.to + '. 🎉');
+                        autoPlay.textContent = T('play');
+                        setAutoStatus('autoFinished', autoState.to);
                         return;
                     }
-                    autoState.current = n + 1;
-                    stepAuto();
+                    autoState.current = next;
+                    if (gapMs > 0) {
+                        setTimeout(function () { stepAuto(); }, gapMs);
+                    } else {
+                        stepAuto();
+                    }
                 });
             }
             autoPlay.addEventListener('click', function () {
                 if (autoState.playing && !autoState.paused) {
                     autoState.paused = true;
                     stopSpeech();
-                    autoPlay.innerHTML = '⏸ Paused — tap to resume';
-                    setAutoStatus('Paused at ' + autoState.current + '.');
+                    autoPlay.textContent = T('pausedResume');
+                    setAutoStatus('autoPausedAt', autoState.current);
                     return;
                 }
                 if (autoState.playing && autoState.paused) {
                     autoState.paused = false;
-                    autoPlay.innerHTML = '⏸ Pause';
+                    autoPlay.textContent = T('pause');
                     stepAuto();
                     return;
                 }
                 var from = parseInt(autoFrom.value, 10);
                 var to = parseInt(autoTo.value, 10);
+                var step = parseInt(autoStep.value, 10) || 1;
                 if (isNaN(from)) from = 1;
                 if (isNaN(to)) to = 20;
                 if (from > to) {
@@ -535,12 +968,12 @@ const webAppJsonLd = {
                     autoFrom.value = String(from);
                     autoTo.value = String(to);
                 }
-                if (to - from > 999) {
-                    setAutoStatus('Please keep the range under 1,000 numbers.');
+                if (Math.ceil((to - from + 1) / step) > 1000) {
+                    setAutoStatus('autoRangeError');
                     return;
                 }
-                autoState = { playing: true, paused: false, current: from, from: from, to: to };
-                autoPlay.innerHTML = '⏸ Pause';
+                autoState = { playing: true, paused: false, current: from, from: from, to: to, step: step };
+                autoPlay.textContent = T('pause');
                 stepAuto();
             });
             autoStop.addEventListener('click', stopAuto);
@@ -549,10 +982,197 @@ const webAppJsonLd = {
                     stopSpeech();
                     if (autoState.playing) {
                         autoState.paused = true;
-                        autoPlay.innerHTML = '⏸ Paused — tap to resume';
+                        autoPlay.textContent = T('pausedResume');
                     }
                 }
             });
+
+            /* ---------------- play: interactive tap games ---------------- */
+            var playScore = 0;
+            var playScoreEl = document.getElementById('play-score');
+            var celebrateBox = document.getElementById('play-celebrate');
+            var celebrateMsg = document.getElementById('play-celebrate-msg');
+            var confettiBox = document.getElementById('play-confetti');
+            var celebrateTimer = null;
+
+            function addStar() {
+                playScore++;
+                playScoreEl.textContent = String(playScore);
+            }
+
+            function confettiBurst() {
+                var bits = ['🎉', '⭐', '🎊', '✨', '🌟', '💛'];
+                for (var i = 0; i < 26; i++) {
+                    var s = document.createElement('span');
+                    s.className = 'confetti-bit';
+                    s.textContent = bits[Math.floor(Math.random() * bits.length)];
+                    s.style.left = (Math.random() * 100) + '%';
+                    s.style.animationDuration = (1.6 + Math.random() * 1.6) + 's';
+                    s.style.animationDelay = (Math.random() * 0.4) + 's';
+                    confettiBox.appendChild(s);
+                    (function (el) {
+                        setTimeout(function () { el.remove(); }, 3800);
+                    })(s);
+                }
+            }
+
+            function celebrate(msg) {
+                celebrateMsg.textContent = msg;
+                celebrateBox.hidden = false;
+                // retrigger pop animation
+                var card = celebrateBox.firstElementChild;
+                card.classList.remove('suna-pop');
+                void card.offsetWidth;
+                card.classList.add('suna-pop');
+                confettiBurst();
+                speakNumber(msg, 1);
+                if (celebrateTimer) clearTimeout(celebrateTimer);
+                celebrateTimer = setTimeout(function () {
+                    celebrateBox.hidden = true;
+                }, 2100);
+            }
+
+            /* sub-tabs */
+            var playModeCount = document.getElementById('play-mode-count');
+            var playModeHear = document.getElementById('play-mode-hear');
+            var playCountWrap = document.getElementById('play-count-wrap');
+            var playHearWrap = document.getElementById('play-hear-wrap');
+
+            function setSubTab(el, on) {
+                el.className = 'play-subtab rounded-full px-4 py-1.5 text-xs font-bold transition-colors ' +
+                    (on ? 'bg-pink-600 text-white' : 'text-mute dark:text-neutral-400');
+            }
+
+            function selectPlayMode(which) {
+                var isCount = which === 'count';
+                setSubTab(playModeCount, isCount);
+                setSubTab(playModeHear, !isCount);
+                playCountWrap.hidden = !isCount;
+                playHearWrap.hidden = isCount;
+                stopSpeech();
+                if (isCount) newCountRound(); else newHearRound();
+            }
+            playModeCount.addEventListener('click', function () { selectPlayMode('count'); });
+            playModeHear.addEventListener('click', function () { selectPlayMode('hear'); });
+
+            /* game 1: tap & count the objects */
+            var OBJECTS = ['🍎', '🍌', '🍇', '🍊', '🍉', '🐶', '🐱', '🐰', '🦁', '🐘', '⭐', '🎈', '🐠', '🦋'];
+            var countGrid = document.getElementById('play-count-grid');
+            var countStatus = document.getElementById('play-count-status');
+            var countTarget = 0, countTapped = 0, countLock = false;
+
+            function setCountStatus(key) {
+                var args = Array.prototype.slice.call(arguments, 1);
+                setStatus(countStatus, countStatusState, key, ...args);
+            }
+            function setHearStatus(key) {
+                var args = Array.prototype.slice.call(arguments, 1);
+                setStatus(hearStatus, hearStatusState, key, ...args);
+            }
+
+            function newCountRound() {
+                stopSpeech();
+                countLock = false;
+                countTarget = 3 + Math.floor(Math.random() * 6); // 3..8
+                countTapped = 0;
+                var emoji = OBJECTS[Math.floor(Math.random() * OBJECTS.length)];
+                countGrid.innerHTML = '';
+                for (var i = 0; i < countTarget; i++) {
+                    (function () {
+                        var b = document.createElement('button');
+                        b.type = 'button';
+                        b.className = 'play-obj';
+                        b.textContent = emoji;
+                        b.setAttribute('aria-label', T('countMe'));
+                        b.addEventListener('click', function () {
+                            if (countLock || b.classList.contains('tapped')) return;
+                            b.classList.add('tapped');
+                            countTapped++;
+                            if (countTapped >= countTarget) {
+                                countLock = true;
+                                setCountStatus('countDone', countTarget);
+                                addStar();
+                                setTimeout(function () { celebrate(Ts('celebrateCounted', countTarget)); }, 250);
+                                setTimeout(newCountRound, 2600);
+                            } else {
+                                setCountStatus('countKeepGoing', countTapped);
+                                speakNumber(countTapped, 1.1);
+                            }
+                        });
+                        countGrid.appendChild(b);
+                    })();
+                }
+                setCountStatus('countTapAlong');
+            }
+            document.getElementById('play-count-next').addEventListener('click', newCountRound);
+
+            /* game 2: hear the number, tap it */
+            var hearOptions = document.getElementById('play-hear-options');
+            var hearStatus = document.getElementById('play-hear-status');
+            var hearAnswer = 0, hearLock = false;
+
+            function shuffle(arr) {
+                for (var i = arr.length - 1; i > 0; i--) {
+                    var j = Math.floor(Math.random() * (i + 1));
+                    var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+                }
+                return arr;
+            }
+
+            function newHearRound() {
+                stopSpeech();
+                hearLock = false;
+                hearAnswer = 1 + Math.floor(Math.random() * 10); // 1..10
+                var pool = [];
+                for (var n = 1; n <= 10; n++) { if (n !== hearAnswer) pool.push(n); }
+                // prefer near-miss distractors so it teaches, not guesses
+                pool.sort(function (a, b) {
+                    return Math.abs(a - hearAnswer) - Math.abs(b - hearAnswer);
+                });
+                var options = shuffle([hearAnswer, pool[0], pool[1]]);
+                hearOptions.innerHTML = '';
+                options.forEach(function (num) {
+                    var b = document.createElement('button');
+                    b.type = 'button';
+                    b.className = 'play-opt text-ink dark:text-neutral-100 bg-elevated dark:bg-neutral-900';
+                    b.textContent = String(num);
+                    b.setAttribute('aria-label', Ts('numberN', num));
+                    b.addEventListener('click', function () {
+                        if (hearLock) return;
+                        if (num === hearAnswer) {
+                            hearLock = true;
+                            b.classList.add('correct');
+                            addStar();
+                            setTimeout(function () { celebrate(Ts('celebrateCorrect', hearAnswer)); }, 200);
+                            setTimeout(newHearRound, 2400);
+                        } else {
+                            b.classList.remove('wrong');
+                            void b.offsetWidth;
+                            b.classList.add('wrong');
+                            setHearStatus('hearTryAgain');
+                            speakNumber(T('spokenTryAgain'), 1);
+                        }
+                    });
+                    hearOptions.appendChild(b);
+                });
+                setHearStatus('hearListen');
+                setTimeout(function () {
+                    if (!panelPlay.hidden && !playHearWrap.hidden && !hearLock) speakNumber(hearAnswer, 0.95);
+                }, 600);
+            }
+            document.getElementById('play-hear-replay').addEventListener('click', function () {
+                if (!hearLock) speakNumber(hearAnswer, 0.95);
+            });
+            document.getElementById('play-hear-next').addEventListener('click', newHearRound);
+
+            // start the default play game when the tab first opens
+            var playStarted = false;
+            tabPlay.addEventListener('click', function () {
+                if (!playStarted) { playStarted = true; newCountRound(); }
+            });
+
+            // apply saved language (also re-renders all dynamic statuses)
+            applySunaLang();
         })();
     </script>
 </Base>
