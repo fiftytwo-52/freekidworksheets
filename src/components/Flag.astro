@@ -1,0 +1,61 @@
+---
+// Flag.astro — tiny rounded language flags for the language switcher.
+// Codes: 'en' (US), 'ne' (Nepal double-pennant), 'es' (Spain).
+interface Props {
+    code: 'en' | 'ne' | 'es';
+    class?: string;
+}
+const { code, class: className = 'h-[15px] w-[22px]' } = Astro.props;
+---
+
+{
+    code === 'en' && (
+        <svg class={className} viewBox="0 0 24 16" aria-hidden="true" style="border-radius:3px">
+            <rect width="24" height="16" fill="#b22234" />
+            <path
+                d="M0 2.46h24M0 4.92h24M0 7.38h24M0 9.84h24M0 12.3h24M0 14.76h24"
+                stroke="#fff"
+                stroke-width="1.23"
+            />
+            <rect width="9.6" height="8.6" fill="#3c3b6e" />
+            <g fill="#fff">
+                <circle cx="2.4" cy="2.1" r="0.6" />
+                <circle cx="4.8" cy="2.1" r="0.6" />
+                <circle cx="7.2" cy="2.1" r="0.6" />
+                <circle cx="3.6" cy="4.3" r="0.6" />
+                <circle cx="6" cy="4.3" r="0.6" />
+                <circle cx="2.4" cy="6.5" r="0.6" />
+                <circle cx="4.8" cy="6.5" r="0.6" />
+                <circle cx="7.2" cy="6.5" r="0.6" />
+            </g>
+            <rect width="24" height="16" fill="none" stroke="rgba(0,0,0,0.18)" stroke-width="0.8" />
+        </svg>
+    )
+}
+{
+    code === 'ne' && (
+        <svg class={className} viewBox="0 0 24 16" aria-hidden="true" style="border-radius:3px">
+            <rect width="24" height="16" fill="#f8fafc" />
+            <path
+                d="M5 1.5 L17.5 7 L8.8 7 L17.5 14.5 L5 14.5 Z"
+                fill="#DC143C"
+                stroke="#003893"
+                stroke-width="1.1"
+                stroke-linejoin="round"
+            />
+            <circle cx="9.4" cy="5" r="1.5" fill="#fff" />
+            <circle cx="9.4" cy="11.4" r="1.5" fill="#fff" />
+            <circle cx="10" cy="11.1" r="1.1" fill="#DC143C" />
+            <rect width="24" height="16" fill="none" stroke="rgba(0,0,0,0.18)" stroke-width="0.8" />
+        </svg>
+    )
+}
+{
+    code === 'es' && (
+        <svg class={className} viewBox="0 0 24 16" aria-hidden="true" style="border-radius:3px">
+            <rect width="24" height="16" fill="#c60b1e" />
+            <rect y="4" width="24" height="8" fill="#ffc400" />
+            <rect width="24" height="16" fill="none" stroke="rgba(0,0,0,0.18)" stroke-width="0.8" />
+        </svg>
+    )
+}
