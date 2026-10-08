@@ -659,6 +659,7 @@ const webAppJsonLd = {
                     targetSpoken: function (n) { return 'Target reached! ' + n; },
                     progressOf: function (c, t) { return c + ' of ' + t; },
                     voicesLoading: 'Loading voices…', voicesShort: 'Voices…', voicesNone: 'No voice support',
+                    voicesHiFallback: 'Hindi fallback — no Nepali voice on this device', voicesNeNone: 'No Nepali or Hindi voice on this device',
 
 
 
@@ -705,6 +706,7 @@ const webAppJsonLd = {
                     targetSpoken: function (n) { return 'लक्ष्य पूरा! ' + n; },
                     progressOf: function (c, t) { return c + ' / ' + t; },
                     voicesLoading: 'आवाजहरू लोड हुँदै…', voicesShort: 'आवाज…', voicesNone: 'आवाज छैन',
+                    voicesHiFallback: 'हिन्दी चल्दैछ — यो डिभाइसमा नेपाली आवाज छैन', voicesNeNone: 'यो डिभाइसमा नेपाली वा हिन्दी आवाज छैन',
 
 
 
@@ -719,7 +721,7 @@ const webAppJsonLd = {
                     howAutoH: 'कक्षाका लागि स्वतः गणना',
                     howAutoP: 'कुनै पनि सीमा राख्नुहोस्, आवाज छान्नुहोस् र बजाऊ थिच्नुहोस्। Suna ठूलो देवनागरी सङ्ख्यामा हरेक सङ्ख्या नेपालीमा बोल्छ — Shapes खोल्नुहोस् र हरेक सङ्ख्याअनुसार ट्याप गर्ने आइकनहरूको समूह देखिन्छ (१९ सम्म); आइकन थिच्दा त्यो खस्छ।',
                     howTallyH: 'ट्याली काउन्टर',
-                    howTallyP: 'जे पनि गन्न ठूलो बटन थिच्नुहोस् (वा स्पेस)। कदम छान्नुहोस्, लक्ष्य राख्नुहोस्, बोल्ने सुविधा खोल्नुहोस् — तपाईंको गणना यही ब्राउजरमा सेभ हुन्छ।',
+                    howTallyP: 'जे पनि गन्न ठूलो बटन थिच्नुहोस् (वा स्पेस)। कदम छान्नुहोस्, लक्ष्य राख्नुहोस्, बोल्ने सुविधा खोल्नुहोस् — तपाईँको गणना यही ब्राउजरमा सेभ हुन्छ।',
                     homeBtn: 'गृहपृष्ठमा फर्कनुहोस्', cleanBtn: 'सफा डिस्प्लेका लागि नियन्त्रण लुकाऊ',
                     fsBtn: 'पूर्ण स्क्रिन', infoBtn: 'Suna कसरी प्रयोग गर्ने', restoreBtn: 'नियन्त्रण फेरि देखाऊ',
 
@@ -751,6 +753,7 @@ const webAppJsonLd = {
                     targetSpoken: function (n) { return 'Meta alcançada! ' + n; },
                     progressOf: function (c, t) { return c + ' de ' + t; },
                     voicesLoading: 'Carregando vozes…', voicesShort: 'Vozes…', voicesNone: 'Sem voz',
+                    voicesHiFallback: 'Fallback em hindi — sem voz nepalesa neste dispositivo', voicesNeNone: 'Sem voz nepalesa ou hindi neste dispositivo',
 
 
 
@@ -791,10 +794,10 @@ const webAppJsonLd = {
             var NE_NUM = ['शून्य', 'एक', 'दुई', 'तीन', 'चार', 'पाँच', 'छ', 'सात', 'आठ', 'नौ', 'दस',
                 'एघार', 'बाह्र', 'तेह्र', 'चौध', 'पन्ध्र', 'सोह्र', 'सत्र', 'अठार', 'उन्नाइस', 'बीस',
                 'एक्काइस', 'बाइस', 'तेइस', 'चौबीस', 'पच्चीस', 'छब्बीस', 'सत्ताइस', 'अट्ठाइस', 'उनन्तीस', 'तीस',
-                'एक्तीस', 'बत्तीस', 'तेत्तीस', 'चौँतीस', 'पैंतीस', 'छत्तीस', 'सैँतीस', 'अठतीस', 'उनन्चालीस', 'चालीस',
+                'एक्तीस', 'बत्तीस', 'तेत्तीस', 'चौँतीस', 'पैँतीस', 'छत्तीस', 'सैँतीस', 'अठतीस', 'उनन्चालीस', 'चालीस',
                 'एकचालीस', 'बयालीस', 'तिर्चालीस', 'चवालीस', 'पैँतालीस', 'छयालीस', 'सच्चालीस', 'अठचालीस', 'उनन्चास', 'पचास',
                 'एकाउन्न', 'बाउन्न', 'त्रिपन्न', 'चवन्न', 'पचपन्न', 'छपन्न', 'सन्ताउन्न', 'अन्ठाउन्न', 'उनन्साठी', 'साठी',
-                'एकसट्ठी', 'बयसट्ठी', 'त्रिसट्ठी', 'चौंसट्ठी', 'पैंसट्ठी', 'छयसट्ठी', 'सतसट्ठी', 'अठसट्ठी', 'उनन्सत्तरी', 'सत्तरी',
+                'एकसट्ठी', 'बयसट्ठी', 'त्रिसट्ठी', 'चौँसट्ठी', 'पैँसट्ठी', 'छयसट्ठी', 'सतसट्ठी', 'अठसट्ठी', 'उनन्सत्तरी', 'सत्तरी',
                 'एकहत्तर', 'बहत्तर', 'त्रिहत्तर', 'चौरहत्तर', 'पचहत्तर', 'छयहत्तर', 'सतहत्तर', 'अठहत्तर', 'उनासी', 'असी',
                 'एकासी', 'बयासी', 'त्रियासी', 'चौरासी', 'पचासी', 'छयासी', 'सतासी', 'अठासी', 'उनान्नब्बे', 'नब्बे',
                 'एकान्नब्बे', 'बयान्नब्बे', 'त्रियान्नब्बे', 'चौरान्नब्बे', 'पचान्नब्बे', 'छयान्नब्बे', 'सन्तान्नब्बे', 'अन्ठान्नब्बे', 'उनान्सय'];
@@ -838,8 +841,10 @@ const webAppJsonLd = {
             }
             function abcSpeakText(letter) {
                 if (sunaLang !== 'ne') return letter;
-                // real Nepali voice -> speak the letter itself; otherwise its romanized name
-                if (voiceMatchesLang(currentVoice)) return letter;
+                // Nepali voice speaks the letter natively; Hindi-fallback voice reads
+                // Devanagari near-correctly too. Otherwise use the romanized name
+                // ("ka", "kha", …) so an English voice stays intelligible.
+                if (voiceReadsDevanagari(currentVoice)) return letter;
                 for (var i = 0; i < NE_ALPHA.length; i++) {
                     if (NE_ALPHA[i][0] === letter) return NE_ALPHA[i][1];
                 }
@@ -891,7 +896,7 @@ const webAppJsonLd = {
                 });
                 document.documentElement.setAttribute('lang', sunaLang === 'pt-br' ? 'pt-BR' : sunaLang);
                 refreshVoicePlaceholders();
-                preferLangVoice();
+                populateVoices();
                 stopAbc();
                 buildAbcOptions();
                 renderStatus(autoStatus, autoStatusState);
@@ -961,16 +966,56 @@ const webAppJsonLd = {
             function voiceMatchesLang(v) {
                 return !!(v && v.lang && v.lang.toLowerCase().indexOf(langTag()) === 0);
             }
+            function isNepaliVoice(v) {
+                return !!(v && v.lang && v.lang.toLowerCase().indexOf('ne') === 0);
+            }
+            function isHindiVoice(v) {
+                return !!(v && v.lang && v.lang.toLowerCase().indexOf('hi') === 0);
+            }
+            // Hindi TTS reads Devanagari almost like Nepali — the fallback that keeps
+            // pronunciation correct on devices with no Nepali voice installed.
+            function voiceReadsDevanagari(v) {
+                return isNepaliVoice(v) || isHindiVoice(v);
+            }
             function preferLangVoice() {
-                if (!synth || voiceMatchesLang(currentVoice)) return;
-                var voices = allVoices();
-                for (var i = 0; i < voices.length; i++) {
-                    if (voiceMatchesLang(voices[i])) {
-                        currentVoice = voices[i];
-                        voiceSelects.forEach(function (sel) { sel.value = String(i); });
+                if (!synth) return;
+                if (sunaLang === 'ne') {
+                    if (isNepaliVoice(currentVoice)) return;
+                    var voices = allVoices();
+                    var pick = null;
+                    var i;
+                    for (i = 0; i < voices.length; i++) {
+                        if (isNepaliVoice(voices[i])) { pick = voices[i]; break; }
+                    }
+                    if (!pick && !isHindiVoice(currentVoice)) {
+                        for (i = 0; i < voices.length; i++) {
+                            if (isHindiVoice(voices[i])) { pick = voices[i]; break; }
+                        }
+                    }
+                    if (pick) {
+                        currentVoice = pick;
+                        voiceSelects.forEach(function (sel) { sel.value = pick.name; });
+                    }
+                    return;
+                }
+                if (voiceMatchesLang(currentVoice)) return;
+                var vs = allVoices();
+                for (var k = 0; k < vs.length; k++) {
+                    if (voiceMatchesLang(vs[k])) {
+                        currentVoice = vs[k];
+                        voiceSelects.forEach(function (sel) { sel.value = vs[k].name; });
                         return;
                     }
                 }
+            }
+            // In Nepali mode the dropdown lists Nepali voices only. With no Nepali
+            // voice on the device it offers Hindi voices as the pronunciation
+            // fallback (labeled); with neither, it says so plainly.
+            function nepaliVoicePool() {
+                var voices = allVoices();
+                var ne = voices.filter(isNepaliVoice);
+                if (ne.length) return { list: ne, fallback: false };
+                return { list: voices.filter(isHindiVoice), fallback: true };
             }
             function populateVoices() {
                 if (!synth) {
@@ -981,14 +1026,33 @@ const webAppJsonLd = {
                 }
                 var voices = allVoices();
                 if (!voices.length) return;
-                // list voices matching the UI language first
-                var ordered = voices.slice().sort(function (a, b) {
-                    return (voiceMatchesLang(b) ? 1 : 0) - (voiceMatchesLang(a) ? 1 : 0);
-                });
+                var pool = voices;
+                var fallbackNote = false;
+                if (sunaLang === 'ne') {
+                    var p = nepaliVoicePool();
+                    pool = p.list;
+                    fallbackNote = p.fallback && p.list.length > 0;
+                } else {
+                    // list voices matching the UI language first
+                    pool = voices.slice().sort(function (a, b) {
+                        return (voiceMatchesLang(b) ? 1 : 0) - (voiceMatchesLang(a) ? 1 : 0);
+                    });
+                }
                 voiceSelects.forEach(function (sel) {
                     var prevName = sel.value;
                     sel.innerHTML = '';
-                    ordered.forEach(function (v) {
+                    if (!pool.length) {
+                        sel.innerHTML = '<option value="">' + T('voicesNeNone') + '</option>';
+                        return;
+                    }
+                    if (fallbackNote) {
+                        var note = document.createElement('option');
+                        note.value = '';
+                        note.disabled = true;
+                        note.textContent = T('voicesHiFallback');
+                        sel.appendChild(note);
+                    }
+                    pool.forEach(function (v) {
                         var opt = document.createElement('option');
                         opt.value = v.name;
                         opt.textContent = v.name + ' (' + v.lang + ')';
@@ -996,9 +1060,9 @@ const webAppJsonLd = {
                     });
                     var stillThere = false;
                     for (var i = 0; i < sel.options.length; i++) {
-                        if (sel.options[i].value === prevName) { stillThere = true; break; }
+                        if (prevName && sel.options[i].value === prevName) { stillThere = true; break; }
                     }
-                    sel.value = stillThere ? prevName : ordered[0].name;
+                    sel.value = stillThere ? prevName : pool[0].name;
                 });
                 syncVoiceFromSelect(voiceSelects[0]);
                 preferLangVoice();
@@ -1037,8 +1101,13 @@ const webAppJsonLd = {
                 synth.speak(u);
             }
             function speakNumber(n, rate, onend) {
-                // Nepali UI => speak Nepali number words (needs a Nepali voice on the device for best results)
-                var text = (sunaLang === 'ne' && typeof n === 'number') ? nepaliWord(n) : String(n);
+                // Nepali UI => Nepali number words, but only when the voice can read
+                // Devanagari (Nepali, else Hindi fallback). Otherwise say the digits in
+                // the voice's own language instead of mangling Nepali words.
+                var text = String(n);
+                if (sunaLang === 'ne' && typeof n === 'number' && voiceReadsDevanagari(currentVoice)) {
+                    text = nepaliWord(n);
+                }
                 speakText(text, rate, onend);
             }
 
