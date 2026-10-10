@@ -386,7 +386,7 @@ const webAppJsonLd = {
             margin: 14px 0;
         }
         #abcRange {
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(3, 1fr);
         }
         label {
             display: flex;
@@ -446,6 +446,7 @@ const webAppJsonLd = {
             .tabs button { flex: 1; justify-content: center; padding: 8px 10px; font-size: 0.98rem; }
             .panel { padding: 14px 10px; border-radius: 20px; }
             #numRange { grid-template-columns: 1fr 1fr; gap: 8px; }
+            #abcRange { grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
             #voiceGrid, #bgmGrid { grid-template-columns: 1fr; gap: 10px; }
             .row { gap: 6px; }
             .row .btn#play { width: 100%; min-height: 52px; font-size: 1.3rem; }
@@ -459,10 +460,12 @@ const webAppJsonLd = {
             .stage { padding: 10px 18px 40px; }
             .panel { padding: 22px 18px; }
             #numRange { grid-template-columns: repeat(4, 1fr); gap: 10px; }
+            #abcRange { grid-template-columns: repeat(3, 1fr); gap: 10px; }
             #voiceGrid, #bgmGrid { grid-template-columns: 1fr 1fr; gap: 12px; }
         }
         @media (min-width: 1025px) {
             #numRange { grid-template-columns: repeat(4, 1fr); gap: 12px; }
+            #abcRange { grid-template-columns: repeat(3, 1fr); gap: 12px; }
             #voiceGrid, #bgmGrid { grid-template-columns: 1fr 1fr; gap: 14px; }
         }
 
@@ -714,6 +717,18 @@ const webAppJsonLd = {
                     <div class="grid" id="abcRange" hidden>
                         <label><span data-i="from">From</span><select id="aFrom"></select></label>
                         <label><span data-i="to">To</span><select id="aTo"></select></label>
+                        <label>
+                            <span data-i="gap">Gap</span>
+                            <select id="aGap">
+                                <option value="0">0s</option>
+                                <option value="500">0.5s</option>
+                                <option value="1000">1s</option>
+                                <option value="1500" selected>1.5s</option>
+                                <option value="2000">2s</option>
+                                <option value="3000">3s</option>
+                                <option value="5000">5s</option>
+                            </select>
+                        </label>
                     </div>
                     <div class="row">
                         <button type="button" class="btn" id="play">
@@ -1252,12 +1267,12 @@ const webAppJsonLd = {
             // 1. Studio Pre-Recorded MP3 Voices (guaranteed 100% on every phone, tablet, and computer)
             var optF = document.createElement('option');
             optF.value = 'mp3-female';
-            optF.textContent = (lang === 'ne') ? '👩 महिला आवाज (Studio Audio)' : '👩 Female Voice (Studio Audio)';
+            optF.textContent = (lang === 'ne') ? '👩 महिला आवाज (Studio Audio)' : '👩 Natural Female Voice (Studio American)';
             voiceSel.appendChild(optF);
 
             var optM = document.createElement('option');
             optM.value = 'mp3-male';
-            optM.textContent = (lang === 'ne') ? '👨 पुरुष आवाज (Studio Audio)' : '👨 Male Voice (Studio Audio)';
+            optM.textContent = (lang === 'ne') ? '👨 पुरुष आवाज (Studio Audio)' : '👨 Natural Male Voice (Studio American)';
             voiceSel.appendChild(optM);
 
             // 2. Default System Voice fallback
@@ -1302,7 +1317,7 @@ const webAppJsonLd = {
                 if (voiceSel.value.indexOf('mp3') === 0) {
                     vNote.textContent = (lang === 'ne')
                         ? '✨ स्टुडियो अडियो सक्रिय छ (सबै मोबाइल र ट्याब्लेटमा १००% स्पष्ट बज्छ)।'
-                        : '✨ Studio audio active (100% crystal-clear on all phones and tablets).';
+                        : '✨ Natural American Studio Audio active (100% crystal-clear on all phones and tablets).';
                     vNote.style.color = '#14532d';
                 } else if (lang === 'ne') {
                     if (hasNe) {
@@ -1387,15 +1402,29 @@ const webAppJsonLd = {
                 if (speedVal > 0) a.playbackRate = Math.min(2, Math.max(0.5, speedVal));
 
                 var done = false;
+                var checkInterval = null;
+                var timeoutTimer = null;
+
                 function finish(ok) {
                     if (done) return;
                     done = true;
+                    if (checkInterval) clearInterval(checkInterval);
+                    if (timeoutTimer) clearTimeout(timeoutTimer);
+                    if (activeAudio === a) activeAudio = null;
                     resolve(ok);
                 }
 
                 a.onended = function () { finish(true); };
                 a.onerror = function () { finish(false); };
-                setTimeout(function () { finish(true); }, 3000);
+
+                // If playback was stopped while audio is loading or playing, abort immediately
+                checkInterval = setInterval(function () {
+                    if (!playing || done) {
+                        finish(false);
+                    }
+                }, 60);
+
+                timeoutTimer = setTimeout(function () { finish(true); }, 2500);
 
                 var playPromise = a.play();
                 if (playPromise !== undefined) {
@@ -1511,6 +1540,25 @@ const webAppJsonLd = {
                 }
             });
         });
+        function getGapMs() {
+            var g = (kind === 'abc') ? $('aGap') : $('gap');
+            if (!g) g = $('gap') || $('aGap');
+            var v = g ? parseFloat(g.value) : 1500;
+            return isNaN(v) ? 1500 : v;
+        }
+        function setGapMs(val) {
+            var str = String(val);
+            if ($('gap')) $('gap').value = str;
+            if ($('aGap')) $('aGap').value = str;
+            try { localStorage.setItem('suna-gap', str); } catch (e) {}
+        }
+        if ($('gap')) $('gap').addEventListener('change', function () { setGapMs(this.value); });
+        if ($('aGap')) $('aGap').addEventListener('change', function () { setGapMs(this.value); });
+        try {
+            var savedGap = localStorage.getItem('suna-gap');
+            if (savedGap !== null) setGapMs(savedGap);
+        } catch (e) {}
+
         $('speed').oninput = function () { $('spv').textContent = (+this.value).toFixed(1) + '×'; };
 
         /* ---- fullscreen ---- */
@@ -1818,6 +1866,13 @@ const webAppJsonLd = {
             playing = false;
             paused = false;
             updatePauseIcon();
+            if (activeAudio) {
+                try {
+                    activeAudio.pause();
+                    activeAudio.currentTime = 0;
+                } catch (e) {}
+                activeAudio = null;
+            }
             if (window.speechSynthesis) speechSynthesis.cancel();
             BGM.stop();
             leaveFS();
@@ -1842,6 +1897,12 @@ const webAppJsonLd = {
         $('pauseBtn').onclick = function () {
             paused = !paused;
             updatePauseIcon();
+            if (activeAudio) {
+                try {
+                    if (paused) activeAudio.pause();
+                    else activeAudio.play();
+                } catch (e) {}
+            }
             if (window.speechSynthesis) {
                 paused ? speechSynthesis.pause() : speechSynthesis.resume();
             }
@@ -1886,8 +1947,8 @@ const webAppJsonLd = {
                 await speak(it);
                 if (run !== id) return;
 
-                // Keeps counting according to count delay! Does not freeze waiting for click
-                var waitMs = parseFloat($('gap').value) || 0;
+                // Dynamic gap countdown responding immediately to changes
+                var waitMs = getGapMs();
                 if (waitMs <= 0 && gameOn) waitMs = 800; // minimum game reaction time
 
                 var elapsed = 0;
@@ -1895,6 +1956,8 @@ const webAppJsonLd = {
                     while (paused && run === id) await wait(100);
                     await wait(100);
                     elapsed += 100;
+                    waitMs = getGapMs();
+                    if (waitMs <= 0 && gameOn) waitMs = 800;
                 }
                 if (run !== id) return;
             }

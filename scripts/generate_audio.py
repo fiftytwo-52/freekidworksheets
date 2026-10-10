@@ -1,6 +1,7 @@
 import asyncio
 import os
 import sys
+import subprocess
 import edge_tts
 
 NE_WORDS_0_100 = [
@@ -37,44 +38,63 @@ EN_LETTERS = [chr(c) for c in range(ord('A'), ord('Z') + 1)]
 NE_LETTERS = ['क','ख','ग','घ','ङ','च','छ','ज','झ','ञ','ट','ठ','ड','ढ','ण','त','थ','द','ध','न','प','फ','ब','भ','म','य','र','ल','व','श','ष','स','ह','क्ष','त्र','ज्ञ']
 
 VOICES = {
-    ('en', 'female'): 'en-US-AriaNeural',
-    ('en', 'male'):   'en-US-GuyNeural',
+    ('en', 'female'): 'en-US-JennyNeural',   # Highly natural, warm American conversational voice
+    ('en', 'male'):   'en-US-AndrewNeural',  # Highly natural, authentic American conversational voice
     ('ne', 'female'): 'ne-NP-HemkalaNeural',
     ('ne', 'male'):   'ne-NP-SagarNeural'
 }
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "public", "audio"))
 
+def trim_silence(raw_path, final_path):
+    # Trims silence from start and end so gap timers work accurately with zero dead air
+    cmd = [
+        "ffmpeg", "-y", "-i", raw_path,
+        "-af", "silenceremove=start_periods=1:start_duration=0.01:start_threshold=-38dB:detection=peak,areverse,silenceremove=start_periods=1:start_duration=0.01:start_threshold=-38dB:detection=peak,areverse",
+        "-b:a", "32k", final_path
+    ]
+    res = subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    if res.returncode != 0 or not os.path.exists(final_path) or os.path.getsize(final_path) == 0:
+        # Fallback to copy if trim filter fails
+        os.replace(raw_path, final_path)
+    else:
+        if os.path.exists(raw_path):
+            os.remove(raw_path)
+
 async def generate_file(text, voice, out_path, sem, retries=3):
-    if os.path.exists(out_path) and os.path.getsize(out_path) > 500:
-        return
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    temp_path = out_path + ".raw.mp3"
     async with sem:
         for attempt in range(retries):
             try:
                 comm = edge_tts.Communicate(text, voice)
-                await comm.save(out_path)
-                if os.path.exists(out_path) and os.path.getsize(out_path) > 500:
+                await comm.save(temp_path)
+                if os.path.exists(temp_path) and os.path.getsize(temp_path) > 300:
+                    trim_silence(temp_path, out_path)
                     return
             except Exception as e:
                 if attempt == retries - 1:
                     print(f"Failed to generate {out_path}: {e}", file=sys.stderr)
-                await asyncio.sleep(0.5 * (attempt + 1))
+                await asyncio.sleep(0.4 * (attempt + 1))
+            finally:
+                if os.path.exists(temp_path):
+                    try: os.remove(temp_path)
+                    except: pass
 
 async def main():
-    sem = asyncio.Semaphore(16)
+    sem = asyncio.Semaphore(18)
     tasks = []
 
     print(f"Target directory: {BASE_DIR}")
 
     # Numbers 1 to 500
     for n in range(1, 501):
-        # English
+        # English with natural Jenny & Andrew
         for gender, voice in [('female', VOICES[('en', 'female')]), ('male', VOICES[('en', 'male')])]:
             p = os.path.join(BASE_DIR, 'en', gender, f"{n}.mp3")
             tasks.append(generate_file(str(n), voice, p, sem))
 
-        # Nepali
+        # Nepali trimmed
         ne_text = get_ne_word(n)
         for gender, voice in [('female', VOICES[('ne', 'female')]), ('male', VOICES[('ne', 'male')])]:
             p = os.path.join(BASE_DIR, 'ne', gender, f"{n}.mp3")
@@ -93,16 +113,16 @@ async def main():
             tasks.append(generate_file(l, voice, p, sem))
 
     total = len(tasks)
-    print(f"Starting generation of {total} audio files with concurrency 16...")
+    print(f"Starting generation of {total} trimmed natural audio files with concurrency 18...")
     done = 0
-    batch_size = 50
+    batch_size = 60
     for i in range(0, total, batch_size):
         batch = tasks[i:i + batch_size]
         await asyncio.gather(*batch)
         done += len(batch)
         print(f"Progress: {done}/{total} files ({(done/total*100):.1f}%)")
 
-    print("All audio files generated successfully!")
+    print("All audio files updated with natural voices and trimmed silence!")
 
 if __name__ == '__main__':
     asyncio.run(main())
