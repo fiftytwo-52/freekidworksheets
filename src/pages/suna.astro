@@ -533,6 +533,7 @@ const webAppJsonLd = {
         body.fs { overflow: hidden; }
         body.fs #app { position: fixed; inset: 0; z-index: 50; overflow: hidden; }
         body.fs header, body.fs .tabs, body.fs .about, body.fs footer, body.fs .panel > :not(.display):not(.msg) { display: none !important; }
+        body.fs [data-ad-slot] { display: none !important; } /* ad slots never appear in fullscreen mode */
         body.fs .stage { height: 100vh; height: 100dvh; max-width: none; display: flex; flex-direction: column; justify-content: center; padding: 0; pointer-events: none; }
         body.fs .panel { background: none; border: 0; box-shadow: none; backdrop-filter: none; padding: 0; }
         body.fs .display { font-size: clamp(8rem, 42vmin, 34rem); }
@@ -885,6 +886,9 @@ const webAppJsonLd = {
                 </div>
             </section>
         </main>
+
+        <!-- Ad slot below the counter stage: hidden in fullscreen mode (see CSS), never in the tap flow -->
+        <AdSlot name="suna-below-stage" minHeight="120px" />
 
         <section class="about">
             <div class="cards">
