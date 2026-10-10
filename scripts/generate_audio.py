@@ -40,8 +40,8 @@ EN_LETTERS = [chr(c) for c in range(ord('A'), ord('Z') + 1)]
 NE_LETTERS = ['क','ख','ग','घ','ङ','च','छ','ज','झ','ञ','ट','ठ','ड','ढ','ण','त','थ','द','ध','न','प','फ','ब','भ','म','य','र','ल','व','श','ष','स','ह','क्ष','त्र','ज्ञ']
 
 VOICES = {
-    ('en', 'female'): 'en-US-JennyNeural',   # Highly natural, warm American conversational voice
-    ('en', 'male'):   'en-US-AndrewNeural',  # Highly natural, authentic American conversational voice
+    ('en', 'female'): 'en-GB-SoniaNeural',   # Clear British enunciation (matches spellbee2026 quality)
+    ('en', 'male'):   'en-GB-RyanNeural',    # British male counterpart
     ('ne', 'female'): 'ne-NP-HemkalaNeural',
     ('ne', 'male'):   'ne-NP-SagarNeural',
     ('pt', 'female'): 'pt-BR-FranciscaNeural',
@@ -53,8 +53,10 @@ LOCALE = {'en': 'en-US', 'ne': 'ne-NP', 'pt': 'pt-BR'}
 # Prosody tuning for a more natural tone (rate, pitch).
 # Nepali gets the strongest lift: the stock ne-NP delivery drones/moans at the
 # default rate and low pitch; quicker + brighter fixes it.
+# English stays at +0%: en-GB-SoniaNeural is used plain, exactly as in
+# spellbee2026 (the reference quality the user prefers).
 PROSODY = {
-    'en': ('+6%', '+3%'),
+    'en': ('+0%', '+0%'),
     'ne': ('+12%', '+8%'),
     'pt': ('+6%', '+4%'),
 }

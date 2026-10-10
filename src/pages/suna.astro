@@ -1278,12 +1278,12 @@ const webAppJsonLd = {
             // 1. Studio Pre-Recorded MP3 Voices (guaranteed 100% on every phone, tablet, and computer)
             var optF = document.createElement('option');
             optF.value = 'mp3-female';
-            optF.textContent = (lang === 'ne') ? '👩 महिला आवाज (Studio Audio)' : '👩 Natural Female Voice (Studio American)';
+            optF.textContent = (lang === 'ne') ? '👩 महिला आवाज (Studio Audio)' : '👩 Natural Female Voice (Studio British)';
             voiceSel.appendChild(optF);
 
             var optM = document.createElement('option');
             optM.value = 'mp3-male';
-            optM.textContent = (lang === 'ne') ? '👨 पुरुष आवाज (Studio Audio)' : '👨 Natural Male Voice (Studio American)';
+            optM.textContent = (lang === 'ne') ? '👨 पुरुष आवाज (Studio Audio)' : '👨 Natural Male Voice (Studio British)';
             voiceSel.appendChild(optM);
 
             // 2. Default System Voice fallback
@@ -1328,7 +1328,9 @@ const webAppJsonLd = {
                 if (voiceSel.value.indexOf('mp3') === 0) {
                     vNote.textContent = (lang === 'ne')
                         ? '✨ स्टुडियो अडियो सक्रिय छ (सबै मोबाइल र ट्याब्लेटमा १००% स्पष्ट बज्छ)।'
-                        : '✨ Natural American Studio Audio active (100% crystal-clear on all phones and tablets).';
+                        : (lang === 'pt')
+                        ? '✨ Áudio de estúdio ativo (nítido em todos os celulares e tablets).'
+                        : '✨ Natural British Studio Audio active (100% crystal-clear on all phones and tablets).';
                     vNote.style.color = '#14532d';
                 } else if (lang === 'ne') {
                     if (hasNe) {
