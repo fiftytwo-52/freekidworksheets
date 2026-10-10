@@ -197,7 +197,7 @@ async def generate_file(text, lang, gender, out_path, sem, force, retries=3):
                     await asyncio.to_thread(pcm_to_mp3, pcm, temp_path)
                 else:
                     voice = VOICES[(lang, gender)]
-                    comm = edge_tts.Communicate(ssml(text, lang, voice), voice, proxy=PROXY)
+                    comm = edge_tts.Communicate(text, voice, proxy=PROXY)
                     await comm.save(temp_path)
                 if os.path.exists(temp_path) and os.path.getsize(temp_path) > 300:
                     trim_silence(temp_path, out_path)
@@ -205,8 +205,8 @@ async def generate_file(text, lang, gender, out_path, sem, force, retries=3):
             except Exception as e:
                 if attempt == retries - 1:
                     print(f"Failed to generate {out_path}: {e}", file=sys.stderr)
-                # Gemini rate limits need longer backoff than edge-tts
-                await asyncio.sleep((3 if use_gemini else 0.4) * (attempt + 1))
+                # Gemini rate limits need longer backoff (15s) than edge-tts
+                await asyncio.sleep((15 if use_gemini else 0.4) * (attempt + 1))
             finally:
                 if os.path.exists(temp_path):
                     try: os.remove(temp_path)
@@ -224,7 +224,7 @@ async def main():
     max_n = args.limit if args.limit > 0 else 500
 
     global GEM_SEM
-    GEM_SEM = asyncio.Semaphore(5)  # Gemini free-tier rate limits are strict
+    GEM_SEM = asyncio.Semaphore(1)  # Gemini rate limits are strict; serialize requests
     sem = asyncio.Semaphore(18)
     tasks = []
 
@@ -245,6 +245,8 @@ async def main():
 
         # Letters: en/pt use A-Z, ne uses the ka-kha set
         letters = EN_LETTERS if lang in ('en', 'pt') else NE_LETTERS
+        if args.limit > 0:
+            letters = letters[:args.limit]
         for idx, l in enumerate(letters):
             fname = f"alpha_{l}.mp3" if lang in ('en', 'pt') else f"alpha_{idx}.mp3"
             for gender in ('female', 'male'):
