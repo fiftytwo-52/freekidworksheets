@@ -1,8 +1,12 @@
 import argparse
 import asyncio
+import base64
+import json
 import os
 import sys
 import subprocess
+import time
+import urllib.request
 import xml.sax.saxutils as saxutils
 import edge_tts
 
@@ -42,11 +46,28 @@ NE_LETTERS = ['क','ख','ग','घ','ङ','च','छ','ज','झ','ञ','ट',
 VOICES = {
     ('en', 'female'): 'en-GB-SoniaNeural',   # Clear British enunciation (matches spellbee2026 quality)
     ('en', 'male'):   'en-GB-RyanNeural',    # British male counterpart
+    # ne/pt use Gemini TTS (see GEMINI_VOICES) — edge-tts entries kept as fallback
     ('ne', 'female'): 'ne-NP-HemkalaNeural',
     ('ne', 'male'):   'ne-NP-SagarNeural',
     ('pt', 'female'): 'pt-BR-FranciscaNeural',
     ('pt', 'male'):   'pt-BR-AntonioNeural',
 }
+
+# Gemini TTS (free API tier) for Nepali + Portuguese — user-auditioned 2026-10-10,
+# all four test voices approved. Kore->female, Puck->male (Aoede/Charon are
+# tested-good one-line swaps).
+GEMINI_LANGS = ('ne', 'pt')
+GEMINI_VOICES = {
+    ('ne', 'female'): 'Kore',
+    ('ne', 'male'):   'Puck',
+    ('pt', 'female'): 'Kore',
+    ('pt', 'male'):   'Puck',
+}
+GEMINI_LANG_NAME = {'ne': 'Nepali', 'pt': 'Brazilian Portuguese'}
+# 2.5 models are restricted to previously-active projects; newer projects fall
+# through to the 3.x TTS model automatically.
+GEMINI_MODELS = ["gemini-2.5-flash-preview-tts", "gemini-3.1-flash-tts-preview"]
+GEM_SEM = None  # set in main()
 
 LOCALE = {'en': 'en-US', 'ne': 'ne-NP', 'pt': 'pt-BR'}
 
@@ -76,6 +97,75 @@ def ssml(text, lang, voice):
     )
 
 
+def load_dotenv():
+    """Tiny .env loader (stdlib only). Never committed (.gitignore)."""
+    root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    path = os.path.join(root, ".env")
+    if not os.path.exists(path):
+        return
+    try:
+        with open(path, encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith("#") or "=" not in line:
+                    continue
+                k, v = line.split("=", 1)
+                k, v = k.strip(), v.strip().strip('"').strip("'")
+                if k and k not in os.environ:
+                    os.environ[k] = v
+    except Exception:
+        pass
+
+
+load_dotenv()
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
+
+
+def gemini_pcm(text, lang, voice):
+    """Blocking: synthesize via Gemini TTS, return raw 24kHz 16-bit mono PCM bytes."""
+    prompt = (
+        f"Read aloud in {GEMINI_LANG_NAME[lang]}, exactly as written, "
+        f"with no extra words. Clear, warm tone, natural pace: {text}"
+    )
+    body = {
+        "contents": [{"parts": [{"text": prompt}]}],
+        "generationConfig": {
+            "responseModalities": ["AUDIO"],
+            "speechConfig": {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": voice}}},
+        },
+    }
+    data = json.dumps(body).encode()
+    last_err = None
+    for model in GEMINI_MODELS:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+        req = urllib.request.Request(
+            url, data=data,
+            headers={"x-goog-api-key": GEMINI_API_KEY, "Content-Type": "application/json"},
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=90) as r:
+                resp = json.loads(r.read())
+            for part in resp["candidates"][0]["content"]["parts"]:
+                if "inlineData" in part:
+                    return base64.b64decode(part["inlineData"]["data"])
+            raise RuntimeError("no audio in response")
+        except Exception as e:
+            last_err = e
+    raise RuntimeError(f"Gemini TTS failed: {last_err}")
+
+
+def pcm_to_mp3(pcm_bytes, out_path):
+    """24kHz 16-bit mono PCM -> MP3 (untrimmed; trim_silence runs after)."""
+    p = subprocess.Popen(
+        ["ffmpeg", "-y", "-f", "s16le", "-ar", "24000", "-ac", "1", "-i", "pipe:0",
+         "-b:a", "32k", out_path],
+        stdin=subprocess.PIPE, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+    )
+    p.communicate(pcm_bytes)
+    if p.returncode != 0 or not os.path.exists(out_path) or os.path.getsize(out_path) == 0:
+        raise RuntimeError("ffmpeg PCM->MP3 failed")
+
+
 def trim_silence(raw_path, final_path):
     # Trims silence from start and end so gap timers work accurately with zero dead air
     cmd = [
@@ -91,23 +181,32 @@ def trim_silence(raw_path, final_path):
         if os.path.exists(raw_path):
             os.remove(raw_path)
 
-async def generate_file(text, lang, voice, out_path, sem, force, retries=3):
+async def generate_file(text, lang, gender, out_path, sem, force, retries=3):
     if not force and os.path.exists(out_path) and os.path.getsize(out_path) > 500:
         return 'skipped'
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     temp_path = out_path + ".raw.mp3"
-    async with sem:
+    use_gemini = lang in GEMINI_LANGS
+    gate = GEM_SEM if use_gemini else sem
+    async with gate:
         for attempt in range(retries):
             try:
-                comm = edge_tts.Communicate(ssml(text, lang, voice), voice, proxy=PROXY)
-                await comm.save(temp_path)
+                if use_gemini:
+                    gvoice = GEMINI_VOICES[(lang, gender)]
+                    pcm = await asyncio.to_thread(gemini_pcm, text, lang, gvoice)
+                    await asyncio.to_thread(pcm_to_mp3, pcm, temp_path)
+                else:
+                    voice = VOICES[(lang, gender)]
+                    comm = edge_tts.Communicate(ssml(text, lang, voice), voice, proxy=PROXY)
+                    await comm.save(temp_path)
                 if os.path.exists(temp_path) and os.path.getsize(temp_path) > 300:
                     trim_silence(temp_path, out_path)
                     return 'ok'
             except Exception as e:
                 if attempt == retries - 1:
                     print(f"Failed to generate {out_path}: {e}", file=sys.stderr)
-                await asyncio.sleep(0.4 * (attempt + 1))
+                # Gemini rate limits need longer backoff than edge-tts
+                await asyncio.sleep((3 if use_gemini else 0.4) * (attempt + 1))
             finally:
                 if os.path.exists(temp_path):
                     try: os.remove(temp_path)
@@ -124,18 +223,25 @@ async def main():
     langs = [l.strip() for l in args.langs.split(',') if l.strip() in ('en', 'ne', 'pt')]
     max_n = args.limit if args.limit > 0 else 500
 
+    global GEM_SEM
+    GEM_SEM = asyncio.Semaphore(5)  # Gemini free-tier rate limits are strict
     sem = asyncio.Semaphore(18)
     tasks = []
 
-    print(f"Target directory: {BASE_DIR}")
+    if any(l in GEMINI_LANGS for l in langs) and not GEMINI_API_KEY:
+        sys.exit("Gemini TTS needs an API key: export GEMINI_API_KEY=... (free at "
+                 "https://aistudio.google.com/apikey) or add it to your local .env")
+
+    engines = ", ".join(f"{l}={'gemini' if l in GEMINI_LANGS else 'edge-tts'}" for l in langs)
+    print(f"Target directory: {BASE_DIR} | engines: {engines}")
 
     for lang in langs:
-        # Numbers 1..max_n (pt uses digit strings; the pt-BR voice reads them natively)
+        # Numbers 1..max_n (pt uses digit strings; the voice reads them natively)
         for n in range(1, max_n + 1):
             text = get_ne_word(n) if lang == 'ne' else str(n)
             for gender in ('female', 'male'):
                 p = os.path.join(BASE_DIR, lang, gender, f"{n}.mp3")
-                tasks.append(generate_file(text, lang, VOICES[(lang, gender)], p, sem, args.force))
+                tasks.append(generate_file(text, lang, gender, p, sem, args.force))
 
         # Letters: en/pt use A-Z, ne uses the ka-kha set
         letters = EN_LETTERS if lang in ('en', 'pt') else NE_LETTERS
@@ -143,7 +249,7 @@ async def main():
             fname = f"alpha_{l}.mp3" if lang in ('en', 'pt') else f"alpha_{idx}.mp3"
             for gender in ('female', 'male'):
                 p = os.path.join(BASE_DIR, lang, gender, fname)
-                tasks.append(generate_file(l, lang, VOICES[(lang, gender)], p, sem, args.force))
+                tasks.append(generate_file(l, lang, gender, p, sem, args.force))
 
     total = len(tasks)
     print(f"Starting generation of {total} trimmed natural audio files (langs={','.join(langs)}, force={args.force})...")
