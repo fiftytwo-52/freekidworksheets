@@ -217,10 +217,12 @@ async def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--force', action='store_true', help='regenerate existing files')
     parser.add_argument('--langs', default='en,ne,pt', help='comma-separated: en,ne,pt')
+    parser.add_argument('--genders', default='female,male', help='comma-separated: female,male')
     parser.add_argument('--limit', type=int, default=0, help='only first N numbers (0 = all 500)')
     args = parser.parse_args()
 
     langs = [l.strip() for l in args.langs.split(',') if l.strip() in ('en', 'ne', 'pt')]
+    genders = [g.strip() for g in args.genders.split(',') if g.strip() in ('female', 'male')]
     max_n = args.limit if args.limit > 0 else 500
 
     global GEM_SEM
@@ -239,7 +241,7 @@ async def main():
         # Numbers 1..max_n (pt uses digit strings; the voice reads them natively)
         for n in range(1, max_n + 1):
             text = get_ne_word(n) if lang == 'ne' else str(n)
-            for gender in ('female', 'male'):
+            for gender in genders:
                 p = os.path.join(BASE_DIR, lang, gender, f"{n}.mp3")
                 tasks.append(generate_file(text, lang, gender, p, sem, args.force))
 
@@ -249,7 +251,7 @@ async def main():
             letters = letters[:args.limit]
         for idx, l in enumerate(letters):
             fname = f"alpha_{l}.mp3" if lang in ('en', 'pt') else f"alpha_{idx}.mp3"
-            for gender in ('female', 'male'):
+            for gender in genders:
                 p = os.path.join(BASE_DIR, lang, gender, fname)
                 tasks.append(generate_file(l, lang, gender, p, sem, args.force))
 
