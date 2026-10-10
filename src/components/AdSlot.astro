@@ -1,3 +1,58 @@
 ---
-// AdSlot.astro — ad placeholders removed per site configuration.
+// AdSlot.astro — policy-compliant AdSense display slot.
+//
+// - When ADSENSE_PUBLISHER_ID is configured (env), renders a real responsive
+//   AdSense unit and requests NON-PERSONALIZED ads (kids' content policy).
+// - Until then, renders a same-size labeled placeholder so slot positions can
+//   be reviewed and the layout never shifts when ads are switched on.
+//
+// Placement rules (AdSense program policies + children's content):
+// - Only in informational/content areas: below articles, between sections,
+//   above footers.
+// - NEVER inside interactive tap/play flows, game controls, or fullscreen
+//   app stages. Never where an ad could be mistaken for a game control.
+// - Never near or inside incentivized actions ("click the ad").
+import { ADSENSE_PUBLISHER_ID } from '../data/site';
+
+interface Props {
+    /** Slot identifier, e.g. "suna-about", "home-mid", "worksheet-below-content". */
+    name: string;
+    /** Minimum placeholder height; real ads size themselves. */
+    minHeight?: string;
+}
+
+const { name, minHeight = '90px' } = Astro.props;
+const hasAds = ADSENSE_PUBLISHER_ID.trim().length > 0;
 ---
+
+<div
+    class="no-print mx-auto flex w-full max-w-3xl justify-center px-4 py-2"
+    data-ad-slot={name}
+    aria-label="Advertisement"
+>
+    {hasAds ? (
+        <>
+            <ins
+                class="adsbygoogle block w-full"
+                data-ad-client={`ca-pub-${ADSENSE_PUBLISHER_ID}`}
+                data-ad-format="auto"
+                data-full-width-responsive="true"
+            />
+            <script is:inline>
+                window.adsbygoogle = window.adsbygoogle || [];
+                /* Kids' content: serve non-personalized ads only. */
+                window.adsbygoogle.requestNonPersonalizedAds = 1;
+                window.adsbygoogle.push({});
+            </script>
+        </>
+    ) : (
+        <div
+            class="flex w-full items-center justify-center rounded-2xl border border-dashed border-neutral-300 bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-900"
+            style={`min-height:${minHeight}`}
+        >
+            <span class="text-[11px] font-semibold uppercase tracking-[0.2em] text-neutral-400 dark:text-neutral-500">
+                Advertisement
+            </span>
+        </div>
+    )}
+</div>

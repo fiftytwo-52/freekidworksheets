@@ -1,6 +1,7 @@
 ---
 // index.astro — home page (English worksheets default feed)
 import Base from '../layouts/Base.astro';
+import AdSlot from '../components/AdSlot.astro';
 import Faq from '../components/Faq.astro';
 import FilterPanel from '../components/FilterPanel.astro';
 import Icon from '../components/Icon.astro';
@@ -178,6 +179,9 @@ const PILL_PRIMARY =
         </div>
     </section>
 
+    <!-- Policy-safe ad slot: between content sections, never near game controls -->
+    <AdSlot name="home-mid" />
+
     <!-- 2. Featured worksheets — English feed -->
     <section
         class="w-full max-w-none px-4 py-7 sm:px-6 sm:py-12 lg:px-8"
@@ -245,6 +249,9 @@ const PILL_PRIMARY =
             </a>
         </div>
     </section>
+
+    <!-- Policy-safe ad slot: between content sections -->
+    <AdSlot name="home-below-banner" />
 
     <!-- 4. FAQ -->
     <section class="w-full max-w-none px-4 pb-16 sm:px-6 lg:px-8">

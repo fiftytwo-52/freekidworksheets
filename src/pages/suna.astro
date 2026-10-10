@@ -3,6 +3,7 @@
 // Auto-count (teacher/classroom) mode & tally counter mode.
 // Web Speech API (speechSynthesis) with interactive game mode & floating shape objects.
 import Base from '../layouts/Base.astro';
+import AdSlot from '../components/AdSlot.astro';
 import { breadcrumbListJsonLd, faqJsonLd } from '../lib/seo';
 
 const PATH = '/suna';
@@ -907,6 +908,8 @@ const webAppJsonLd = {
                     <p>{faq.answer}</p>
                 </details>
             ))}
+            <!-- Policy-safe ad slot: informational area only, never in the tap/play flow -->
+            <AdSlot name="suna-about" minHeight="120px" />
         </section>
         <footer>
             Suna – The Counter is part of <a href="/">Free Kids Worksheets</a> — free printables and playful learning tools for early learners.

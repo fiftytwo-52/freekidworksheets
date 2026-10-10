@@ -5,6 +5,7 @@
 import { Image, getImage } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import AdSlot from '../../components/AdSlot.astro';
 import RelatedGrid from '../../components/RelatedGrid.astro';
 import Icon from '../../components/Icon.astro';
 import { getRelated } from '../../lib/content';
@@ -190,6 +191,9 @@ const pageKeywords = Array.from(
             class="mt-4"
         />
     </section>
+
+    <!-- Policy-safe ad slot: below the worksheet content, above related items -->
+    <AdSlot name="worksheet-below-content" />
 
     <!-- Related Worksheets -->
     {related.length > 0 && (
