@@ -41,6 +41,31 @@ PROMPT = (
 API_KEY = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
 
 
+def load_dotenv():
+    """Tiny .env loader (stdlib only): reads KEY=VALUE lines from repo-root .env
+    into os.environ without overriding real env vars. Never committed (.gitignore)."""
+    root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    path = os.path.join(root, ".env")
+    if not os.path.exists(path):
+        return
+    try:
+        with open(path, encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith("#") or "=" not in line:
+                    continue
+                k, v = line.split("=", 1)
+                k, v = k.strip(), v.strip().strip('"').strip("'")
+                if k and k not in os.environ:
+                    os.environ[k] = v
+    except Exception:
+        pass
+
+
+load_dotenv()
+API_KEY = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
+
+
 def tts_pcm(text, voice):
     body = {
         "contents": [{"parts": [{"text": text}]}],
