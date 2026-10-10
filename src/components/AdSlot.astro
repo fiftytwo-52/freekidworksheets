@@ -3,8 +3,9 @@
 //
 // - When ADSENSE_PUBLISHER_ID is configured (env), renders a real responsive
 //   AdSense unit and requests NON-PERSONALIZED ads (kids' content policy).
-// - Until then, renders a same-size labeled placeholder so slot positions can
-//   be reviewed and the layout never shifts when ads are switched on.
+// - Until then, renders INVISIBLE reserved space (same dimensions) so the
+//   layout never shifts when ads are switched on, and visitors see no
+//   empty boxes during the AdSense review period.
 //
 // Placement rules (AdSense program policies + children's content):
 // - Only in informational/content areas: below articles, between sections,
@@ -17,7 +18,7 @@ import { ADSENSE_PUBLISHER_ID } from '../data/site';
 interface Props {
     /** Slot identifier, e.g. "suna-about", "home-mid", "worksheet-below-content". */
     name: string;
-    /** Minimum placeholder height; real ads size themselves. */
+    /** Reserved height while ads are not yet configured; real ads size themselves. */
     minHeight?: string;
 }
 
@@ -28,10 +29,9 @@ const hasAds = ADSENSE_PUBLISHER_ID.trim().length > 0;
 <div
     class="no-print mx-auto flex w-full max-w-3xl justify-center px-4 py-2"
     data-ad-slot={name}
-    aria-label="Advertisement"
 >
     {hasAds ? (
-        <>
+        <div aria-label="Advertisement" class="w-full">
             <ins
                 class="adsbygoogle block w-full"
                 data-ad-client={`ca-pub-${ADSENSE_PUBLISHER_ID}`}
@@ -44,15 +44,13 @@ const hasAds = ADSENSE_PUBLISHER_ID.trim().length > 0;
                 window.adsbygoogle.requestNonPersonalizedAds = 1;
                 window.adsbygoogle.push({});
             </script>
-        </>
+        </div>
     ) : (
         <div
-            class="flex w-full items-center justify-center rounded-2xl border border-dashed border-neutral-300 bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-900"
+            class="invisible w-full"
             style={`min-height:${minHeight}`}
-        >
-            <span class="text-[11px] font-semibold uppercase tracking-[0.2em] text-neutral-400 dark:text-neutral-500">
-                Advertisement
-            </span>
-        </div>
+            aria-hidden="true"
+            data-ad-slot-placeholder={name}
+        />
     )}
 </div>
