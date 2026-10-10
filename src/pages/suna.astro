@@ -1027,7 +1027,7 @@ const webAppJsonLd = {
         }
 
         function isDevaVoice(v) {
-            if (!v) return false;
+            if (!v) return lang === 'ne';
             var l = (v.lang || '').toLowerCase();
             return l.indexOf('ne') === 0 || l.indexOf('hi') === 0;
         }
@@ -1209,19 +1209,14 @@ const webAppJsonLd = {
 
         /* ---- voice loading & speech with multi-browser support ---- */
         function loadVoices() {
-            voices = window.speechSynthesis ? speechSynthesis.getVoices() : [];
-            var vNote = $('voiceNote');
+            if (!window.speechSynthesis) return;
+            try { voices = speechSynthesis.getVoices() || []; } catch (e) { voices = []; }
             if (!voiceSel) return;
-            if (!voices.length) {
-                voiceSel.innerHTML = '<option value="">' + (lang === 'ne' ? 'आवाजहरू लोड हुँदै…' : 'Loading voices…') + '</option>';
-                if (vNote) {
-                    vNote.style.display = 'block';
-                    vNote.textContent = lang === 'ne'
-                        ? 'डिभाइसबाट आवाजहरू खोजिँदैछ…'
-                        : 'Checking device voices…';
-                }
-                return;
-            }
+
+            var defaultLabel = lang === 'ne'
+                ? '📱 प्रणालीको आवाज (System Default)'
+                : (lang === 'pt' ? '📱 Voz padrão do sistema' : '📱 Default Device Voice');
+            var prevVal = voiceSel.value;
 
             var pre = [];
             var hasNe = voices.some(function (v) { return (v.lang || '').toLowerCase().indexOf('ne') === 0; });
@@ -1235,39 +1230,49 @@ const webAppJsonLd = {
                 pre = voices.filter(function (v) { return (v.lang || '').toLowerCase().indexOf(tag) === 0; });
             }
 
-            // Put preferred language voices first, followed by device's other voices so selector is never empty
             var list = pre.length ? pre.concat(voices.filter(function (v) { return pre.indexOf(v) < 0; })) : voices;
-            var prevIdx = voiceSel.value;
             voiceSel.innerHTML = '';
+
+            var defOpt = document.createElement('option');
+            defOpt.value = 'default';
+            defOpt.textContent = defaultLabel;
+            voiceSel.appendChild(defOpt);
 
             list.forEach(function (v) {
                 var o = document.createElement('option');
-                o.value = voices.indexOf(v);
+                o.value = String(voices.indexOf(v));
                 o.textContent = v.name + (v.lang ? ' (' + v.lang + ')' : '');
                 voiceSel.appendChild(o);
             });
 
-            if (prevIdx !== '' && prevIdx >= 0 && prevIdx < voices.length) {
-                voiceSel.value = prevIdx;
-            } else if (list.length) {
-                voiceSel.value = voices.indexOf(list[0]);
+            // Select preferred voice if available, otherwise keep user selection or default
+            if (prevVal !== '' && prevVal !== 'default' && +prevVal >= 0 && +prevVal < voices.length) {
+                voiceSel.value = prevVal;
+            } else if (pre.length) {
+                voiceSel.value = String(voices.indexOf(pre[0]));
+            } else {
+                voiceSel.value = 'default';
             }
 
+            var vNote = $('voiceNote');
             if (vNote) {
+                vNote.style.display = 'block';
                 if (lang === 'ne') {
-                    vNote.style.display = 'block';
                     if (hasNe) {
                         vNote.textContent = 'नेपाली आवाज सक्रिय छ।';
                         vNote.style.color = '#14532d';
                     } else if (hasHi) {
-                        vNote.textContent = 'नेपाली आवाज नभेटिएकाले हिन्दी आवाज प्रयोग गरिएको छ।';
+                        vNote.textContent = 'फोनमा नेपाली आवाज नभेटिएकाले हिन्दी आवाज प्रयोग गरिएको छ।';
                         vNote.style.color = '#2b1d4a';
                     } else {
-                        vNote.textContent = 'यो डिभाइसमा प्रणाली आवाजबाट उच्चारण भइरहेको छ। (सेटिङ्सबाट Nepali/Hindi TTS थप्न सकिन्छ)';
-                        vNote.style.color = '#2b1d4a';
+                        vNote.textContent = 'प्रणालीको पूर्वनिर्धारित आवाज प्रयोग भइरहेको छ। (नेपाली आवाजका लागि: Phone Settings > Accessibility > Text-to-speech > Google TTS मा Nepali voice डाउनलोड गर्नुहोस्)';
+                        vNote.style.color = '#9a3412';
                     }
                 } else {
-                    vNote.style.display = 'none';
+                    vNote.textContent = voices.length
+                        ? 'Device voices active.'
+                        : 'Using device default voice (tap Test to listen).';
+                    vNote.style.color = '#2b1d4a';
                 }
             }
         }
@@ -1277,25 +1282,21 @@ const webAppJsonLd = {
             if (typeof speechSynthesis.addEventListener === 'function') {
                 speechSynthesis.addEventListener('voiceschanged', loadVoices);
             }
-            var vT = 0;
-            var vTimer = setInterval(function () {
-                vT++;
-                if (voices.length || vT > 25) {
-                    clearInterval(vTimer);
-                    if (!voices.length && voiceSel) {
-                        voiceSel.innerHTML = '<option value="">' + (lang === 'ne' ? 'यो डिभाइसमा आवाज छैन' : 'No voices on this device') + '</option>';
-                        var vNote = $('voiceNote');
-                        if (vNote) {
-                            vNote.style.display = 'block';
-                            vNote.textContent = lang === 'ne'
-                                ? 'यो डिभाइसमा कुनै बोली आवाज भेटिएन (प्रणाली टेक्स्ट-टु-स्पीच जाँच गर्नुहोस्)'
-                                : 'No Text-to-Speech voices detected on this device.';
-                        }
-                    }
-                } else {
-                    loadVoices();
-                }
-            }, 100);
+            loadVoices();
+            // Frequent polling on mobile devices as Android / iOS TTS service initializes asynchronously
+            [100, 300, 600, 1200, 2500, 5000].forEach(function (ms) {
+                setTimeout(loadVoices, ms);
+            });
+            // Also refresh voices whenever user touches screen or focuses the voice dropdown
+            ['touchstart', 'pointerdown', 'click'].forEach(function (evt) {
+                window.addEventListener(evt, function () {
+                    if (!voices.length) loadVoices();
+                }, { once: false, passive: true });
+            });
+            if (voiceSel) {
+                voiceSel.addEventListener('focus', loadVoices);
+                voiceSel.addEventListener('click', loadVoices);
+            }
         }
 
         window.__sunaUtterance = null;
@@ -1308,7 +1309,7 @@ const webAppJsonLd = {
                     if (speechSynthesis.paused) speechSynthesis.resume();
                 } catch (e) {}
 
-                var v = (voiceSel && voiceSel.value !== '') ? voices[voiceSel.value] : null;
+                var v = (voiceSel && voiceSel.value !== '' && voiceSel.value !== 'default') ? voices[+voiceSel.value] : null;
                 var spokenTxt = textToSpeak(raw, v);
 
                 var u = new SpeechSynthesisUtterance(spokenTxt);
@@ -1358,7 +1359,7 @@ const webAppJsonLd = {
                 speechSynthesis.resume();
                 if (speechSynthesis.speaking) speechSynthesis.cancel();
             } catch (e) {}
-            var v = (voiceSel && voiceSel.value !== '') ? voices[voiceSel.value] : null;
+            var v = (voiceSel && voiceSel.value !== '' && voiceSel.value !== 'default') ? voices[+voiceSel.value] : null;
             var sample = lang === 'ne'
                 ? (isDevaVoice(v) ? 'एक, दुई, तीन' : '1, 2, 3')
                 : (lang === 'pt' ? 'Um, dois, três' : 'One, two, three');
