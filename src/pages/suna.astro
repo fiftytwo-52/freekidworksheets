@@ -219,6 +219,10 @@ const webAppJsonLd = {
         @media (prefers-reduced-motion: reduce) { #sky i { animation: none; } }
 
         header, main, .about, footer { position: relative; z-index: 1; }
+        /* The language menu drops down over <main>: the header must paint
+           above main, otherwise the menu renders behind the tab buttons
+           (the menu's own z-index can't escape the header's stacking context). */
+        header { z-index: 5; }
         header {
             display: flex;
             align-items: center;
@@ -1373,12 +1377,14 @@ const webAppJsonLd = {
                 if (typeof raw === 'number' || /^\d+$/.test(raw)) {
                     var n = +raw;
                     if (n >= 1 && n <= 500) {
-                        src = '/audio/' + (langTag === 'ne' ? 'ne' : 'en') + '/' + gender + '/' + n + '.mp3';
+                        var numLang = langTag === 'pt' ? 'pt' : langTag === 'ne' ? 'ne' : 'en';
+                        src = '/audio/' + numLang + '/' + gender + '/' + n + '.mp3';
                     }
                 } else if (typeof raw === 'string') {
                     var trimmed = raw.trim();
                     if (/^[A-Za-z]$/.test(trimmed)) {
-                        src = '/audio/en/' + gender + '/alpha_' + trimmed.toUpperCase() + '.mp3';
+                        var alphaLang = langTag === 'pt' ? 'pt' : 'en';
+                        src = '/audio/' + alphaLang + '/' + gender + '/alpha_' + trimmed.toUpperCase() + '.mp3';
                     } else {
                         var neIdx = NEL.indexOf(trimmed);
                         if (neIdx >= 0) {
@@ -1435,12 +1441,10 @@ const webAppJsonLd = {
 
         window.__sunaUtterance = null;
         async function speak(raw) {
-            beep(520, .04); // subtle audio feedback
-
             var vChoice = voiceSel ? voiceSel.value : 'mp3-female';
             if (vChoice === 'mp3-female' || vChoice === 'mp3-male') {
                 var gender = vChoice === 'mp3-male' ? 'male' : 'female';
-                var langTag = (lang === 'ne') ? 'ne' : 'en';
+                var langTag = lang === 'ne' ? 'ne' : lang === 'pt' ? 'pt' : 'en';
                 var played = await playMp3(langTag, gender, raw);
                 if (played) return;
             }
@@ -1492,11 +1496,10 @@ const webAppJsonLd = {
         }
 
         $('testVoiceBtn').onclick = async function () {
-            beep(660, 0.08);
             var vChoice = voiceSel ? voiceSel.value : 'mp3-female';
             if (vChoice === 'mp3-female' || vChoice === 'mp3-male') {
                 var gender = vChoice === 'mp3-male' ? 'male' : 'female';
-                var langTag = (lang === 'ne') ? 'ne' : 'en';
+                var langTag = lang === 'ne' ? 'ne' : lang === 'pt' ? 'pt' : 'en';
                 var ok = await playMp3(langTag, gender, 1);
                 if (ok) return;
             }
