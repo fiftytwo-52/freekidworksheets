@@ -132,13 +132,13 @@ const adsenseScript = ADSENSE_PUBLISHER_ID
     <body
         class={
             bare
-                ? 'h-dvh overflow-hidden bg-canvas text-ink dark:bg-[#0a0a0a] dark:text-neutral-100'
+                ? 'min-h-screen overflow-x-hidden bg-canvas text-ink dark:bg-[#0a0a0a] dark:text-neutral-100'
                 : 'flex min-h-screen flex-col bg-canvas text-ink dark:bg-[#0a0a0a] dark:text-neutral-100'
         }
     >
         {!bare && <SiteNav path={path} />}
 
-        <main class={bare ? 'h-dvh' : 'flex-1'}>
+        <main class={bare ? 'min-h-screen' : 'flex-1'}>
             <slot />
         </main>
 

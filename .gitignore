@@ -43,3 +43,11 @@ samplesheets/
 
 # local audit and export files
 *.pdf
+
+# environment & secrets
+.env
+.env.*
+!.env.example
+
+# temporary and backup files
+*.bak
