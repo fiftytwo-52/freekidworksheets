@@ -352,7 +352,7 @@ const webAppJsonLd = {
             font-family: var(--display);
             font-weight: 700;
             text-align: center;
-            font-size: clamp(6.5rem, 28vmin, 18rem);
+            font-size: clamp(4.8rem, 23vmin, 16rem);
             line-height: 1;
             color: var(--pink);
             min-height: 1.1em;
@@ -364,6 +364,10 @@ const webAppJsonLd = {
             justify-content: center;
             overflow: hidden;
             max-width: 100%;
+            transition: font-size 0.2s ease;
+        }
+        .display.long {
+            font-size: clamp(3.2rem, 16vmin, 10.5rem);
         }
         .display.pop { animation: pop .35s cubic-bezier(.3,1.6,.5,1); }
         .msg {
@@ -435,6 +439,32 @@ const webAppJsonLd = {
         }
         .btn.stop { background: var(--sun); color: #2b1d4a; padding: 9px clamp(14px, 3vw, 22px); }
         .btn:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--ink); }
+
+        /* Media queries for phone, tablet, ipad, desktop */
+        @media (max-width: 640px) {
+            .tabs { width: 100%; gap: 6px; }
+            .tabs button { flex: 1; justify-content: center; padding: 8px 10px; font-size: 0.98rem; }
+            .panel { padding: 14px 10px; border-radius: 20px; }
+            #numRange { grid-template-columns: 1fr 1fr; gap: 8px; }
+            #voiceGrid, #bgmGrid { grid-template-columns: 1fr; gap: 10px; }
+            .row { gap: 6px; }
+            .row .btn#play { width: 100%; min-height: 52px; font-size: 1.3rem; }
+            .row .pill { flex: 1 1 calc(50% - 6px); justify-content: center; }
+            #tallyCtl .grid { grid-template-columns: 1fr 1fr; }
+            #tallyCtl .chips#step { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+            #fsbar { padding: 8px 8px calc(8px + env(safe-area-inset-bottom, 0px)); flex-wrap: wrap; gap: 6px; }
+            #fsbar .pill { font-size: 0.8rem; padding: 6px 10px; min-height: 38px; }
+        }
+        @media (min-width: 641px) and (max-width: 1024px) {
+            .stage { padding: 10px 18px 40px; }
+            .panel { padding: 22px 18px; }
+            #numRange { grid-template-columns: repeat(4, 1fr); gap: 10px; }
+            #voiceGrid, #bgmGrid { grid-template-columns: 1fr 1fr; gap: 12px; }
+        }
+        @media (min-width: 1025px) {
+            #numRange { grid-template-columns: repeat(4, 1fr); gap: 12px; }
+            #voiceGrid, #bgmGrid { grid-template-columns: 1fr 1fr; gap: 14px; }
+        }
 
         .chips {
             display: flex;
@@ -747,7 +777,7 @@ const webAppJsonLd = {
                             </svg>
                             <span data-i="reset">Reset</span>
                         </button>
-                        <button type="button" class="pill" id="say" aria-pressed="false">
+                        <button type="button" class="pill" id="say" aria-pressed="true">
                             <svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
                                 <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
@@ -758,7 +788,7 @@ const webAppJsonLd = {
                     </div>
                 </div>
 
-                <div class="grid">
+                <div class="grid" id="voiceGrid">
                     <label>
                         <span>
                             <svg class="ic" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -769,8 +799,12 @@ const webAppJsonLd = {
                             <span data-i="voice">Voice</span>
                         </span>
                         <div style="display: flex; gap: 6px; align-items: center;">
-                            <select id="voice"><option>Loading voices…</option></select>
-                            <button type="button" class="pill" id="testVoiceBtn" title="Test audio voice" style="min-height: 44px; padding: 6px 12px; font-size: 0.82rem; white-space: nowrap;">
+                            <select id="voice" style="flex: 1; min-width: 0;">
+                                <option value="mp3-female" selected>Female Voice (महिला आवाज — Studio MP3)</option>
+                                <option value="mp3-male">Male Voice (पुरुष आवाज — Studio MP3)</option>
+                                <option value="default">Device System Voice (सिस्टम आवाज)</option>
+                            </select>
+                            <button type="button" class="pill" id="testVoiceBtn" title="Test audio voice" style="min-height: 44px; padding: 6px 12px; font-size: 0.82rem; white-space: nowrap; flex-shrink: 0;">
                                 <svg class="ic" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
                                 <span data-i="test">Test</span>
                             </button>
@@ -801,8 +835,8 @@ const webAppJsonLd = {
                         </span>
                         <div style="display: flex; gap: 6px; align-items: center;">
                             <select id="bgmTrack">
-                                <option value="off">Off (No music)</option>
-                                <option value="deepfocus" selected>Deep Learning Flow</option>
+                                <option value="off" selected>Off (No music)</option>
+                                <option value="deepfocus">Deep Learning Flow</option>
                                 <option value="peaceful">Peaceful Ambient</option>
                                 <option value="zen">Zen Mindfulness</option>
                                 <option value="lofi">Calm Lofi Beats</option>
@@ -1207,17 +1241,32 @@ const webAppJsonLd = {
             if (mode === 'tally') tallyShow();
         }
 
-        /* ---- voice loading & speech with multi-browser support ---- */
+        /* ---- voice loading & studio MP3 support ---- */
         function loadVoices() {
-            if (!window.speechSynthesis) return;
-            try { voices = speechSynthesis.getVoices() || []; } catch (e) { voices = []; }
             if (!voiceSel) return;
+            try { voices = (window.speechSynthesis ? speechSynthesis.getVoices() : []) || []; } catch (e) { voices = []; }
 
-            var defaultLabel = lang === 'ne'
-                ? '📱 प्रणालीको आवाज (System Default)'
-                : (lang === 'pt' ? '📱 Voz padrão do sistema' : '📱 Default Device Voice');
-            var prevVal = voiceSel.value;
+            var prevVal = voiceSel.value || 'mp3-female';
+            voiceSel.innerHTML = '';
 
+            // 1. Studio Pre-Recorded MP3 Voices (guaranteed 100% on every phone, tablet, and computer)
+            var optF = document.createElement('option');
+            optF.value = 'mp3-female';
+            optF.textContent = (lang === 'ne') ? '👩 महिला आवाज (Studio Audio)' : '👩 Female Voice (Studio Audio)';
+            voiceSel.appendChild(optF);
+
+            var optM = document.createElement('option');
+            optM.value = 'mp3-male';
+            optM.textContent = (lang === 'ne') ? '👨 पुरुष आवाज (Studio Audio)' : '👨 Male Voice (Studio Audio)';
+            voiceSel.appendChild(optM);
+
+            // 2. Default System Voice fallback
+            var optSys = document.createElement('option');
+            optSys.value = 'default';
+            optSys.textContent = (lang === 'ne') ? '📱 प्रणालीको आवाज (System TTS)' : '📱 System Default TTS';
+            voiceSel.appendChild(optSys);
+
+            // 3. Any additional device voices detected
             var pre = [];
             var hasNe = voices.some(function (v) { return (v.lang || '').toLowerCase().indexOf('ne') === 0; });
             var hasHi = voices.some(function (v) { return (v.lang || '').toLowerCase().indexOf('hi') === 0; });
@@ -1231,13 +1280,6 @@ const webAppJsonLd = {
             }
 
             var list = pre.length ? pre.concat(voices.filter(function (v) { return pre.indexOf(v) < 0; })) : voices;
-            voiceSel.innerHTML = '';
-
-            var defOpt = document.createElement('option');
-            defOpt.value = 'default';
-            defOpt.textContent = defaultLabel;
-            voiceSel.appendChild(defOpt);
-
             list.forEach(function (v) {
                 var o = document.createElement('option');
                 o.value = String(voices.indexOf(v));
@@ -1245,33 +1287,36 @@ const webAppJsonLd = {
                 voiceSel.appendChild(o);
             });
 
-            // Select preferred voice if available, otherwise keep user selection or default
-            if (prevVal !== '' && prevVal !== 'default' && +prevVal >= 0 && +prevVal < voices.length) {
+            // Restore selection or default to studio female voice
+            if (['mp3-female', 'mp3-male', 'default'].indexOf(prevVal) >= 0) {
                 voiceSel.value = prevVal;
-            } else if (pre.length) {
-                voiceSel.value = String(voices.indexOf(pre[0]));
+            } else if (+prevVal >= 0 && +prevVal < voices.length) {
+                voiceSel.value = prevVal;
             } else {
-                voiceSel.value = 'default';
+                voiceSel.value = 'mp3-female';
             }
 
             var vNote = $('voiceNote');
             if (vNote) {
                 vNote.style.display = 'block';
-                if (lang === 'ne') {
+                if (voiceSel.value.indexOf('mp3') === 0) {
+                    vNote.textContent = (lang === 'ne')
+                        ? '✨ स्टुडियो अडियो सक्रिय छ (सबै मोबाइल र ट्याब्लेटमा १००% स्पष्ट बज्छ)।'
+                        : '✨ Studio audio active (100% crystal-clear on all phones and tablets).';
+                    vNote.style.color = '#14532d';
+                } else if (lang === 'ne') {
                     if (hasNe) {
-                        vNote.textContent = 'नेपाली आवाज सक्रिय छ।';
+                        vNote.textContent = 'नेपाली प्रणाली आवाज सक्रिय छ।';
                         vNote.style.color = '#14532d';
                     } else if (hasHi) {
-                        vNote.textContent = 'फोनमा नेपाली आवाज नभेटिएकाले हिन्दी आवाज प्रयोग गरिएको छ।';
+                        vNote.textContent = 'फोनमा नेपाली आवाज नभेटिएकाले हिन्दी प्रणाली आवाज प्रयोग गरिएको छ।';
                         vNote.style.color = '#2b1d4a';
                     } else {
-                        vNote.textContent = 'प्रणालीको पूर्वनिर्धारित आवाज प्रयोग भइरहेको छ। (नेपाली आवाजका लागि: Phone Settings > Accessibility > Text-to-speech > Google TTS मा Nepali voice डाउनलोड गर्नुहोस्)';
+                        vNote.textContent = 'फोनको प्रणाली आवाज सक्रिय छ।';
                         vNote.style.color = '#9a3412';
                     }
                 } else {
-                    vNote.textContent = voices.length
-                        ? 'Device voices active.'
-                        : 'Using device default voice (tap Test to listen).';
+                    vNote.textContent = 'System device voice active.';
                     vNote.style.color = '#2b1d4a';
                 }
             }
@@ -1283,11 +1328,9 @@ const webAppJsonLd = {
                 speechSynthesis.addEventListener('voiceschanged', loadVoices);
             }
             loadVoices();
-            // Frequent polling on mobile devices as Android / iOS TTS service initializes asynchronously
-            [100, 300, 600, 1200, 2500, 5000].forEach(function (ms) {
+            [100, 300, 600, 1200, 2500].forEach(function (ms) {
                 setTimeout(loadVoices, ms);
             });
-            // Also refresh voices whenever user touches screen or focuses the voice dropdown
             ['touchstart', 'pointerdown', 'click'].forEach(function (evt) {
                 window.addEventListener(evt, function () {
                     if (!voices.length) loadVoices();
@@ -1296,24 +1339,95 @@ const webAppJsonLd = {
             if (voiceSel) {
                 voiceSel.addEventListener('focus', loadVoices);
                 voiceSel.addEventListener('click', loadVoices);
+                voiceSel.addEventListener('change', function () {
+                    try { localStorage.setItem('suna-voice-choice', this.value); } catch (e) {}
+                    loadVoices();
+                });
             }
         }
 
-        window.__sunaUtterance = null;
-        function speak(raw) {
-            return new Promise(function (res) {
-                beep(520, .04); // subtle audible feedback on every count step
-                if (!window.speechSynthesis) return res();
+        try {
+            var savedVoice = localStorage.getItem('suna-voice-choice');
+            if (savedVoice && voiceSel) voiceSel.value = savedVoice;
+        } catch (e) {}
 
+        var activeAudio = null;
+        function playMp3(langTag, gender, raw) {
+            return new Promise(function (resolve) {
+                var src = '';
+                if (typeof raw === 'number' || /^\d+$/.test(raw)) {
+                    var n = +raw;
+                    if (n >= 1 && n <= 500) {
+                        src = '/audio/' + (langTag === 'ne' ? 'ne' : 'en') + '/' + gender + '/' + n + '.mp3';
+                    }
+                } else if (typeof raw === 'string') {
+                    var trimmed = raw.trim();
+                    if (/^[A-Za-z]$/.test(trimmed)) {
+                        src = '/audio/en/' + gender + '/alpha_' + trimmed.toUpperCase() + '.mp3';
+                    } else {
+                        var neIdx = NEL.indexOf(trimmed);
+                        if (neIdx >= 0) {
+                            src = '/audio/ne/' + gender + '/alpha_' + neIdx + '.mp3';
+                        }
+                    }
+                }
+
+                if (!src) return resolve(false);
+
+                try {
+                    if (activeAudio) {
+                        activeAudio.pause();
+                        activeAudio = null;
+                    }
+                } catch (e) {}
+
+                var a = new Audio(src);
+                activeAudio = a;
+                var speedVal = +$('speed').value;
+                if (speedVal > 0) a.playbackRate = Math.min(2, Math.max(0.5, speedVal));
+
+                var done = false;
+                function finish(ok) {
+                    if (done) return;
+                    done = true;
+                    resolve(ok);
+                }
+
+                a.onended = function () { finish(true); };
+                a.onerror = function () { finish(false); };
+                setTimeout(function () { finish(true); }, 3000);
+
+                var playPromise = a.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(function () { finish(false); });
+                }
+            });
+        }
+
+        window.__sunaUtterance = null;
+        async function speak(raw) {
+            beep(520, .04); // subtle audio feedback
+
+            var vChoice = voiceSel ? voiceSel.value : 'mp3-female';
+            if (vChoice === 'mp3-female' || vChoice === 'mp3-male') {
+                var gender = vChoice === 'mp3-male' ? 'male' : 'female';
+                var langTag = (lang === 'ne') ? 'ne' : 'en';
+                var played = await playMp3(langTag, gender, raw);
+                if (played) return;
+            }
+
+            // Fallback to SpeechSynthesis if mp3 not available or device voice chosen
+            return new Promise(function (res) {
+                if (!window.speechSynthesis) return res();
                 try {
                     if (speechSynthesis.paused) speechSynthesis.resume();
                 } catch (e) {}
 
-                var v = (voiceSel && voiceSel.value !== '' && voiceSel.value !== 'default') ? voices[+voiceSel.value] : null;
+                var v = (voiceSel && voiceSel.value !== '' && voiceSel.value !== 'default' && voiceSel.value.indexOf('mp3') < 0) ? voices[+voiceSel.value] : null;
                 var spokenTxt = textToSpeak(raw, v);
 
                 var u = new SpeechSynthesisUtterance(spokenTxt);
-                window.__sunaUtterance = u; // Keep reference on window to prevent garbage collection in Chromium
+                window.__sunaUtterance = u;
 
                 if (v) {
                     u.voice = v;
@@ -1337,7 +1451,6 @@ const webAppJsonLd = {
                 u.onend = done;
                 u.onerror = done;
 
-                // Safety timeout: prevents counter from hanging if browser drops onend
                 var maxWait = Math.max(1200, (String(spokenTxt).length * 280) / u.rate + 800);
                 setTimeout(done, maxWait);
 
@@ -1349,8 +1462,16 @@ const webAppJsonLd = {
             });
         }
 
-        $('testVoiceBtn').onclick = function () {
+        $('testVoiceBtn').onclick = async function () {
             beep(660, 0.08);
+            var vChoice = voiceSel ? voiceSel.value : 'mp3-female';
+            if (vChoice === 'mp3-female' || vChoice === 'mp3-male') {
+                var gender = vChoice === 'mp3-male' ? 'male' : 'female';
+                var langTag = (lang === 'ne') ? 'ne' : 'en';
+                var ok = await playMp3(langTag, gender, 1);
+                if (ok) return;
+            }
+
             if (!window.speechSynthesis) {
                 alert(lang === 'ne' ? 'यो ब्राउजरमा आवाज सुविधा उपलब्ध छैन।' : 'Speech synthesis is not supported on this browser.');
                 return;
@@ -1359,7 +1480,7 @@ const webAppJsonLd = {
                 speechSynthesis.resume();
                 if (speechSynthesis.speaking) speechSynthesis.cancel();
             } catch (e) {}
-            var v = (voiceSel && voiceSel.value !== '' && voiceSel.value !== 'default') ? voices[+voiceSel.value] : null;
+            var v = (voiceSel && voiceSel.value !== '' && voiceSel.value !== 'default' && voiceSel.value.indexOf('mp3') < 0) ? voices[+voiceSel.value] : null;
             var sample = lang === 'ne'
                 ? (isDevaVoice(v) ? 'एक, दुई, तीन' : '1, 2, 3')
                 : (lang === 'pt' ? 'Um, dois, três' : 'One, two, three');
@@ -1368,6 +1489,7 @@ const webAppJsonLd = {
 
         function show(t) {
             disp.textContent = t;
+            disp.classList.toggle('long', String(t).length > 2);
             disp.classList.remove('pop');
             void disp.offsetWidth;
             disp.classList.add('pop');
@@ -1409,7 +1531,7 @@ const webAppJsonLd = {
         var BGM = (function () {
             var ctx = null;
             var timer = null;
-            var currentTrack = 'deepfocus';
+            var currentTrack = 'off';
             var volume = 0.3;
             var masterGain = null;
             var step = 0;
@@ -1680,7 +1802,7 @@ const webAppJsonLd = {
         }
 
         try {
-            var savedBgmTrack = localStorage.getItem('suna-bgm-track') || 'deepfocus';
+            var savedBgmTrack = localStorage.getItem('suna-bgm-track') || 'off';
             if ($('bgmTrack')) $('bgmTrack').value = savedBgmTrack;
             BGM.setTrack(savedBgmTrack);
             var savedBgmVol = parseFloat(localStorage.getItem('suna-bgm-vol'));
