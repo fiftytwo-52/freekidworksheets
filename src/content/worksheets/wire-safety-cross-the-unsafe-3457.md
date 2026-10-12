@@ -5,9 +5,9 @@ category: "Writing"
 ageGroup: "7-8"
 date: 2026-09-29
 description: "Wire safety cross the unsafe is a free printable english worksheet for children aged 7-8. This writing activity supports guided practice at home, in class, or during independent learning. It is an original worksheet prepared for FreeKidWorksheets and is marked Original."
-about: "Wire safety cross the unsafe is a free printable cross the unsafe worksheet for young learners ages 7-8. Children complete every section to build key early skills through guided practice. Print the clean A4 sheet at home or in class for independent learning."
+about: "In this writing worksheet, your child will work through the activity. The wire safety cross the unsafe tasks are short and friendly for young learners. Working row by row keeps the challenge bite-sized and fun. Print it on A4 at 100% scale — free to download, no signup, and you can reprint it as often as you like."
 shortTitle: "Wire safety cross the unsafe"
-metaDescription: "Wire safety cross the unsafe — free printable english writing worksheet for ages 7-8. Download the clean A4 sheet and print free."
+metaDescription: "Wire safety cross the unsafe Worksheet — free printable writing worksheet, ages 7-8. One A4 page, ready to print. Download and print free, no signup."
 image: "./3457.png"
 tags: ["wire", "safety", "cross", "the", "unsafe", "writing", "7-8", "english", "kids worksheet"]
 language: "en"

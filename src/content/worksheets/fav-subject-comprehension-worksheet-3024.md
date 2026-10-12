@@ -5,9 +5,9 @@ category: "Writing"
 ageGroup: "7-8"
 date: 2026-09-05
 description: "Fav subject comprehension helps children practise comprehension / answering through a clear, print-ready activity sheet. It is suitable for flexible use at home, in class, or during independent learning; the suggested age and class are only broad guides and any learner may use it. Worksheet origin: altered — downloaded from an external source, modified before use, and the original owner must be credited."
-about: "Fav subject comprehension Worksheet is a free printable activity sheet for ages 7-8. Fav subject comprehension Worksheet is a free printable writing worksheet for ages 7-8. Young learners work through the page while exploring a friendly vehicles theme, and the clean A4 page prints sharply at home or in class, so the skill grows through guided practice rather than guessing. Print the clean A4 page at home or in class and let your child finish it independently."
+about: "In this writing worksheet, your child will work through the activity. The fav subject comprehension tasks are short and friendly for young learners. Working row by row keeps the challenge bite-sized and fun. The suggested age is a guide, not a rule — print it whenever your child is curious and ready."
 shortTitle: "Fav subject comprehension Worksheet"
-metaDescription: "Fav subject comprehension Worksheet — free printable english writing practice worksheet for ages 7-8. Complete the whole page. Download the A4 sheet and..."
+metaDescription: "Fav subject comprehension Worksheet — free printable writing worksheet, ages 7-8. Perfect for home or classroom use. Download and print free, no signup."
 image: "./3024.png"
 tags: ["fav", "subject", "comprehension", "writing", "age 7-8", "english", "kids worksheet"]
 language: "en"

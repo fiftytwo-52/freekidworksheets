@@ -5,9 +5,9 @@ category: "Writing"
 ageGroup: "3-4"
 date: 2026-09-26
 description: "Cat complete the picture is a free printable english worksheet for children aged 3-4. This writing activity supports guided practice at home, in class, or during independent learning. It is an original worksheet prepared for FreeKidWorksheets and is marked Original."
-about: "Cat complete the picture is a free printable activity sheet for ages 3-4. Cat complete the picture is a free printable writing worksheet for ages 3-4. Young learners check your answers while exploring a friendly the home theme, and the clean A4 page prints sharply at home or in class, so the skill grows through guided practice rather than guessing. Print the clean A4 page at home or in class and let your child finish it independently."
+about: "In this writing worksheet, your child will work through the activity. The cat complete the picture tasks are short and friendly for young learners. Each small task practises focus, vocabulary, and early thinking skills. Print it on A4 at 100% scale — free to download, no signup, and you can reprint it as often as you like."
 shortTitle: "Cat complete the picture worksheet"
-metaDescription: "Cat complete the picture — free printable english writing practice worksheet for ages 3-4. Finish each row together. Download the A4 sheet and print free."
+metaDescription: "Cat complete the picture worksheet — free printable writing worksheet, ages 3-4. Short, focused, and frustration-free. Download and print free, no signup."
 image: "./3209.png"
 tags: ["cat", "complete", "the", "picture", "writing", "3-4", "english", "kids worksheet"]
 language: "en"

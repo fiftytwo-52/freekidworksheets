@@ -5,9 +5,9 @@ category: "Coloring"
 ageGroup: "7-8"
 date: 2026-09-29
 description: "AI or Me? Circle the drawing AI helped with is a free printable english worksheet for children aged 7-8. This coloring activity supports guided practice at home, in class, or during independent learning. It is an original worksheet prepared for FreeKidWorksheets and is marked Original."
-about: "AI or Me? Circle the drawing AI helped with is a free printable worksheet for young learners ages 7-8. Children complete every section to build key early skills through guided practice. Print the clean A4 sheet at home or in class for independent learning."
+about: "In this coloring worksheet, your child will look closely and circle the right answers. The ai or me? circle the ai choices are big and easy to tell apart. Colouring inside the lines builds the fine-motor control children need for writing. The suggested age is a guide, not a rule — print it whenever your child is curious and ready."
 shortTitle: "AI or Me? Circle the AI drawing"
-metaDescription: "AI or Me? Circle the drawing AI helped with - free printable english coloring worksheet for ages 7-8. Download the clean A4 sheet and print free."
+metaDescription: "AI or Me? Circle the AI drawing Worksheet — free printable coloring worksheet, ages 7-8. One A4 page, ready to print. Download and print free, no signup."
 image: "./3389.png"
 tags: ["ai", "circle", "drawing", "helped", "with", "coloring", "7-8", "english", "kids worksheet"]
 language: "en"

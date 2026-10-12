@@ -5,9 +5,9 @@ category: "Alphabet & Tracing"
 ageGroup: "5-6"
 date: 2026-09-26
 description: "Banana tracing and writing is a free printable english worksheet for children aged 5-6. This alphabet & tracing activity supports guided practice at home, in class, or during independent learning. It is an original worksheet prepared for FreeKidWorksheets and is marked Original."
-about: "Banana tracing and writing is a free printable activity sheet for ages 5-6. Banana tracing and writing is a free printable tracing worksheet for ages 5-6. Young learners check your answers while exploring a friendly the home theme, and the clean A4 page prints sharply at home or in class, so the skill grows through guided practice rather than guessing. Print the clean A4 page at home or in class and let your child finish it independently."
+about: "In this alphabet & tracing worksheet, your child will trace the dotted lines. The dotted banana tracing and guides little hands along the correct strokes. Short tracing sessions are the gentlest first step into writing. The suggested age is a guide, not a rule — print it whenever your child is curious and ready."
 shortTitle: "Banana tracing and writing"
-metaDescription: "Banana tracing and writing — free printable english alphabet and tracing worksheet for ages 5-6. Complete the whole page. Download the A4 sheet and print free."
+metaDescription: "Banana tracing and writing Worksheet — free printable alphabet & tracing worksheet for ages 5-6. Perfect for home or classroom use. A fun no-prep A4 page.…"
 image: "./3156.png"
 tags: ["banana", "tracing", "and", "writing", "alphabet & tracing", "5-6", "english", "kids worksheet"]
 language: "en"

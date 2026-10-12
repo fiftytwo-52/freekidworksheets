@@ -1,0 +1,172 @@
+---
+// /worksheets/coloring-pages — topic cluster pillar page for coloring
+// sheets. Parent/teacher guide copy + curated sheet links.
+// Purely additive: no existing routes, copy, or schema touched.
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import RelatedGrid from '../../components/RelatedGrid.astro';
+import { articleJsonLd, breadcrumbListJsonLd, faqJsonLd } from '../../lib/seo';
+
+const PATH = '/worksheets/coloring-pages';
+const TITLE = 'Coloring Pages for Kids';
+const DESCRIPTION =
+    'Free printable coloring pages for ages 3–8. Animals, festivals, alphabets and more with bold outlines. No signup — download and print.';
+
+const GUIDE_FAQS = [
+    {
+        question: 'Is coloring actually good for my child, or just fun?',
+        answer: 'Both. Coloring builds the fine-motor control and pencil grip that writing depends on, teaches patience and focus, and gives children low-stakes practice making decisions (which color? stay inside or go wild?). It is one of the highest-value quiet activities for ages 3–6.',
+    },
+    {
+        question: 'My child scribbles all over instead of coloring inside the lines. Is that okay?',
+        answer: 'For under-4s, absolutely — scribbling is the developmental step before controlled coloring. Around age 4–5 most children start caring about boundaries on their own. Never correct a scribbler; just keep offering pages.',
+    },
+    {
+        question: 'Crayons, colored pencils, or markers?',
+        answer: 'Start with chunky crayons (easiest to grip, forgiving). Move to colored pencils around age 5 for finer control. Markers are fun but bleed through — put a spare sheet underneath. All our pages print cleanly for any of them.',
+    },
+    {
+        question: 'How do I choose the right coloring page for my child\u2019s age?',
+        answer: 'Ages 3–4: big shapes, thick outlines, few details. Ages 5–6: medium detail, recognizable subjects. Ages 7–8: intricate pages, patterns, scenes. When in doubt, go easier — a finished page beats an abandoned hard one.',
+    },
+    {
+        question: 'Are these coloring pages really free?',
+        answer: 'Yes. Every page is free to download and print, with no account and no limits. Print the same page as many times as your child wants to color it.',
+    },
+];
+
+const all = await getCollection('worksheets');
+const byTitle = (a: (typeof all)[number], b: (typeof all)[number]) =>
+    a.data.title.localeCompare(b.data.title);
+const coloringSheets = all.filter((e) => e.data.category === 'Coloring').sort(byTitle);
+const gridSheets = coloringSheets.slice(0, 12);
+const packSheets = coloringSheets.slice(0, 10);
+---
+
+<Base
+    pageTitle={TITLE}
+    description={DESCRIPTION}
+    path={PATH}
+    keywords="coloring pages for kids, free printable coloring pages, kids coloring sheets, preschool coloring pages, printable coloring pages pdf"
+    jsonLd={[
+        articleJsonLd({
+            name: TITLE,
+            description: DESCRIPTION,
+            url: 'https://freekidworksheets.com/worksheets/coloring-pages',
+            inLanguage: 'en',
+            datePublished: '2026-10-12',
+        }),
+        breadcrumbListJsonLd([
+            { name: 'Home', url: '/' },
+            { name: 'Worksheets', url: '/worksheets' },
+            { name: 'Coloring Pages' },
+        ]),
+        faqJsonLd(GUIDE_FAQS),
+    ]}
+>
+    <article class="mx-auto w-full max-w-3xl px-4 pt-10 pb-16 sm:px-6 lg:px-8">
+        <nav aria-label="Breadcrumb" class="font-mono text-[11px] uppercase tracking-widest text-mute dark:text-neutral-500">
+            <a href="/" class="hover:text-pink-600">Home</a>
+            <span aria-hidden="true"> › </span>
+            <a href="/worksheets" class="hover:text-pink-600">Worksheets</a>
+            <span aria-hidden="true"> › </span>
+            <span class="normal-case tracking-normal">Coloring Pages</span>
+        </nav>
+
+        <h1 class="mt-3 text-3xl font-semibold tracking-tight text-ink sm:text-4xl dark:text-neutral-100">
+            Coloring Pages for Kids
+        </h1>
+        <p class="mt-3 text-base leading-relaxed text-body dark:text-neutral-400">
+            Free printable coloring pages with bold, kid-friendly outlines —
+            animals, festivals, letters, and everyday things to bring to life.
+        </p>
+
+        <div class="mt-8 space-y-6 text-[15px] leading-relaxed text-body dark:text-neutral-300">
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                More than just fun
+            </h2>
+            <p>
+                Coloring looks like play, and it is — but it is also one of the
+                best workouts little hands can get. Gripping a crayon, pressing
+                just hard enough, steering inside a boundary: every one of those
+                is a rehearsal for writing. Children who color regularly usually
+                pick up pencils with more confidence when school starts.
+            </p>
+            <p>
+                It also teaches something worksheets rarely do: comfort with
+                open-ended choices. There is no single right way to color an
+                apple. Making those small decisions — red or green, light or
+                dark — builds the creative confidence that carries into drawing,
+                storytelling, and beyond.
+            </p>
+
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                Picking the right page
+            </h2>
+            <p>
+                The right difficulty is everything. Too simple and older kids get
+                bored; too detailed and younger ones give up halfway. For ages
+                3–4, choose pages with big shapes and thick outlines — animals
+                and familiar objects work best. Ages 5–6 can handle medium
+                detail: scenes, patterns, festival pages. Ages 7–8 enjoy
+                intricate designs they can spend real time on.
+            </p>
+            <p>
+                Let your child choose whenever possible. A self-chosen page gets
+                finished; an assigned one might not. Keep a small stack printed
+                and let them pick — choice is part of the activity.
+            </p>
+
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                Coloring tips that actually help
+            </h2>
+            <ul class="list-disc space-y-2 pl-5">
+                <li>Print at 100% scale on A4 so outlines stay crisp and bold.</li>
+                <li>Tape the page to the table for under-5s — it stops the page sliding away mid-stroke.</li>
+                <li>Start with chunky crayons; move to colored pencils around age 5.</li>
+                <li>Put scrap paper under the page if using markers.</li>
+                <li>Display finished work. A fridge gallery motivates more than any sticker chart.</li>
+            </ul>
+
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                Ready-to-print pack: 10 favorite pages
+            </h2>
+            <p>
+                A hand-picked starter set across animals, objects, and festive
+                themes. Print all ten for a week of quiet-time coloring.
+            </p>
+            <ol class="list-decimal space-y-2 pl-5">
+                {packSheets.map((s) => (
+                    <li>
+                        <a href={`/worksheet/${s.slug}`} class="font-medium text-pink-600 hover:underline dark:text-pink-400">
+                            {s.data.shortTitle || s.data.title}
+                        </a>
+                        <span class="text-sm text-mute dark:text-neutral-500"> — ages {s.data.ageGroup}</span>
+                    </li>
+                ))}
+            </ol>
+        </div>
+
+        <RelatedGrid title="Browse coloring pages" items={gridSheets} />
+
+        <div class="mt-12">
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                Frequently asked questions
+            </h2>
+            <dl class="mt-4 space-y-5">
+                {GUIDE_FAQS.map((f) => (
+                    <div>
+                        <dt class="text-[15px] font-semibold text-ink dark:text-neutral-100">{f.question}</dt>
+                        <dd class="mt-1 text-[15px] leading-relaxed text-body dark:text-neutral-300">{f.answer}</dd>
+                    </div>
+                ))}
+            </dl>
+        </div>
+
+        <p class="mt-10 text-sm text-mute dark:text-neutral-500">
+            Looking for more? Browse the full{' '}
+            <a href="/category/coloring" class="text-pink-600 hover:underline dark:text-pink-400">Coloring library</a>{' '}
+            or the complete <a href="/worksheets" class="text-pink-600 hover:underline dark:text-pink-400">worksheet library</a>.
+        </p>
+    </article>
+</Base>

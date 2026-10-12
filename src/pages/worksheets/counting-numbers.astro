@@ -1,0 +1,177 @@
+---
+// /worksheets/counting-numbers — topic cluster pillar page for counting &
+// number (Math) sheets. Parent/teacher guide copy + curated sheet links.
+// Purely additive: no existing routes, copy, or schema touched.
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import RelatedGrid from '../../components/RelatedGrid.astro';
+import { articleJsonLd, breadcrumbListJsonLd, faqJsonLd } from '../../lib/seo';
+
+const PATH = '/worksheets/counting-numbers';
+const TITLE = 'Counting & Number Worksheets';
+const DESCRIPTION =
+    'Free printable counting and number worksheets for ages 3–7. Count, trace numbers, and build real number sense. No signup — download and print.';
+
+const GUIDE_FAQS = [
+    {
+        question: 'What should my 4-year-old be able to do with numbers?',
+        answer: 'By age 4 most children can count to 10, recognise a few written numerals, and understand "more" versus "less". Do not worry about writing numbers yet — counting real things out loud matters far more at this stage.',
+    },
+    {
+        question: 'How do these sheets teach number sense, not just memorising?',
+        answer: 'The sheets pair every numeral with something countable — apples, stars, animals. Children touch each picture as they count, which connects the symbol "3" to the idea of three-ness. That connection is number sense.',
+    },
+    {
+        question: 'My child counts "1, 2, 5, 9…" — should I correct them?',
+        answer: 'Gently, and without making it a test. Count together slowly, pointing at each object, and let them hear the right order many times. Rote sequence comes before accurate one-to-one counting for almost every child.',
+    },
+    {
+        question: 'When do we move from counting to addition?',
+        answer: 'When counting to 20 is solid and your child can say which of two small groups has more without recounting. That is usually around age 5–6. Rushing into addition before counting is automatic creates shaky foundations.',
+    },
+    {
+        question: 'Are these math worksheets really free?',
+        answer: 'Yes. Every sheet is free to download and print, with no account and no limits. Print the same page as many times as your child wants to practise.',
+    },
+];
+
+const all = await getCollection('worksheets');
+const byTitle = (a: (typeof all)[number], b: (typeof all)[number]) =>
+    a.data.title.localeCompare(b.data.title);
+const mathSheets = all.filter((e) => e.data.category === 'Math').sort(byTitle);
+const gridSheets = mathSheets.slice(0, 12);
+const packSheets = mathSheets.slice(0, 10);
+---
+
+<Base
+    pageTitle={TITLE}
+    description={DESCRIPTION}
+    path={PATH}
+    keywords="counting worksheets, number worksheets for kids, kindergarten math worksheets, counting to 10 printable, preschool math worksheets, free printable math worksheets"
+    jsonLd={[
+        articleJsonLd({
+            name: TITLE,
+            description: DESCRIPTION,
+            url: 'https://freekidworksheets.com/worksheets/counting-numbers',
+            inLanguage: 'en',
+            datePublished: '2026-10-12',
+        }),
+        breadcrumbListJsonLd([
+            { name: 'Home', url: '/' },
+            { name: 'Worksheets', url: '/worksheets' },
+            { name: 'Counting & Numbers' },
+        ]),
+        faqJsonLd(GUIDE_FAQS),
+    ]}
+>
+    <article class="mx-auto w-full max-w-3xl px-4 pt-10 pb-16 sm:px-6 lg:px-8">
+        <nav aria-label="Breadcrumb" class="font-mono text-[11px] uppercase tracking-widest text-mute dark:text-neutral-500">
+            <a href="/" class="hover:text-pink-600">Home</a>
+            <span aria-hidden="true"> › </span>
+            <a href="/worksheets" class="hover:text-pink-600">Worksheets</a>
+            <span aria-hidden="true"> › </span>
+            <span class="normal-case tracking-normal">Counting &amp; Numbers</span>
+        </nav>
+
+        <h1 class="mt-3 text-3xl font-semibold tracking-tight text-ink sm:text-4xl dark:text-neutral-100">
+            Counting &amp; Number Worksheets
+        </h1>
+        <p class="mt-3 text-base leading-relaxed text-body dark:text-neutral-400">
+            Free printable math sheets that turn counting into a hands-on game —
+            from first 1-to-5 counts to comparing quantities.
+        </p>
+
+        <div class="mt-8 space-y-6 text-[15px] leading-relaxed text-body dark:text-neutral-300">
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                Counting before calculating
+            </h2>
+            <p>
+                Every math skill your child will ever learn sits on top of
+                counting. Addition is counting forward, subtraction is counting
+                back, and multiplication is counting in jumps. Sheets that ask
+                children to touch, count, and write numbers are not "easy" work —
+                they are the foundation everything else is built on.
+            </p>
+            <p>
+                The sheets below always pair numerals with countable pictures.
+                That pairing matters: a child who can recite to 20 but cannot
+                tell you how many apples are on the table has memorised a song,
+                not learned numbers. Count the things, then write the number.
+            </p>
+
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                What to expect at each age
+            </h2>
+            <p>
+                Ages 3–4: counting objects to 5, recognising a few numerals,
+                understanding "more". Keep groups small and pictures big — five
+                large apples beat fifteen tiny stars. Ages 5–6: counting to 20,
+                writing numerals, comparing two groups, and simple "how many
+                altogether" questions. Ages 6–7: counting in 2s and 10s, before
+                and after numbers, and the first gentle steps into addition.
+            </p>
+            <p>
+                Move at your child's pace, not the chart's. A child who counts
+                to 10 confidently is better prepared than one pushed to 100
+                with wobbling one-to-one correspondence.
+            </p>
+
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                How to use these sheets
+            </h2>
+            <p>
+                Count out loud together, with your child touching each picture as
+                they say the number — that touch is what builds one-to-one
+                correspondence. Then let them write the answer themselves, even
+                if the numeral comes out backwards. Correct formation gently by
+                writing it once yourself and letting them trace yours.
+            </p>
+            <ul class="list-disc space-y-2 pl-5">
+                <li>Count real things too: stairs, spoons, buttons in a jar.</li>
+                <li>Keep sessions to 10–15 minutes for under-6s.</li>
+                <li>Reprint favourites — fluency comes from repetition.</li>
+                <li>Celebrate the counting, not just the right answer.</li>
+            </ul>
+
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                Ready-to-print pack: counting starter set
+            </h2>
+            <p>
+                Ten sheets in difficulty order, from counting to 5 up to comparing
+                groups. Print the set and do one page a day.
+            </p>
+            <ol class="list-decimal space-y-2 pl-5">
+                {packSheets.map((s) => (
+                    <li>
+                        <a href={`/worksheet/${s.slug}`} class="font-medium text-pink-600 hover:underline dark:text-pink-400">
+                            {s.data.shortTitle || s.data.title}
+                        </a>
+                        <span class="text-sm text-mute dark:text-neutral-500"> — ages {s.data.ageGroup}</span>
+                    </li>
+                ))}
+            </ol>
+        </div>
+
+        <RelatedGrid title="Browse counting & number sheets" items={gridSheets} />
+
+        <div class="mt-12">
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                Frequently asked questions
+            </h2>
+            <dl class="mt-4 space-y-5">
+                {GUIDE_FAQS.map((f) => (
+                    <div>
+                        <dt class="text-[15px] font-semibold text-ink dark:text-neutral-100">{f.question}</dt>
+                        <dd class="mt-1 text-[15px] leading-relaxed text-body dark:text-neutral-300">{f.answer}</dd>
+                    </div>
+                ))}
+            </dl>
+        </div>
+
+        <p class="mt-10 text-sm text-mute dark:text-neutral-500">
+            Looking for more? Browse the full{' '}
+            <a href="/category/math" class="text-pink-600 hover:underline dark:text-pink-400">Math library</a>{' '}
+            or the complete <a href="/worksheets" class="text-pink-600 hover:underline dark:text-pink-400">worksheet library</a>.
+        </p>
+    </article>
+</Base>

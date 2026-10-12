@@ -5,9 +5,9 @@ category: "Alphabet & Tracing"
 ageGroup: "5-6"
 date: 2026-09-26
 description: "Pear tracing and writing is a free printable english worksheet for children aged 5-6. This alphabet & tracing activity supports guided practice at home, in class, or during independent learning. It is an original worksheet prepared for FreeKidWorksheets and is marked Original."
-about: "Pear tracing and writing is a free printable activity sheet for ages 5-6. Pear tracing and writing is a free printable tracing worksheet for ages 5-6. Young learners work through the page while exploring a friendly animals theme, and the clean A4 page prints sharply at home or in class, so the skill grows through guided practice rather than guessing. Print the clean A4 page at home or in class and let your child finish it independently."
+about: "In this alphabet & tracing worksheet, your child will trace the dotted lines. The dotted pear tracing and guides little hands along the correct strokes. Following dotted lines trains pencil grip and hand-eye coordination. Use it at home, in class, or on the go: one A4 page, zero prep, and free forever."
 shortTitle: "Pear tracing and writing worksheet"
-metaDescription: "Pear tracing and writing — free printable english alphabet and tracing worksheet for ages 5-6. Solve every puzzle. Download the A4 sheet and print free."
+metaDescription: "Pear tracing and writing worksheet — free printable alphabet & tracing worksheet, ages 5-6. One A4 page, ready to print. Download and print free, no signup."
 image: "./3337.png"
 tags: ["pear", "tracing", "and", "writing", "alphabet & tracing", "5-6", "english", "kids worksheet"]
 language: "en"

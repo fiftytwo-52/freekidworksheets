@@ -5,9 +5,9 @@ category: "Writing"
 ageGroup: "5-6"
 date: 2026-09-05
 description: "Creative writing helps children practise writing through a clear, print-ready activity sheet. It is suitable for flexible use at home, in class, or during independent learning; the suggested age and class are only broad guides and any learner may use it. Worksheet origin: altered — downloaded from an external source, modified before use, and the original owner must be credited. This specific worksheet is identified by code 3018."
-about: "Creative Writing Worksheet — Black and White is a free printable activity sheet for ages 5-6. Creative Writing Worksheet — Black and White is a free printable writing worksheet for ages 5-6. Young learners work through the page while exploring a friendly food theme, and the clean A4 page prints sharply at home or in class, so the skill grows through guided practice rather than guessing. Print the clean A4 page at home or in class and let your child finish it independently."
+about: "In this writing worksheet, your child will practise writing with the guided lines. The creative writing worksheet — black prompts keep the writing task short and friendly. These activities build the attention span school will ask for. Print it on A4 at 100% scale — free to download, no signup, and you can reprint it as often as you like."
 shortTitle: "Creative Writing Worksheet — Black"
-metaDescription: "Creative Writing Worksheet — Black and White — free printable english writing practice worksheet for ages 5-6. Complete the whole page. Download the A4..."
+metaDescription: "Creative Writing Worksheet — Black — free printable writing worksheet, ages 5-6. One A4 page, ready to print. Download and print free, no signup."
 image: "./3018.png"
 tags: ["creative", "writing", "age 5-6", "english", "kids worksheet"]
 language: "en"

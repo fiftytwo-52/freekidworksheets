@@ -59,6 +59,37 @@ const description =
         tone={lang === 'ne' ? 'green' : lang === 'es' ? 'blue' : 'pink'}
         {lang}
     />
+
+    <!-- Topic guides strip — only on page 1 of the English library (SEO: pillar
+     cluster hubs, purely additive). -->
+{page === 1 && lang === 'en' && (
+    <section class="mx-auto w-full max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
+        <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+            Learning guides
+        </h2>
+        <p class="mt-1 text-sm text-body dark:text-neutral-400">
+            Parent &amp; teacher guides with ready-to-print sheet packs.
+        </p>
+        <div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+                { href: '/worksheets/alphabet-tracing', label: 'Alphabet Tracing', blurb: 'A–Z tracing order, pencil tips & starter pack' },
+                { href: '/worksheets/counting-numbers', label: 'Counting & Numbers', blurb: 'Number sense by age & counting games' },
+                { href: '/worksheets/coloring-pages', label: 'Coloring Pages', blurb: 'Picking the right page & coloring tips' },
+                { href: '/worksheets/writing-practice', label: 'Writing Practice', blurb: 'Pre-writing skills through play' },
+                { href: '/worksheets/shapes-for-kids', label: 'Shapes for Kids', blurb: 'First geometry: trace, count & find' },
+                { href: '/dashain-tihar-worksheets', label: 'Dashain & Tihar Pack', blurb: 'Festival activity sheets for kids' },
+            ].map((g) => (
+                <a
+                    href={g.href}
+                    class="block rounded-2xl border border-neutral-200 bg-white p-5 transition-colors hover:border-pink-300 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-pink-900"
+                >
+                    <p class="font-semibold text-ink dark:text-neutral-100">{g.label}</p>
+                    <p class="mt-1 text-sm text-body dark:text-neutral-400">{g.blurb}</p>
+                </a>
+            ))}
+        </div>
+    </section>
+    )}
 </Base>
 
 <script>

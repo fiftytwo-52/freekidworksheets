@@ -1,0 +1,160 @@
+---
+// /dashain-tihar-worksheets — seasonal festival pack page: Dashain & Tihar
+// activity sheets for kids (coloring, tracing, counting, matching).
+// Guide copy + the real festival sheets, cross-linked with /nepali.
+// Purely additive: no existing routes, copy, or schema touched.
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import RelatedGrid from '../components/RelatedGrid.astro';
+import { articleJsonLd, breadcrumbListJsonLd, faqJsonLd } from '../lib/seo';
+
+const PATH = '/dashain-tihar-worksheets';
+const TITLE = 'Dashain & Tihar Worksheets';
+const DESCRIPTION =
+    'Free printable Dashain and Tihar worksheets for kids. Color tika plates, fly kites, count swings. No signup — download and print.';
+
+const GUIDE_FAQS = [
+    {
+        question: 'What is Dashain?',
+        answer: 'Dashain (दशैँ) is the biggest festival in Nepal, celebrated for 15 days. Families gather, elders put tika (a mix of rice, yoghurt, and red powder) on younger ones\u2019 foreheads, and children receive jamara (barley shoots) and dakshina (blessing money). Kite flying and bamboo swings are the classic Dashain pastimes.',
+    },
+    {
+        question: 'What is Tihar?',
+        answer: 'Tihar, the festival of lights, comes right after Dashain and lasts five days. Each day honours something different — crows, dogs, cows, oxen — and the fourth day celebrates brothers and sisters. Homes glow with diyo (oil lamps) and marigold garlands.',
+    },
+    {
+        question: 'What ages are these festival worksheets for?',
+        answer: 'Ages 3–8. Coloring pages suit the youngest, while the tracing, counting, and matching sheets work well for ages 5–8. Every sheet shows its suggested age, but treat it as a guide — print whatever your child enjoys.',
+    },
+    {
+        question: 'Can I use these in a classroom?',
+        answer: 'Yes. All sheets are free for home and classroom use. They work well as festival-week activities: color the tika plate while you talk about Dashain traditions, or count the kites while learning about the season.',
+    },
+    {
+        question: 'Are these worksheets really free?',
+        answer: 'Yes. Every sheet is free to download and print, with no account and no limits.',
+    },
+];
+
+const all = await getCollection('worksheets');
+const byTitle = (a: (typeof all)[number], b: (typeof all)[number]) =>
+    a.data.title.localeCompare(b.data.title);
+const festivalSheets = all
+    .filter((e) => e.data.tags.includes('dashain'))
+    .sort(byTitle);
+const gridSheets = festivalSheets.slice(0, 12);
+---
+
+<Base
+    pageTitle={TITLE}
+    description={DESCRIPTION}
+    path={PATH}
+    keywords="dashain worksheets, tihar worksheets, dashain coloring pages, nepali festival worksheets for kids, diwali activities for kids printable, tika colouring page"
+    jsonLd={[
+        articleJsonLd({
+            name: TITLE,
+            description: DESCRIPTION,
+            url: 'https://freekidworksheets.com/dashain-tihar-worksheets',
+            inLanguage: 'en',
+            datePublished: '2026-10-12',
+        }),
+        breadcrumbListJsonLd([
+            { name: 'Home', url: '/' },
+            { name: 'Nepali Worksheets', url: '/nepali' },
+            { name: 'Dashain & Tihar Worksheets' },
+        ]),
+        faqJsonLd(GUIDE_FAQS),
+    ]}
+>
+    <article class="mx-auto w-full max-w-3xl px-4 pt-10 pb-16 sm:px-6 lg:px-8">
+        <nav aria-label="Breadcrumb" class="font-mono text-[11px] uppercase tracking-widest text-mute dark:text-neutral-500">
+            <a href="/" class="hover:text-pink-600">Home</a>
+            <span aria-hidden="true"> › </span>
+            <a href="/nepali" class="hover:text-pink-600">Nepali Worksheets</a>
+            <span aria-hidden="true"> › </span>
+            <span class="normal-case tracking-normal">Dashain &amp; Tihar</span>
+        </nav>
+
+        <h1 class="mt-3 text-3xl font-semibold tracking-tight text-ink sm:text-4xl dark:text-neutral-100">
+            Dashain &amp; Tihar Worksheets
+        </h1>
+        <p class="mt-3 text-base leading-relaxed text-body dark:text-neutral-400">
+            Free printable festival activity sheets — color tika plates, fly
+            paper kites, count the swings, and celebrate Nepal\u2019s biggest
+            festivals through play.
+        </p>
+
+        <div class="mt-8 space-y-6 text-[15px] leading-relaxed text-body dark:text-neutral-300">
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                Learning the festivals through play
+            </h2>
+            <p>
+                Dashain (दशैँ) and Tihar are the heart of the Nepali festival
+                calendar — fifteen days of Dashain followed by five days of
+                Tihar\u2019s lights. For young children, these festivals are a
+                swirl of wonderful things: red tika on foreheads, green jamara
+                behind ears, kites tugging at strings, bamboo swings flying
+                high, and houses glowing with diyo lamps and marigold garlands.
+            </p>
+            <p>
+                These worksheets turn that excitement into learning. Coloring a
+                tika plate teaches what goes on it and why. A kite tracing sheet
+                practises pencil control with something children actually care
+                about. Counting swings sneaks math into festival week. Each
+                sheet is a small doorway into the traditions — perfect for
+                Nepali families at home and abroad, and for classrooms
+                celebrating the festivals.
+            </p>
+
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                What\u2019s in the pack
+            </h2>
+            <ul class="list-disc space-y-2 pl-5">
+                <li><strong>Coloring pages</strong> — Happy Dashain scenes, tika blessings, marigold garlands, and children on the traditional Dashain swing.</li>
+                <li><strong>Tracing</strong> — fly-the-kite trace-and-color sheets that build pencil control.</li>
+                <li><strong>Counting</strong> — how-many-on-the-swing counting practice with a festival twist.</li>
+                <li><strong>Matching &amp; sequencing</strong> — tika plate matching and jamara growth sequencing in Nepali.</li>
+                <li><strong>Shapes</strong> — find the diamond kites, a shape hunt in the Dashain sky.</li>
+            </ul>
+
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                How to use them during the festivals
+            </h2>
+            <p>
+                Print a few sheets in the week before Dashain begins and let the
+                festival build slowly: color the kite page while talking about
+                why people fly kites, do the jamara sequencing sheet when the
+                barley shoots start growing at home. During Tihar, the marigold
+                garland coloring page pairs beautifully with making a real
+                garland together.
+            </p>
+            <p>
+                For families outside Nepal, these sheets are a gentle way to
+                keep the festivals alive — a Dashain swing coloring page on the
+                fridge goes a long way when the real ping is an ocean away.
+            </p>
+        </div>
+
+        <RelatedGrid title="Dashain & Tihar activity sheets" items={gridSheets} />
+
+        <div class="mt-12">
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                Frequently asked questions
+            </h2>
+            <dl class="mt-4 space-y-5">
+                {GUIDE_FAQS.map((f) => (
+                    <div>
+                        <dt class="text-[15px] font-semibold text-ink dark:text-neutral-100">{f.question}</dt>
+                        <dd class="mt-1 text-[15px] leading-relaxed text-body dark:text-neutral-300">{f.answer}</dd>
+                    </div>
+                ))}
+            </dl>
+        </div>
+
+        <p class="mt-10 text-sm text-mute dark:text-neutral-500">
+            More Nepali learning: browse the{' '}
+            <a href="/nepali" class="text-pink-600 hover:underline dark:text-pink-400">Nepali worksheets collection</a>{' '}
+            or read the <a href="/nepali-alphabet-guide" class="text-pink-600 hover:underline dark:text-pink-400">Nepali alphabet guide for parents</a>.
+        </p>
+    </article>
+</Base>

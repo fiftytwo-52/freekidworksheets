@@ -5,9 +5,9 @@ category: "Alphabet & Tracing"
 ageGroup: "3-4"
 date: 2026-09-26
 description: "Letter M tracing is a free printable english worksheet for children aged 3-4. This alphabet & tracing activity supports guided practice at home, in class, or during independent learning. It is an original worksheet prepared for FreeKidWorksheets and is marked Original."
-about: "Letter M tracing is a free printable activity sheet for ages 3-4. Letter M tracing is a free printable tracing worksheet for ages 3-4. Young learners take it one row at a time while exploring a friendly shapes theme, and the clean A4 page prints sharply at home or in class, so the skill grows through guided practice rather than guessing. Print the clean A4 page at home or in class and let your child finish it independently."
+about: "In this alphabet & tracing worksheet, your child will trace the dotted lines. The dotted letter m guides little hands along the correct strokes. Short tracing sessions are the gentlest first step into writing. Use it at home, in class, or on the go: one A4 page, zero prep, and free forever."
 shortTitle: "Letter M tracing worksheet for kids"
-metaDescription: "Letter M tracing — free printable english alphabet and tracing worksheet for ages 3-4. Finish each row together. Download the A4 sheet and print free."
+metaDescription: "Letter M tracing worksheet for kids — free printable alphabet & tracing worksheet for ages 3-4. Perfect for home or classroom use. A fun no-prep A4 page.…"
 image: "./3278.png"
 tags: ["letter", "tracing", "alphabet & tracing", "3-4", "english", "kids worksheet"]
 language: "en"

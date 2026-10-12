@@ -5,9 +5,9 @@ category: "Math"
 ageGroup: "5-6"
 date: 2026-09-06
 description: "Tall and short comparison is a free printable english worksheet for children aged 5-6. This math activity supports guided practice at home, in class, or during independent learning. It is an original worksheet prepared for FreeKidWorksheets and is marked Original."
-about: "Tall and short comparison is a free printable activity sheet for ages 5-6. Tall and short comparison is a free printable math worksheet for ages 5-6. Young learners take it one row at a time while exploring a friendly the weather theme, and the clean A4 page prints sharply at home or in class, so the skill grows through guided practice rather than guessing. Print the clean A4 page at home or in class and let your child finish it independently."
+about: "In this math worksheet, your child will work through the activity. The tall and short comparison tasks are short and friendly for young learners. Hands-on counting turns abstract numbers into something children can see and touch. The suggested age is a guide, not a rule — print it whenever your child is curious and ready."
 shortTitle: "Tall and short comparison worksheet"
-metaDescription: "Tall and short comparison — free printable english maths practice worksheet for ages 5-6. Complete the whole page. Download the A4 sheet and print free."
+metaDescription: "Tall and short comparison worksheet — free printable math worksheet, ages 5-6. Fun, no-prep practice for little learners. Download and print free, no signup."
 image: "./3129.jpg"
 tags: ["tall", "and", "short", "comparison", "math", "5-6", "english", "kids worksheet"]
 language: "en"

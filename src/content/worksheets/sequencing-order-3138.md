@@ -5,9 +5,9 @@ category: "Writing"
 ageGroup: "5-6"
 date: 2026-09-06
 description: "Sequencing order is a free printable english worksheet for children aged 5-6. This writing activity supports guided practice at home, in class, or during independent learning. It is an original worksheet prepared for FreeKidWorksheets and is marked Original."
-about: "Sequencing order is a free printable counting sheet for ages 5-6. Sequencing order is a free printable writing worksheet for ages 5-6. Young learners count each picture while exploring a friendly the weather theme, and the clean A4 page prints sharply at home or in class, so the skill grows through guided practice rather than guessing. Print the clean A4 page at home or in class and let your child finish it independently."
+about: "In this writing worksheet, your child will put the pictures in the correct order. The sequencing order steps tell a simple story children can follow. Each small task practises focus, vocabulary, and early thinking skills. Use it at home, in class, or on the go: one A4 page, zero prep, and free forever."
 shortTitle: "Sequencing order worksheet for kids"
-metaDescription: "Sequencing order — free printable english writing practice worksheet for kids ages 5-6. Write every total with this clean A4 page. Download and print free."
+metaDescription: "Sequencing order worksheet for kids — free printable writing worksheet, ages 5-6. Fun, no-prep practice for little learners. Download and print free, no signup."
 image: "./3138.jpg"
 tags: ["sequencing", "order", "writing", "5-6", "english", "kids worksheet"]
 language: "en"

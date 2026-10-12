@@ -5,9 +5,9 @@ category: "Writing"
 ageGroup: "5-6"
 date: 2026-09-26
 description: "Match fish shadow matching is a free printable english worksheet for children aged 5-6. This writing activity supports guided practice at home, in class, or during independent learning. It is an original worksheet prepared for FreeKidWorksheets and is marked Original."
-about: "Match fish shadow matching is a free printable matching sheet for ages 5-6. Match fish shadow matching is a free printable writing worksheet for ages 5-6. Young learners draw a line to each partner while exploring a friendly vehicles theme, and the clean A4 page prints sharply at home or in class, so the skill grows through guided practice rather than guessing. Print the clean A4 page at home or in class and let your child finish it independently."
+about: "In this writing worksheet, your child will match each picture to its shadow. The match fish shadow pairs are big and clear, so little eyes can spot the matches. These activities build the attention span school will ask for. Use it at home, in class, or on the go: one A4 page, zero prep, and free forever."
 shortTitle: "Match fish shadow matching"
-metaDescription: "Match fish shadow matching — free printable english writing practice worksheet for ages 5-6. Find every partner. Download the A4 sheet and print free."
+metaDescription: "Match fish shadow matching Worksheet — free printable writing worksheet, ages 5-6. Builds early skills through play. Download and print free, no signup."
 image: "./3306.png"
 tags: ["match", "fish", "shadow", "matching", "writing", "5-6", "english", "kids worksheet"]
 language: "en"

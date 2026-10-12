@@ -5,9 +5,9 @@ category: "Writing"
 ageGroup: "5-6"
 date: 2026-09-26
 description: "Boat dot to dot is a free printable english worksheet for children aged 5-6. This writing activity supports guided practice at home, in class, or during independent learning. It is an original worksheet prepared for FreeKidWorksheets and is marked Original."
-about: "Boat dot to dot is a free printable activity sheet for ages 5-6. Boat dot to dot is a free printable writing worksheet for ages 5-6. Young learners check your answers while exploring a friendly insects theme, and the clean A4 page prints sharply at home or in class, so the skill grows through guided practice rather than guessing. Print the clean A4 page at home or in class and let your child finish it independently."
+about: "In this writing worksheet, your child will work through the activity. The boat tasks are short and friendly for young learners. These activities build the attention span school will ask for. Use it at home, in class, or on the go: one A4 page, zero prep, and free forever."
 shortTitle: "Boat dot to dot worksheet for kids"
-metaDescription: "Boat dot to dot — free printable english writing practice worksheet for kids ages 5-6. Solve every puzzle with this clean A4 page. Download and print free."
+metaDescription: "Boat dot to dot worksheet for kids — free printable writing worksheet, ages 5-6. One A4 page, ready to print. Download and print free, no signup."
 image: "./3166.png"
 tags: ["boat", "dot", "to", "writing", "5-6", "english", "kids worksheet"]
 language: "en"

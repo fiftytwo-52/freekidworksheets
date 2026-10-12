@@ -1,0 +1,179 @@
+---
+// /worksheets/writing-practice — topic cluster pillar page for early
+// writing sheets (matching, mazes, dot-to-dot, early writing). Parent/
+// teacher guide copy + curated sheet links.
+// Purely additive: no existing routes, copy, or schema touched.
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import RelatedGrid from '../../components/RelatedGrid.astro';
+import { articleJsonLd, breadcrumbListJsonLd, faqJsonLd } from '../../lib/seo';
+
+const PATH = '/worksheets/writing-practice';
+const TITLE = 'Writing Practice Worksheets';
+const DESCRIPTION =
+    'Free printable writing practice for ages 3–8. Matching, mazes, dot-to-dot, and early writing fun. No signup — download and print.';
+
+const GUIDE_FAQS = [
+    {
+        question: 'What counts as "writing practice" for a 4-year-old?',
+        answer: 'Not sentences! At 4, writing practice means anything that trains the hand and the mind for writing later: tracing lines, matching pictures, finishing dot-to-dots, and drawing. Letter formation comes after these foundations feel easy.',
+    },
+    {
+        question: 'Are mazes and matching games really educational?',
+        answer: 'Yes. Mazes train pencil control and planning ahead; matching trains visual discrimination and vocabulary; dot-to-dots teach number order and patience. They are the pre-writing workout disguised as play.',
+    },
+    {
+        question: 'How do I build my child\u2019s writing stamina?',
+        answer: 'Gradually and without pressure. Start with 5-minute activities, and add a minute or two every couple of weeks. Stamina grows from regular short practice, not from occasional long sessions that end in tears.',
+    },
+    {
+        question: 'Should I correct pencil grip?',
+        answer: 'Guide it, do not police it. Show the tripod grip (thumb and two fingers), offer chunky pencils that make it natural, and model it yourself. Most children settle into an efficient grip between ages 4 and 6 if the tools are right.',
+    },
+    {
+        question: 'Are these worksheets really free?',
+        answer: 'Yes. Every sheet is free to download and print, with no account and no limits. Print the same page as many times as your child wants to practise.',
+    },
+];
+
+const all = await getCollection('worksheets');
+const byTitle = (a: (typeof all)[number], b: (typeof all)[number]) =>
+    a.data.title.localeCompare(b.data.title);
+const writingSheets = all.filter((e) => e.data.category === 'Writing').sort(byTitle);
+const gridSheets = writingSheets.slice(0, 12);
+const packSheets = writingSheets.slice(0, 10);
+---
+
+<Base
+    pageTitle={TITLE}
+    description={DESCRIPTION}
+    path={PATH}
+    keywords="writing practice worksheets, preschool writing worksheets, kindergarten writing practice, maze worksheets for kids, matching worksheets printable, dot to dot worksheets"
+    jsonLd={[
+        articleJsonLd({
+            name: TITLE,
+            description: DESCRIPTION,
+            url: 'https://freekidworksheets.com/worksheets/writing-practice',
+            inLanguage: 'en',
+            datePublished: '2026-10-12',
+        }),
+        breadcrumbListJsonLd([
+            { name: 'Home', url: '/' },
+            { name: 'Worksheets', url: '/worksheets' },
+            { name: 'Writing Practice' },
+        ]),
+        faqJsonLd(GUIDE_FAQS),
+    ]}
+>
+    <article class="mx-auto w-full max-w-3xl px-4 pt-10 pb-16 sm:px-6 lg:px-8">
+        <nav aria-label="Breadcrumb" class="font-mono text-[11px] uppercase tracking-widest text-mute dark:text-neutral-500">
+            <a href="/" class="hover:text-pink-600">Home</a>
+            <span aria-hidden="true"> › </span>
+            <a href="/worksheets" class="hover:text-pink-600">Worksheets</a>
+            <span aria-hidden="true"> › </span>
+            <span class="normal-case tracking-normal">Writing Practice</span>
+        </nav>
+
+        <h1 class="mt-3 text-3xl font-semibold tracking-tight text-ink sm:text-4xl dark:text-neutral-100">
+            Writing Practice Worksheets
+        </h1>
+        <p class="mt-3 text-base leading-relaxed text-body dark:text-neutral-400">
+            Free printable sheets that build the hands and minds behind writing —
+            matching, mazes, dot-to-dots, and first writing activities.
+        </p>
+
+        <div class="mt-8 space-y-6 text-[15px] leading-relaxed text-body dark:text-neutral-300">
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                Writing starts long before letters
+            </h2>
+            <p>
+                A child who can write their name at 5 started preparing at 3 —
+                not with the alphabet, but with activities that look like pure
+                play. Matching a picture to its shadow teaches the visual focus
+                reading needs. Finding a path through a maze teaches the pencil
+                control writing needs. Connecting dots in order teaches the
+                patience both need.
+            </p>
+            <p>
+                The sheets below are organized the way skills actually develop:
+                look-and-find games first, then guided pencil activities, then
+                early writing with support. Follow your child's interest through
+                the stages rather than marching through them in order.
+            </p>
+
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                The activity types, and what each builds
+            </h2>
+            <p>
+                <strong>Matching</strong> (picture to picture, picture to shadow,
+                word to picture) builds visual discrimination and vocabulary —
+                the ability to notice small differences, which is exactly what
+                telling b from d requires later. <strong>Mazes</strong> build
+                planning and controlled pencil movement; start with wide paths
+                and no dead ends. <strong>Dot-to-dot</strong> pages sneak in
+                number order while rewarding patience with a revealed picture.
+                <strong>Early writing</strong> sheets — tracing words, finishing
+                sentences, drawing and labeling — come last, once the hand is
+                ready.
+            </p>
+
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                How to use these sheets
+            </h2>
+            <p>
+                Keep it short and regular: 10 minutes a day beats an hour on
+                Sunday. Do the first one together so your child sees how the
+                activity works, then step back — independent struggle is where
+                the learning happens. If a sheet causes frustration, it is too
+                hard for today; swap it for an easier one and try again next
+                week.
+            </p>
+            <ul class="list-disc space-y-2 pl-5">
+                <li>Offer chunky pencils or crayons for small hands.</li>
+                <li>Tape the page down so it does not slide around.</li>
+                <li>Talk about the pictures — vocabulary grows alongside the hand.</li>
+                <li>Reprint favourites; mastery loves repetition.</li>
+            </ul>
+
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                Ready-to-print pack: 10-sheet starter set
+            </h2>
+            <p>
+                Ten sheets moving from look-and-find games to guided pencil
+                activities. Print the set and do one page a day.
+            </p>
+            <ol class="list-decimal space-y-2 pl-5">
+                {packSheets.map((s) => (
+                    <li>
+                        <a href={`/worksheet/${s.slug}`} class="font-medium text-pink-600 hover:underline dark:text-pink-400">
+                            {s.data.shortTitle || s.data.title}
+                        </a>
+                        <span class="text-sm text-mute dark:text-neutral-500"> — ages {s.data.ageGroup}</span>
+                    </li>
+                ))}
+            </ol>
+        </div>
+
+        <RelatedGrid title="Browse writing practice sheets" items={gridSheets} />
+
+        <div class="mt-12">
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                Frequently asked questions
+            </h2>
+            <dl class="mt-4 space-y-5">
+                {GUIDE_FAQS.map((f) => (
+                    <div>
+                        <dt class="text-[15px] font-semibold text-ink dark:text-neutral-100">{f.question}</dt>
+                        <dd class="mt-1 text-[15px] leading-relaxed text-body dark:text-neutral-300">{f.answer}</dd>
+                    </div>
+                ))}
+            </dl>
+        </div>
+
+        <p class="mt-10 text-sm text-mute dark:text-neutral-500">
+            Looking for more? Browse the full{' '}
+            <a href="/category/writing" class="text-pink-600 hover:underline dark:text-pink-400">Writing library</a>{' '}
+            or the complete <a href="/worksheets" class="text-pink-600 hover:underline dark:text-pink-400">worksheet library</a>.
+        </p>
+    </article>
+</Base>

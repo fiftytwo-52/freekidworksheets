@@ -5,9 +5,9 @@ category: "Alphabet & Tracing"
 ageGroup: "3-4"
 date: 2026-09-26
 description: "House tracing is a free printable english worksheet for children aged 3-4. This alphabet & tracing activity supports guided practice at home, in class, or during independent learning. It is an original worksheet prepared for FreeKidWorksheets and is marked Original."
-about: "House tracing is a free printable activity sheet for ages 3-4. House tracing is a free printable tracing worksheet for ages 3-4. Young learners check your answers while exploring a friendly fruits theme, and the clean A4 page prints sharply at home or in class, so the skill grows through guided practice rather than guessing. Print the clean A4 page at home or in class and let your child finish it independently."
+about: "In this alphabet & tracing worksheet, your child will trace the dotted lines. The dotted house guides little hands along the correct strokes. Repeated tracing helps letter shapes stick in memory before independent writing. Print it on A4 at 100% scale — free to download, no signup, and you can reprint it as often as you like."
 shortTitle: "House tracing worksheet for kids"
-metaDescription: "House tracing — free printable english alphabet and tracing worksheet for ages 3-4. Complete the whole page. Download the A4 sheet and print free."
+metaDescription: "House tracing worksheet for kids — free printable alphabet & tracing worksheet, ages 3-4. Builds early skills through play. Download and print free, no signup."
 image: "./3258.png"
 tags: ["house", "tracing", "alphabet & tracing", "3-4", "english", "kids worksheet"]
 language: "en"

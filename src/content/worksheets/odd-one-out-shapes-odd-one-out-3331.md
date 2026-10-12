@@ -5,9 +5,9 @@ category: "Writing"
 ageGroup: "5-6"
 date: 2026-09-26
 description: "Odd one out shapes odd one out is a free printable english worksheet for children aged 5-6. This writing activity supports guided practice at home, in class, or during independent learning. It is an original worksheet prepared for FreeKidWorksheets and is marked Original."
-about: "Odd one out shapes odd one out is a free printable counting sheet for ages 5-6. Odd one out shapes odd one out is a free printable writing worksheet for ages 5-6. Young learners point and count slowly while exploring a friendly animals theme, and the clean A4 page prints sharply at home or in class, so the skill grows through guided practice rather than guessing. Print the clean A4 page at home or in class and let your child finish it independently."
+about: "In this writing worksheet, your child will spot the odd one out in each row. The odd one out shapes odd one out rows are simple enough for young children to scan. These activities build the attention span school will ask for. The suggested age is a guide, not a rule — print it whenever your child is curious and ready."
 shortTitle: "Odd one out shapes odd one out"
-metaDescription: "Odd one out shapes odd one out — free printable english writing practice worksheet for ages 5-6. Count every picture. Download the A4 sheet and print free."
+metaDescription: "Odd one out shapes odd one out Worksheet — free printable writing worksheet, ages 5-6. Short, focused, and frustration-free. Download and print free, no signup."
 image: "./3331.png"
 tags: ["odd", "one", "out", "shapes", "writing", "5-6", "english", "kids worksheet"]
 language: "en"

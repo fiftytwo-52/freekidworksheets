@@ -5,9 +5,9 @@ category: "Writing"
 ageGroup: "3-4"
 date: 2026-09-06
 description: "Car and garage maze puzzle is a free printable english worksheet for children aged 3-4. This writing activity supports guided practice at home, in class, or during independent learning. It is an original worksheet prepared for FreeKidWorksheets and is marked Original."
-about: "Car and garage maze puzzle is a free printable activity sheet for ages 3-4. Car and garage maze puzzle is a free printable writing worksheet for ages 3-4. Young learners take it one row at a time while exploring a friendly fruits theme, and the clean A4 page prints sharply at home or in class, so the skill grows through guided practice rather than guessing. Print the clean A4 page at home or in class and let your child finish it independently."
+about: "In this writing worksheet, your child will find the way through the maze. The car and garage maze puzzle maze paths are wide and forgiving for first-time puzzlers. Each small task practises focus, vocabulary, and early thinking skills. Print it on A4 at 100% scale — free to download, no signup, and you can reprint it as often as you like."
 shortTitle: "Car and garage maze puzzle"
-metaDescription: "Car and garage maze puzzle — free printable english writing practice worksheet for ages 3-4. Complete the whole page. Download the A4 sheet and print free."
+metaDescription: "Car and garage maze puzzle Worksheet — free printable writing worksheet, ages 3-4. Perfect for home or classroom use. Download and print free, no signup."
 image: "./3063.jpg"
 tags: ["car", "and", "garage", "maze", "puzzle", "writing", "3-4", "english", "kids worksheet"]
 language: "en"

@@ -5,9 +5,9 @@ category: "Alphabet & Tracing"
 ageGroup: "3-4"
 date: 2026-09-06
 description: "Sleeping line stroke tracing is a free printable english worksheet for children aged 3-4. This alphabet & tracing activity supports guided practice at home, in class, or during independent learning. It is an original worksheet prepared for FreeKidWorksheets and is marked Original."
-about: "Sleeping line stroke tracing is a free printable activity sheet for ages 3-4. Sleeping line stroke tracing is a free printable tracing worksheet for ages 3-4. Young learners work through the page while exploring a friendly vehicles theme, and the clean A4 page prints sharply at home or in class, so the skill grows through guided practice rather than guessing. Print the clean A4 page at home or in class and let your child finish it independently."
+about: "In this alphabet & tracing worksheet, your child will trace the dotted lines. The dotted sleeping line stroke guides little hands along the correct strokes. Short tracing sessions are the gentlest first step into writing. The suggested age is a guide, not a rule — print it whenever your child is curious and ready."
 shortTitle: "Sleeping line stroke tracing"
-metaDescription: "Sleeping line stroke tracing — free printable english alphabet and tracing worksheet for ages 3-4. Complete the whole page. Download the A4 sheet and print..."
+metaDescription: "Sleeping line stroke tracing Worksheet — free alphabet & tracing worksheet, ages 3-4. Short, focused, and frustration-free."
 image: "./3099.jpg"
 tags: ["sleeping", "line", "stroke", "tracing", "alphabet & tracing", "3-4", "english", "kids worksheet"]
 language: "en"

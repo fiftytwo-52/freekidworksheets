@@ -33,6 +33,15 @@ const pageKeywords = `${catLower} for kids worksheet, ${catLower} kids worksheet
 
 // Unique 150-250 word intro copy above the grid (SEO TASK-08).
 const intro = CATEGORY_INTROS[category];
+
+// Related topic-guide pillar page per category (SEO: cluster cross-linking).
+const CATEGORY_GUIDES: Record<string, { href: string; label: string }> = {
+    'Alphabet & Tracing': { href: '/worksheets/alphabet-tracing', label: 'Alphabet tracing guide & starter pack' },
+    Math: { href: '/worksheets/counting-numbers', label: 'Counting & numbers guide & starter pack' },
+    Coloring: { href: '/worksheets/coloring-pages', label: 'Coloring guide & favorite pages' },
+    Writing: { href: '/worksheets/writing-practice', label: 'Writing practice guide & starter pack' },
+};
+const categoryGuide = CATEGORY_GUIDES[category];
 ---
 
 <Base pageTitle={pageTitle} description={description} path={path} keywords={pageKeywords}>
@@ -47,6 +56,19 @@ const intro = CATEGORY_INTROS[category];
         {totalPages}
         {intro}
     />
+    {page === 1 && categoryGuide && (
+        <section class="mx-auto w-full max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
+            <a
+                href={categoryGuide.href}
+                class="block rounded-2xl border border-pink-200 bg-pink-50/60 p-5 transition-colors hover:border-pink-300 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-pink-900"
+            >
+                <p class="font-mono text-[11px] uppercase tracking-widest text-pink-600 dark:text-pink-400">Guide</p>
+                <p class="mt-1 font-semibold text-ink dark:text-neutral-100">
+                    {categoryGuide.label} →
+                </p>
+            </a>
+        </section>
+    )}
 </Base>
 
 <script>

@@ -1,0 +1,175 @@
+---
+// /worksheets/shapes-for-kids — topic cluster pillar page for shape
+// worksheets (trace, count, match, and find shapes). Parent/teacher guide
+// copy + curated sheet links.
+// Purely additive: no existing routes, copy, or schema touched.
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import RelatedGrid from '../../components/RelatedGrid.astro';
+import { articleJsonLd, breadcrumbListJsonLd, faqJsonLd } from '../../lib/seo';
+
+const PATH = '/worksheets/shapes-for-kids';
+const TITLE = 'Shapes Worksheets for Kids';
+const DESCRIPTION =
+    'Free printable shapes worksheets for ages 3–6. Trace, count, match, and find circles, squares, triangles and more. No signup.';
+
+const GUIDE_FAQS = [
+    {
+        question: 'Why do shapes matter for preschoolers?',
+        answer: 'Shapes are a child\u2019s first geometry. Recognising and naming shapes trains visual discrimination (spotting differences), which later helps tell letters apart. Sorting by shape is also early logical thinking: grouping things by a rule.',
+    },
+    {
+        question: 'What order should we learn shapes in?',
+        answer: 'Circle first — it is the easiest to recognise and draw. Then square and triangle, then rectangle, oval, and diamond. Stars and hearts can wait; they are hard to draw and not mathematically central.',
+    },
+    {
+        question: 'My child calls every four-sided shape a square. Is that a problem?',
+        answer: 'Not at all — it is actually good thinking: they have noticed the family resemblance. Gently name the differences as you meet them ("a rectangle is a stretched square") and the vocabulary will sort itself out.',
+    },
+    {
+        question: 'How do these sheets go beyond just naming shapes?',
+        answer: 'The sheets ask children to trace shapes (motor control), count shapes in a picture (attention), match shapes (discrimination), and find shapes hidden in scenes (real-world transfer). Naming is only the first step.',
+    },
+    {
+        question: 'Are these shapes worksheets really free?',
+        answer: 'Yes. Every sheet is free to download and print, with no account and no limits. Print the same page as many times as your child wants to practise.',
+    },
+];
+
+const all = await getCollection('worksheets');
+const byTitle = (a: (typeof all)[number], b: (typeof all)[number]) =>
+    a.data.title.localeCompare(b.data.title);
+const shapeSheets = all.filter((e) => /shape/i.test(e.data.title)).sort(byTitle);
+const gridSheets = shapeSheets.slice(0, 12);
+const packSheets = shapeSheets.slice(0, 10);
+---
+
+<Base
+    pageTitle={TITLE}
+    description={DESCRIPTION}
+    path={PATH}
+    keywords="shapes worksheets for kids, preschool shapes printable, 2d shapes worksheets, trace shapes, kindergarten geometry worksheets, free printable shapes"
+    jsonLd={[
+        articleJsonLd({
+            name: TITLE,
+            description: DESCRIPTION,
+            url: 'https://freekidworksheets.com/worksheets/shapes-for-kids',
+            inLanguage: 'en',
+            datePublished: '2026-10-12',
+        }),
+        breadcrumbListJsonLd([
+            { name: 'Home', url: '/' },
+            { name: 'Worksheets', url: '/worksheets' },
+            { name: 'Shapes for Kids' },
+        ]),
+        faqJsonLd(GUIDE_FAQS),
+    ]}
+>
+    <article class="mx-auto w-full max-w-3xl px-4 pt-10 pb-16 sm:px-6 lg:px-8">
+        <nav aria-label="Breadcrumb" class="font-mono text-[11px] uppercase tracking-widest text-mute dark:text-neutral-500">
+            <a href="/" class="hover:text-pink-600">Home</a>
+            <span aria-hidden="true"> › </span>
+            <a href="/worksheets" class="hover:text-pink-600">Worksheets</a>
+            <span aria-hidden="true"> › </span>
+            <span class="normal-case tracking-normal">Shapes for Kids</span>
+        </nav>
+
+        <h1 class="mt-3 text-3xl font-semibold tracking-tight text-ink sm:text-4xl dark:text-neutral-100">
+            Shapes Worksheets for Kids
+        </h1>
+        <p class="mt-3 text-base leading-relaxed text-body dark:text-neutral-400">
+            Free printable shape sheets — trace, count, match, and find circles,
+            squares, triangles, and more through play.
+        </p>
+
+        <div class="mt-8 space-y-6 text-[15px] leading-relaxed text-body dark:text-neutral-300">
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                A child\u2019s first geometry
+            </h2>
+            <p>
+                Long before "geometry" appears in school, children are already
+                doing it: noticing that wheels are round, that doors are not,
+                that a slice of pizza is a triangle. Shape worksheets give that
+                natural noticing a vocabulary and a set of hands-on games. The
+                payoff goes beyond math — telling shapes apart trains the same
+                visual discrimination that later tells b from d and 6 from 9.
+            </p>
+            <p>
+                The sheets below work through four kinds of shape play. Tracing
+                shapes builds motor control and teaches the feel of each form.
+                Counting shapes inside busy pictures builds focused attention.
+                Matching games sharpen the eye for sameness and difference. And
+                find-the-shape scenes connect the flat worksheet to the round,
+                square world outside it.
+            </p>
+
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                The order that works
+            </h2>
+            <p>
+                Start with the circle — one continuous curve, no corners, the
+                easiest shape to recognise and the most satisfying to draw.
+                Then square and triangle together, contrasting "four corners"
+                with "three corners" out loud as you point. Rectangle follows
+                naturally as "a stretched square", then oval as "a stretched
+                circle". Diamond, star, and heart come last; they are lovely
+                but harder to draw and less central.
+            </p>
+            <p>
+                Teach one shape at a time, and let each one live in the real
+                world for a few days before the next arrives: find circles at
+                breakfast (plates, oranges), squares on a walk (windows, tiles),
+                triangles in the kitchen (samosa, pizza slice).
+            </p>
+
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                How to use these sheets
+            </h2>
+            <ul class="list-disc space-y-2 pl-5">
+                <li>Say the shape\u2019s name every time you point: "trace the triangle, around the three corners."</li>
+                <li>Count corners and sides out loud together — that is real geometry vocabulary.</li>
+                <li>After the sheet, go on a 2-minute shape hunt around the room.</li>
+                <li>Print at 100% scale on A4; shapes should be big enough to trace comfortably.</li>
+            </ul>
+
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                Ready-to-print pack: 10 shape sheets
+            </h2>
+            <p>
+                Ten sheets from first circles to shape-hunt scenes. Print the set
+                and do one page a day.
+            </p>
+            <ol class="list-decimal space-y-2 pl-5">
+                {packSheets.map((s) => (
+                    <li>
+                        <a href={`/worksheet/${s.slug}`} class="font-medium text-pink-600 hover:underline dark:text-pink-400">
+                            {s.data.shortTitle || s.data.title}
+                        </a>
+                        <span class="text-sm text-mute dark:text-neutral-500"> — ages {s.data.ageGroup}</span>
+                    </li>
+                ))}
+            </ol>
+        </div>
+
+        <RelatedGrid title="Browse shapes worksheets" items={gridSheets} />
+
+        <div class="mt-12">
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                Frequently asked questions
+            </h2>
+            <dl class="mt-4 space-y-5">
+                {GUIDE_FAQS.map((f) => (
+                    <div>
+                        <dt class="text-[15px] font-semibold text-ink dark:text-neutral-100">{f.question}</dt>
+                        <dd class="mt-1 text-[15px] leading-relaxed text-body dark:text-neutral-300">{f.answer}</dd>
+                    </div>
+                ))}
+            </dl>
+        </div>
+
+        <p class="mt-10 text-sm text-mute dark:text-neutral-500">
+            Looking for more? Browse the complete <a href="/worksheets" class="text-pink-600 hover:underline dark:text-pink-400">worksheet library</a>{' '}
+            or try the <a href="/worksheets/counting-numbers" class="text-pink-600 hover:underline dark:text-pink-400">counting &amp; numbers guide</a>.
+        </p>
+    </article>
+</Base>

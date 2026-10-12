@@ -5,9 +5,9 @@ category: "Coloring"
 ageGroup: "3-4"
 date: 2026-09-05
 description: "Trace and color helps children practise colouring through a clear, print-ready activity sheet. It is suitable for flexible use at home, in class, or during independent learning; the suggested age and class are only broad guides and any learner may use it. Worksheet origin: altered — downloaded from an external source, modified before use, and the original owner must be credited. This specific worksheet is identified by code 3048."
-about: "Trace and Color Worksheet — Colorful is a free printable tracing sheet for ages 3-4. Trace and Color Worksheet — Colorful is a free printable tracing worksheet for ages 3-4. Young learners steady lines come from slow hands while exploring a friendly food theme, and the clean A4 page prints sharply at home or in class, so the skill grows through guided practice rather than guessing. Print the clean A4 page at home or in class and let your child finish it independently."
+about: "In this coloring worksheet, your child will trace the dotted lines. The dotted trace and color worksheet — colorful guides little hands along the correct strokes. Colouring inside the lines builds the fine-motor control children need for writing. Print it on A4 at 100% scale — free to download, no signup, and you can reprint it as often as you like."
 shortTitle: "Trace and Color Worksheet — Colorful"
-metaDescription: "Trace and Color Worksheet — Colorful — free printable english colouring worksheet for ages 3-4. Follow each dotted line slowly. Download the A4 sheet and..."
+metaDescription: "Trace and Color Worksheet — Colorful — free printable coloring worksheet for ages 3-4. Fun, no-prep practice for little learners. A fun no-prep A4 page.…"
 image: "./3048.png"
 tags: ["trace", "and", "color", "colouring", "coloring", "age 3-4", "english", "kids worksheet"]
 language: "en"

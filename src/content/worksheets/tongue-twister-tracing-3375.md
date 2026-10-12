@@ -5,9 +5,9 @@ category: "Alphabet & Tracing"
 ageGroup: "7-8"
 date: 2026-09-26
 description: "Tongue twister tracing is a free printable english worksheet for children aged 7-8. This alphabet & tracing activity supports guided practice at home, in class, or during independent learning. It is an original worksheet prepared for FreeKidWorksheets and is marked Original."
-about: "Tongue twister tracing is a free printable activity sheet for ages 7-8. Tongue twister tracing is a free printable tracing worksheet for ages 7-8. Young learners check your answers while exploring a friendly food theme, and the clean A4 page prints sharply at home or in class, so the skill grows through guided practice rather than guessing. Print the clean A4 page at home or in class and let your child finish it independently."
+about: "In this alphabet & tracing worksheet, your child will trace the dotted lines. The dotted tongue twister guides little hands along the correct strokes. Following dotted lines trains pencil grip and hand-eye coordination. Print it on A4 at 100% scale — free to download, no signup, and you can reprint it as often as you like."
 shortTitle: "Tongue twister tracing worksheet"
-metaDescription: "Tongue twister tracing — free printable english alphabet and tracing worksheet for ages 7-8. Complete the whole page. Download the A4 sheet and print free."
+metaDescription: "Tongue twister tracing worksheet — free printable alphabet & tracing worksheet, ages 7-8. Builds early skills through play. Download and print free, no signup."
 image: "./3375.png"
 tags: ["tongue", "twister", "tracing", "alphabet & tracing", "7-8", "english", "kids worksheet"]
 language: "en"

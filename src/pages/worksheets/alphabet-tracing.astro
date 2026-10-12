@@ -1,0 +1,185 @@
+---
+// /worksheets/alphabet-tracing — topic cluster pillar page for alphabet &
+// letter tracing sheets. Parent/teacher guide copy + curated sheet links.
+// Purely additive: no existing routes, copy, or schema touched.
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import RelatedGrid from '../../components/RelatedGrid.astro';
+import { articleJsonLd, breadcrumbListJsonLd, faqJsonLd } from '../../lib/seo';
+
+const PATH = '/worksheets/alphabet-tracing';
+const TITLE = 'Alphabet Tracing Worksheets';
+const DESCRIPTION =
+    'Free printable alphabet tracing worksheets for ages 3–6. Trace A–Z with dotted guides that build pencil control. No signup — download and print.';
+
+const GUIDE_FAQS = [
+    {
+        question: 'When should my child start tracing letters?',
+        answer: 'Most children are ready between ages 3 and 4, once they can hold a crayon and imitate a line you draw. Start with simple straight-line letters like E, F, H, I, L, and T before moving to curves like C, O, and S.',
+    },
+    {
+        question: 'Should we trace uppercase or lowercase letters first?',
+        answer: 'Uppercase first. Capital letters are made of simpler strokes — straight lines and big curves — so they are easier for small hands. Introduce lowercase letters once uppercase tracing feels comfortable, usually a few months later.',
+    },
+    {
+        question: 'How long should a tracing session last?',
+        answer: 'Ten minutes is plenty for ages 3–4. Two short sessions a day beat one long one: little hands tire quickly, and tired hands practise bad habits. Stop while it is still fun.',
+    },
+    {
+        question: 'My child traces well but cannot write letters alone yet. Is that normal?',
+        answer: 'Completely normal. Tracing, copying with a model nearby, and writing from memory are three separate stages. Expect several months of tracing before independent writing appears — the dotted lines are doing their job.',
+    },
+    {
+        question: 'Are these tracing worksheets really free?',
+        answer: 'Yes. Every sheet is free to download and print, with no account and no limits. Print the same page as many times as your child wants to practise.',
+    },
+];
+
+const all = await getCollection('worksheets');
+const byTitle = (a: (typeof all)[number], b: (typeof all)[number]) =>
+    a.data.title.localeCompare(b.data.title);
+const tracingSheets = all
+    .filter((e) => e.data.category === 'Alphabet & Tracing')
+    .sort(byTitle);
+const gridSheets = tracingSheets.slice(0, 12);
+const packSheets = tracingSheets.slice(0, 10);
+---
+
+<Base
+    pageTitle={TITLE}
+    description={DESCRIPTION}
+    path={PATH}
+    keywords="alphabet tracing worksheets, letter tracing printable, abc tracing worksheets, trace letters a-z, kindergarten tracing worksheets, free printable alphabet worksheets"
+    jsonLd={[
+        articleJsonLd({
+            name: TITLE,
+            description: DESCRIPTION,
+            url: 'https://freekidworksheets.com/worksheets/alphabet-tracing',
+            inLanguage: 'en',
+            datePublished: '2026-10-12',
+        }),
+        breadcrumbListJsonLd([
+            { name: 'Home', url: '/' },
+            { name: 'Worksheets', url: '/worksheets' },
+            { name: 'Alphabet Tracing' },
+        ]),
+        faqJsonLd(GUIDE_FAQS),
+    ]}
+>
+    <article class="mx-auto w-full max-w-3xl px-4 pt-10 pb-16 sm:px-6 lg:px-8">
+        <nav aria-label="Breadcrumb" class="font-mono text-[11px] uppercase tracking-widest text-mute dark:text-neutral-500">
+            <a href="/" class="hover:text-pink-600">Home</a>
+            <span aria-hidden="true"> › </span>
+            <a href="/worksheets" class="hover:text-pink-600">Worksheets</a>
+            <span aria-hidden="true"> › </span>
+            <span class="normal-case tracking-normal">Alphabet Tracing</span>
+        </nav>
+
+        <h1 class="mt-3 text-3xl font-semibold tracking-tight text-ink sm:text-4xl dark:text-neutral-100">
+            Alphabet Tracing Worksheets
+        </h1>
+        <p class="mt-3 text-base leading-relaxed text-body dark:text-neutral-400">
+            Free printable A–Z tracing sheets that take children from first pencil
+            strokes to confident letters — one dotted line at a time.
+        </p>
+
+        <div class="mt-8 space-y-6 text-[15px] leading-relaxed text-body dark:text-neutral-300">
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                Why tracing comes before writing
+            </h2>
+            <p>
+                Writing a letter from memory asks a young child to do three hard
+                things at once: remember the shape, plan the strokes, and control
+                the pencil. Tracing removes the first two, so all their attention
+                goes into the feeling of the movement. That muscle memory is what
+                later makes independent writing possible. Think of tracing sheets
+                as training wheels — they come off on their own once the balance
+                is there.
+            </p>
+            <p>
+                Tracing also teaches the often-ignored basics: starting at the
+                top, moving left to right, and lifting the pencil between strokes.
+                Children who trace first tend to form letters correctly later,
+                instead of drawing them in whatever order feels natural and then
+                having to unlearn it.
+            </p>
+
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                The order that works
+            </h2>
+            <p>
+                Not all letters are equally hard. The sequence that frustrates
+                children least is: straight lines first (E, F, H, I, L, T), then
+                letters with one curve (B, C, D, J, O, P, S, U), then the tricky
+                ones with direction changes (K, M, N, R, V, W, X, Y, Z). Work
+                through uppercase letters completely before introducing lowercase —
+                capitals are built from simpler strokes and give faster wins.
+            </p>
+            <p>
+                Before any letter at all, let brand-new pencil holders practise
+                plain strokes: vertical lines, horizontal lines, circles, and
+                zigzags. A week of stroke play makes the first real letter feel
+                easy instead of intimidating.
+            </p>
+
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                How to use these sheets
+            </h2>
+            <p>
+                Print at 100% scale on A4 with no page shrink, so the dotted lines
+                stay crisp. Hand your child a thick pencil or a crayon — both are
+                easier to grip than a standard pencil. Sit beside them for the
+                first few sheets and trace one letter yourself, slowly, narrating
+                as you go: "start at the top, pull down, now across." Then let
+                them take over.
+            </p>
+            <ul class="list-disc space-y-2 pl-5">
+                <li>One or two letters per session is enough at first.</li>
+                <li>Reprint favourite sheets — repetition is the whole point.</li>
+                <li>Praise the effort and the direction of strokes, not neatness.</li>
+                <li>If frustration appears, drop back to an easier letter for a day.</li>
+            </ul>
+
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                Ready-to-print pack: A–Z starter set
+            </h2>
+            <p>
+                New to tracing? Start with these ten sheets in order — they move
+                from simple strokes to full letters. Print the whole set and work
+                through one page a day.
+            </p>
+            <ol class="list-decimal space-y-2 pl-5">
+                {packSheets.map((s) => (
+                    <li>
+                        <a href={`/worksheet/${s.slug}`} class="font-medium text-pink-600 hover:underline dark:text-pink-400">
+                            {s.data.shortTitle || s.data.title}
+                        </a>
+                        <span class="text-sm text-mute dark:text-neutral-500"> — ages {s.data.ageGroup}</span>
+                    </li>
+                ))}
+            </ol>
+        </div>
+
+        <RelatedGrid title="Browse alphabet tracing sheets" items={gridSheets} />
+
+        <div class="mt-12">
+            <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">
+                Frequently asked questions
+            </h2>
+            <dl class="mt-4 space-y-5">
+                {GUIDE_FAQS.map((f) => (
+                    <div>
+                        <dt class="text-[15px] font-semibold text-ink dark:text-neutral-100">{f.question}</dt>
+                        <dd class="mt-1 text-[15px] leading-relaxed text-body dark:text-neutral-300">{f.answer}</dd>
+                    </div>
+                ))}
+            </dl>
+        </div>
+
+        <p class="mt-10 text-sm text-mute dark:text-neutral-500">
+            Looking for more? Browse the full{' '}
+            <a href="/category/alphabet-tracing" class="text-pink-600 hover:underline dark:text-pink-400">Alphabet &amp; Tracing library</a>{' '}
+            or the complete <a href="/worksheets" class="text-pink-600 hover:underline dark:text-pink-400">worksheet library</a>.
+        </p>
+    </article>
+</Base>
