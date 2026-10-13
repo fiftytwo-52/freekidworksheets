@@ -24,7 +24,7 @@ const SUNA_FAQS = [
     },
     {
         question: 'Can I use Suna as a classroom counting tool?',
-        answer: 'Yes. The default is 1 to 100 with a 1.5 second gap. Press play and the page goes fullscreen. Use Pause, Stop or Hide to control it.',
+        answer: 'Yes. The default is 1 to 100 with a 1.5 second gap. Press play and the counter runs in the normal view — tap the fullscreen button any time for the giant classroom display. Use Pause, Stop or Hide to control it.',
     },
     {
         question: 'Does the tally counter save my count?',
@@ -618,6 +618,13 @@ const webAppJsonLd = {
                     <polyline points="9 22 9 12 15 12 15 22"></polyline>
                 </svg>
             </a>
+            <button type="button" class="pill fsToggle" id="fsToggle" aria-label="Enter fullscreen" title="Fullscreen">
+                <svg class="ic" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                    <g class="fsIconPaths" fill="none" stroke="#00A8B5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>
+                    </g>
+                </svg>
+            </button>
             <span class="sp"></span>
             <div class="lm">
                 <button type="button" class="pill" id="lmBtn" aria-haspopup="true" aria-expanded="false">
@@ -894,7 +901,7 @@ const webAppJsonLd = {
             <div class="cards">
                 <div class="card">
                     <h3>Auto-count for class</h3>
-                    <p>Choose Numbers or Alphabet, pick a range and press play. Suna goes fullscreen and says every number or letter on a giant display. Turn on Shapes to see that many objects (or pictures for the letter) float across the screen.</p>
+                    <p>Choose Numbers or Alphabet, pick a range and press play. Suna says every number or letter on a giant display — tap the fullscreen button for the full-screen classroom view. Turn on Shapes to see that many objects (or pictures for the letter) float across the screen.</p>
                 </div>
                 <div class="card">
                     <h3>Game mode</h3>
@@ -925,6 +932,13 @@ const webAppJsonLd = {
                 <svg class="ic" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">
                     <rect x="6" y="4" width="4" height="16" rx="1"></rect>
                     <rect x="14" y="4" width="4" height="16" rx="1"></rect>
+                </svg>
+            </button>
+            <button type="button" class="btn fsToggle" id="fsToggleFs" aria-label="Enter fullscreen" title="Fullscreen">
+                <svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                    <g class="fsIconPaths" fill="none" stroke="#00A8B5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>
+                    </g>
                 </svg>
             </button>
             <button type="button" class="btn stop" id="stopBtn" aria-label="Exit fullscreen">
@@ -1380,29 +1394,47 @@ const webAppJsonLd = {
         } catch (e) {}
 
         var activeAudio = null;
-        function playMp3(langTag, gender, raw) {
-            return new Promise(function (resolve) {
-                var src = '';
-                if (typeof raw === 'number' || /^\d+$/.test(raw)) {
-                    var n = +raw;
-                    if (n >= 1 && n <= 500) {
-                        var numLang = langTag === 'pt' ? 'pt' : langTag === 'ne' ? 'ne' : 'en';
-                        src = '/audio/' + numLang + '/' + gender + '/' + n + '.mp3';
-                    }
-                } else if (typeof raw === 'string') {
-                    var trimmed = raw.trim();
-                    if (/^[A-Za-z]$/.test(trimmed)) {
-                        var alphaLang = langTag === 'pt' ? 'pt' : 'en';
-                        src = '/audio/' + alphaLang + '/' + gender + '/alpha_' + trimmed.toUpperCase() + '.mp3';
-                    } else {
-                        var neIdx = NEL.indexOf(trimmed);
-                        if (neIdx >= 0) {
-                            src = '/audio/ne/' + gender + '/alpha_' + neIdx + '.mp3';
-                        }
+        // Studio-MP3 URL for one spoken item ('' when out of range).
+        function mp3Src(langTag, gender, raw) {
+            if (typeof raw === 'number' || /^\d+$/.test(raw)) {
+                var n = +raw;
+                if (n >= 1 && n <= 500) {
+                    var numLang = langTag === 'pt' ? 'pt' : langTag === 'ne' ? 'ne' : 'en';
+                    return '/audio/' + numLang + '/' + gender + '/' + n + '.mp3';
+                }
+            } else if (typeof raw === 'string') {
+                var trimmed = raw.trim();
+                if (/^[A-Za-z]$/.test(trimmed)) {
+                    var alphaLang = langTag === 'pt' ? 'pt' : 'en';
+                    return '/audio/' + alphaLang + '/' + gender + '/alpha_' + trimmed.toUpperCase() + '.mp3';
+                } else {
+                    var neIdx = NEL.indexOf(trimmed);
+                    if (neIdx >= 0) {
+                        return '/audio/ne/' + gender + '/alpha_' + neIdx + '.mp3';
                     }
                 }
+            }
+            return '';
+        }
+        // Known studio-MP3 coverage on disk: en has 1–500 + A–Z, ne female has
+        // 1–10 only, pt has 1–3 only (no letters, ne male has none). Anything
+        // outside coverage goes straight to TTS instead of paying a network
+        // 404 round-trip on every single count.
+        function mp3Covered(langTag, gender, raw) {
+            if (langTag === 'en') return mp3Src(langTag, gender, raw) !== '';
+            if (langTag === 'ne') {
+                return gender === 'female' && (typeof raw === 'number' || /^\d+$/.test(raw)) && +raw >= 1 && +raw <= 10;
+            }
+            if (langTag === 'pt') {
+                return (typeof raw === 'number' || /^\d+$/.test(raw)) && +raw >= 1 && +raw <= 3;
+            }
+            return false;
+        }
+        function playMp3(langTag, gender, raw) {
+            return new Promise(function (resolve) {
+                var src = mp3Src(langTag, gender, raw);
 
-                if (!src) return resolve(false);
+                if (!src || !mp3Covered(langTag, gender, raw)) return resolve(false);
 
                 try {
                     if (activeAudio) {
@@ -1587,6 +1619,37 @@ const webAppJsonLd = {
                 try { (document.exitFullscreen || document.webkitExitFullscreen || function () {}).call(document); } catch (e) {}
             }
         }
+        function isFS() {
+            return !!(document.fullscreenElement || document.webkitFullscreenElement);
+        }
+        // Fullscreen toggle: swaps the verbatim Lucide icons (teal outward
+        // corners = enter, red inward corners = exit) on every toggle button.
+        function updateFsToggle() {
+            var active = isFS();
+            document.querySelectorAll('.fsIconPaths').forEach(function (g) {
+                if (active) {
+                    g.innerHTML = '<path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/>';
+                    g.setAttribute('stroke', '#E63946');
+                } else {
+                    g.innerHTML = '<path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>';
+                    g.setAttribute('stroke', '#00A8B5');
+                }
+            });
+            document.querySelectorAll('.fsToggle').forEach(function (b) {
+                b.setAttribute('aria-label', active ? 'Exit fullscreen' : 'Enter fullscreen');
+                b.title = active ? 'Exit fullscreen' : 'Fullscreen';
+            });
+        }
+        // Fullscreen is a view only: it happens solely via the toggle, and
+        // leaving it never stops the counter.
+        function toggleFS() {
+            if (isFS()) leaveFS(); else enterFS();
+        }
+        document.querySelectorAll('.fsToggle').forEach(function (b) { b.onclick = toggleFS; });
+        document.addEventListener('fullscreenchange', function () {
+            if (!isFS() && document.body.classList.contains('fs')) leaveFS();
+            updateFsToggle();
+        });
         /* ---- BGM (Background Music) manager with smooth ambient synth ---- */
         var BGM = (function () {
             var ctx = null;
@@ -1901,9 +1964,6 @@ const webAppJsonLd = {
             btn.setAttribute('aria-label', paused ? 'Resume' : 'Pause');
         }
 
-        document.addEventListener('fullscreenchange', function () {
-            if (!document.fullscreenElement && document.body.classList.contains('fs')) stop();
-        });
         $('stopBtn').onclick = stop;
         $('exitMini').onclick = stop;
         $('pauseBtn').onclick = function () {
@@ -1942,7 +2002,21 @@ const webAppJsonLd = {
             }
             if (!items.length) return;
             playing = true;
-            enterFS();
+            // Warm the audio cache for the first counts so each number's audio
+            // is already loaded instead of fetching on demand (per-count delay).
+            try {
+                var vChoiceP = voiceSel ? voiceSel.value : 'mp3-female';
+                if (vChoiceP === 'mp3-female' || vChoiceP === 'mp3-male') {
+                    var genderP = vChoiceP === 'mp3-male' ? 'male' : 'female';
+                    var langTagP = lang === 'ne' ? 'ne' : lang === 'pt' ? 'pt' : 'en';
+                    for (var pi = 0; pi < Math.min(20, items.length); pi++) {
+                        if (mp3Covered(langTagP, genderP, items[pi])) {
+                            var pre = new Audio(mp3Src(langTagP, genderP, items[pi]));
+                            pre.preload = 'auto';
+                        }
+                    }
+                }
+            } catch (e) {}
             for (var i = 0; i < items.length && run === id; i++) {
                 var it = items[i];
                 show(kind === 'abc' ? it : num(it));
@@ -2019,7 +2093,6 @@ const webAppJsonLd = {
                 e.preventDefault();
                 add(chipVal('step'));
             }
-            if (document.body.classList.contains('fs') && e.key === 'Escape') stop();
         });
 
         document.querySelectorAll('.tabs button').forEach(function (b) {
@@ -2043,5 +2116,6 @@ const webAppJsonLd = {
         });
 
         applyLang();
+        updateFsToggle();
     </script>
 </Base>
