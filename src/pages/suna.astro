@@ -1171,7 +1171,7 @@ const webAppJsonLd = {
             'त': '⚖️ तराजु', 'थ': '🍽️ थाल', 'द': '🥛 दूध|🦷 दाँत', 'ध': '🏹 धनुष', 'न': '👃 नाक|🗺️ नक्सा',
             'प': '🕊️ परेवा|📖 पुस्तक', 'फ': '🌸 फूल', 'ब': '🐅 बाघ|⚽ बल', 'भ': '🐻 भालु|🐃 भैँसी',
             'म': '🐟 माछा|🌽 मकै', 'य': '🦬 याक|🔥 यज्ञ', 'र': '🌳 रुख', 'ल': '🧄 लसुन',
-            'व': '🌲🌲🌲 वन', 'श': '🐚 शङ्ख', 'ष': '⬡ षट्कोण', 'स': '☀️ सूर्य|🍎 स्याउ', 'ह': '✋ हात|🦌 हरिण',
+            'व': '🌲🌳🌴 वन', 'श': '🐚 शङ्ख', 'ष': '⬡ षट्कोण', 'स': '☀️ सूर्य|🍎 स्याउ', 'ह': '✋ हात|🦌 हरिण',
             'क्ष': '⚔️ क्षत्रिय', 'त्र': '🔱 त्रिशूल', 'ज्ञ': '📚 ज्ञान'
         };
         var NE_WORDS = ['शून्य','एक','दुई','तीन','चार','पाँच','छ','सात','आठ','नौ','दस',
@@ -1792,8 +1792,9 @@ const webAppJsonLd = {
                 }
             });
         }
-        // Fullscreen is a view only: it happens solely via the toggle, and
-        // leaving it never stops the counter.
+        // Fullscreen: via the toggle, or automatically when Start Count is
+        // pressed with Shapes/Game on (visual modes). Leaving it never
+        // stops the counter.
         function toggleFS() {
             if (isFS()) leaveFS(); else enterFS();
         }
@@ -2169,6 +2170,9 @@ const webAppJsonLd = {
                 for (var n = f; n <= to && items.length < 2000; n += by) items.push(n);
             }
             if (!items.length) return;
+            // Shapes/Game are visual modes: auto-enter fullscreen for the big
+            // classroom display. Plain counting stays in the normal view.
+            if ((shapesOn || gameOn) && !isFS()) enterFS();
             playing = true;
             // Warm the audio cache for the first counts so each number's audio
             // is already loaded instead of fetching on demand (per-count delay).
