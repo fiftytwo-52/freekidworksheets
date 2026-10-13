@@ -2023,7 +2023,8 @@ const webAppJsonLd = {
                     if (speechSynthesis.speaking) speechSynthesis.cancel();
                 } catch (e) {}
             }
-            BGM.start();
+            // BGM intentionally NOT auto-started here: default is no BGM.
+            // Music plays only when the user explicitly presses the BGM Play button.
             if (kind === 'abc') {
                 items = letters().slice(+$('aFrom').value, +$('aTo').value + 1);
             } else {
