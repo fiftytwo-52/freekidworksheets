@@ -330,14 +330,12 @@ function readTrackedFilenames() {
 // ---------------------------------------------------------------------------
 const { descriptions: publishedDescriptions, shortTitles: publishedShortTitles, highestCode } = readExistingContent();
 const alreadyTracked = readTrackedFilenames();
-const nextCode = {};
-// Codes share one global image namespace (<code>.png), so the next code must clear the
-// GLOBAL maximum across all languages — a per-language max can re-issue a code that another
-// language already owns (seen 2026-10-13: Nepali 50012 overwrote English 50012's image).
 const globalMaxCode = Math.max(0, ...Object.values(highestCode));
-for (const [token, meta] of Object.entries(LANGUAGES)) {
-    nextCode[token] = Math.max(globalMaxCode, meta.base) + 1;
-}
+// Codes share one global image namespace (<code>.png), so every sheet in a run must draw
+// from ONE shared counter. Per-language counters re-issue the same code within a single
+// mixed-language batch (seen 2026-10-13: Nepali 50012 overwrote English 50012's image) —
+// the bases are kept only as a floor for a fresh install with no content yet.
+let nextCode = Math.max(globalMaxCode, ...Object.values(LANGUAGES).map((m) => m.base)) + 1;
 
 const sourceFiles = readdirSync(sourceDir, { withFileTypes: true })
     .filter((entry) => entry.isFile())
@@ -364,7 +362,7 @@ for (const originalName of sourceFiles) {
     const record = {
         ...parsed,
         status: parsed.origin,
-        code: String(nextCode[parsed.lang]++),
+        code: String(nextCode++),
         category: categoryFor(parsed.topic, parsed.activity),
         ageGroup: ageGroupFor(parsed.age),
         language: language.code,
