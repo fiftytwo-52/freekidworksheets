@@ -331,8 +331,12 @@ function readTrackedFilenames() {
 const { descriptions: publishedDescriptions, shortTitles: publishedShortTitles, highestCode } = readExistingContent();
 const alreadyTracked = readTrackedFilenames();
 const nextCode = {};
+// Codes share one global image namespace (<code>.png), so the next code must clear the
+// GLOBAL maximum across all languages — a per-language max can re-issue a code that another
+// language already owns (seen 2026-10-13: Nepali 50012 overwrote English 50012's image).
+const globalMaxCode = Math.max(0, ...Object.values(highestCode));
 for (const [token, meta] of Object.entries(LANGUAGES)) {
-    nextCode[token] = Math.max(highestCode[meta.code] ?? 0, meta.base) + 1;
+    nextCode[token] = Math.max(globalMaxCode, meta.base) + 1;
 }
 
 const sourceFiles = readdirSync(sourceDir, { withFileTypes: true })
