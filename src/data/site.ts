@@ -156,7 +156,7 @@ export const AGE_GROUPS = ['3-4', '5-6', '7-8', '9+'] as const;
 export const PER_PAGE = 20;
 
 export const SITE_URL =
-    (import.meta.env.SITE_URL as string | undefined) || 'http://localhost:4321';
+    (import.meta.env.SITE_URL as string | undefined) || 'https://freekidworksheets.com';
 
 export const ADSENSE_PUBLISHER_ID =
     (import.meta.env.ADSENSE_PUBLISHER_ID as string | undefined) || '';
