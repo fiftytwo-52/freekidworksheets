@@ -757,6 +757,14 @@ const webAppJsonLd = {
                             </svg>
                             <span data-i="play">Start Count</span>
                         </button>
+                        <button type="button" class="pill pauseBtn" aria-label="Pause">
+                            <span class="pauseIcon"><svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4" height="16" rx="1"></rect><rect x="14" y="4" width="4" height="16" rx="1"></rect></svg></span>
+                            <span data-i="pause">Pause</span>
+                        </button>
+                        <button type="button" class="pill stopBtn" aria-label="Stop">
+                            <svg class="ic" viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1.5"></rect></svg>
+                            <span data-i="stopBtn">Stop</span>
+                        </button>
                         <button type="button" class="pill" id="shapeTog" aria-pressed="false">
                             <svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
@@ -955,7 +963,7 @@ const webAppJsonLd = {
 
         <!-- must live INSIDE #app, otherwise the browser hides them in fullscreen -->
         <div id="fsbar">
-            <button type="button" class="btn" id="pauseBtn" aria-label="Pause">
+            <button type="button" class="btn pauseBtn" id="pauseBtn" aria-label="Pause">
                 <svg class="ic" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">
                     <rect x="6" y="4" width="4" height="16" rx="1"></rect>
                     <rect x="14" y="4" width="4" height="16" rx="1"></rect>
@@ -968,7 +976,7 @@ const webAppJsonLd = {
                     </g>
                 </svg>
             </button>
-            <button type="button" class="btn stop" id="stopBtn" aria-label="Exit fullscreen">
+            <button type="button" class="btn stop stopBtn" id="stopBtn" aria-label="Exit fullscreen">
                 <svg class="ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
                     <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -1016,7 +1024,7 @@ const webAppJsonLd = {
                 from: 'From', to: 'To', by: 'By', gap: 'Gap', play: 'Start Count', shapes: 'Shapes', game: 'Game', on: 'on', off: 'off',
                 setup: 'Count setup', sound: 'Sound settings',
                 step: 'Step', target: 'Target', undo: 'Undo', reset: 'Reset', say: 'Read aloud', voice: 'Voice', speed: 'Speed',
-                test: 'Test', exit: 'Exit', bgm: 'Background Music', bgmVol: 'BGM Vol', bgmPlay: 'Play', bgmStop: 'Stop', lang: 'en-US'
+                test: 'Test', exit: 'Exit', bgm: 'Background Music', bgmVol: 'BGM Vol', bgmPlay: 'Play', bgmStop: 'Stop', pause: 'Pause', stopBtn: 'Stop', lang: 'en-US'
             },
             ne: {
                 c: 'ने', sub: 'काउन्टर', auto: 'स्वत: गन्ती', tally: 'ट्याली', nums: 'अङ्क', alpha: 'वर्णमाला',
@@ -1024,7 +1032,7 @@ const webAppJsonLd = {
                 from: 'देखि', to: 'सम्म', by: 'अन्तर', gap: 'अन्तराल', play: 'गन्ती सुरु गर्नुहोस्', shapes: 'आकृति', game: 'खेल', on: 'खुला', off: 'बन्द',
                 setup: 'गन्ती सेटअप', sound: 'ध्वनि सेटिङ',
                 step: 'चरण', target: 'लक्ष्य', undo: 'फिर्ता', reset: 'रिसेट', say: 'ठूलो स्वरमा', voice: 'आवाज', speed: 'गति',
-                test: 'परीक्षण', exit: 'निस्कनुहोस्', bgm: 'पृष्ठभूमि सङ्गीत', bgmVol: 'सङ्गीत आवाज', bgmPlay: 'बजाउनुहोस्', bgmStop: 'रोक्नुहोस्', lang: 'ne-NP'
+                test: 'परीक्षण', exit: 'निस्कनुहोस्', bgm: 'पृष्ठभूमि सङ्गीत', bgmVol: 'सङ्गीत आवाज', bgmPlay: 'बजाउनुहोस्', bgmStop: 'रोक्नुहोस्', pause: 'पज गर्नुहोस्', stopBtn: 'रोक्नुहोस्', lang: 'ne-NP'
             },
             pt: {
                 c: 'PT', sub: 'O Contador', auto: 'Auto-contar', tally: 'Contagem', nums: 'Números', alpha: 'Alfabeto',
@@ -1032,7 +1040,7 @@ const webAppJsonLd = {
                 from: 'De', to: 'Até', by: 'De', gap: 'Pausa', play: 'Iniciar contagem', shapes: 'Formas', game: 'Jogo', on: 'ligado', off: 'desligado',
                 setup: 'Configurar contagem', sound: 'Configurações de som',
                 step: 'Passo', target: 'Meta', undo: 'Desfazer', reset: 'Zerar', say: 'Ler em voz alta', voice: 'Voz', speed: 'Velocidade',
-                test: 'Testar', exit: 'Sair', bgm: 'Música de fundo', bgmVol: 'Vol. da música', bgmPlay: 'Tocar', bgmStop: 'Parar', lang: 'pt-BR'
+                test: 'Testar', exit: 'Sair', bgm: 'Música de fundo', bgmVol: 'Vol. da música', bgmPlay: 'Tocar', bgmStop: 'Parar', pause: 'Pausar', stopBtn: 'Parar', lang: 'pt-BR'
             }
         };
         var NE = '०१२३४५६७८९';
@@ -1985,18 +1993,29 @@ const webAppJsonLd = {
             if (mode !== 'tally') { msg.textContent = T().hint; }
         }
 
-        function updatePauseIcon() {
-            var btn = $('pauseBtn');
-            if (!btn) return;
-            btn.innerHTML = paused
-                ? '<svg class="ic" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>'
-                : '<svg class="ic" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4" height="16" rx="1"></rect><rect x="14" y="4" width="4" height="16" rx="1"></rect></svg>';
-            btn.setAttribute('aria-label', paused ? 'Resume' : 'Pause');
+        function pauseIconSvg(size) {
+            return paused
+                ? '<svg class="ic" viewBox="0 0 24 24" width="' + size + '" height="' + size + '" fill="currentColor" aria-hidden="true"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>'
+                : '<svg class="ic" viewBox="0 0 24 24" width="' + size + '" height="' + size + '" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4" height="16" rx="1"></rect><rect x="14" y="4" width="4" height="16" rx="1"></rect></svg>';
         }
 
-        $('stopBtn').onclick = stop;
-        $('exitMini').onclick = stop;
-        $('pauseBtn').onclick = function () {
+        function updatePauseIcon() {
+            // Fullscreen-bar icon-only button (id-based, 22px icon).
+            var fsBtn = $('pauseBtn');
+            if (fsBtn) {
+                fsBtn.innerHTML = pauseIconSvg(22);
+                fsBtn.setAttribute('aria-label', paused ? 'Resume' : 'Pause');
+            }
+            // Normal-view buttons: swap only the icon span, keep the text label.
+            document.querySelectorAll('.pauseBtn .pauseIcon').forEach(function (s) {
+                s.innerHTML = pauseIconSvg(17);
+            });
+            document.querySelectorAll('.pauseBtn').forEach(function (b) {
+                b.setAttribute('aria-label', paused ? 'Resume' : 'Pause');
+            });
+        }
+
+        function togglePause() {
             paused = !paused;
             updatePauseIcon();
             if (activeAudio) {
@@ -2009,7 +2028,11 @@ const webAppJsonLd = {
                 paused ? speechSynthesis.pause() : speechSynthesis.resume();
             }
             paused ? BGM.pause() : BGM.resume();
-        };
+        }
+
+        document.querySelectorAll('.stopBtn').forEach(function (b) { b.onclick = stop; });
+        $('exitMini').onclick = stop;
+        document.querySelectorAll('.pauseBtn').forEach(function (b) { b.onclick = togglePause; });
         $('hideBtn').onclick = function () { document.body.classList.add('hideui'); };
         $('showui').onclick = function () { document.body.classList.remove('hideui'); };
 
