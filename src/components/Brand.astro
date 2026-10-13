@@ -1,7 +1,7 @@
 ---
 // Brand.astro — the FreeKidWorksheets logo lockup (v2, 2026-10-13).
 // Mark: smiling-worksheet icon (blue rounded square, /assets/icon-pink.svg).
-// Wordmark: Baloo 2, stacked two lines — "freekid" navy #1E3A8A over
+// Wordmark: Baloo 2, single line — "freekid" navy #1E3A8A +
 // "worksheets" orange #F97316, matching logo.svg.
 interface Props {
     /** Size tier: 'md' (header) or 'sm' (footer). */
@@ -12,8 +12,7 @@ interface Props {
 const { size = 'md', class: className = '' } = Astro.props;
 
 const mark = size === 'md' ? 'h-10 w-10' : 'h-9 w-9';
-const line1 = size === 'md' ? 'text-[19px]' : 'text-[17px]';
-const line2 = size === 'md' ? 'text-[13px]' : 'text-[12px]';
+const wordmark = size === 'md' ? 'text-[18px] sm:text-[19px]' : 'text-[16px]';
 ---
 
 <a
@@ -40,21 +39,15 @@ const line2 = size === 'md' ? 'text-[13px]' : 'text-[12px]';
         />
     </span>
 
-    <!-- Wordmark: stacked "freekid" / "worksheets" in Baloo 2 -->
-    <span class="flex flex-col leading-none">
-        <span
-            class:list={[
-                'font-logo font-extrabold lowercase tracking-tight text-brand-navy dark:text-[#fff4e0]',
-                line1,
-            ]}
-        >
-            freekid
-        </span>
-        <span
-            class:list={[
-                'font-logo font-bold lowercase tracking-wide text-brand-orange',
-                line2,
-            ]}
+    <!-- Wordmark: single-line "freekidworksheets" in Baloo 2 -->
+    <span
+        class:list={[
+            'font-logo font-extrabold lowercase leading-none tracking-tight whitespace-nowrap',
+            wordmark,
+        ]}
+    >
+        <span class="text-brand-navy dark:text-[#fff4e0]">freekid</span><span
+            class="text-brand-orange"
         >
             worksheets
         </span>
