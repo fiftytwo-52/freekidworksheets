@@ -771,12 +771,13 @@ const webAppJsonLd = {
                             </svg>
                             <span><span data-i="shapes">Shapes</span>: <span id="shapeState">off</span></span>
                         </button>
-                        <button type="button" class="pill fsToggle icon-only" id="fsToggle" aria-label="Enter fullscreen" title="Fullscreen">
+                        <button type="button" class="pill fsToggle" id="fsToggle" aria-label="Enter fullscreen" title="Fullscreen">
                             <svg class="ic" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true">
                                 <g class="fsIconPaths" fill="none" stroke="#00A8B5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>
                                 </g>
                             </svg>
+                            <span data-i="fullscreen" class="fsText">Fullscreen</span>
                         </button>
                         <button type="button" class="pill" id="gameTog" aria-pressed="false">
                             <svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -837,12 +838,13 @@ const webAppJsonLd = {
                             </svg>
                             <span data-i="say">Read aloud</span>
                         </button>
-                        <button type="button" class="pill fsToggle icon-only" id="fsToggleTally" aria-label="Enter fullscreen" title="Fullscreen">
+                        <button type="button" class="pill fsToggle" id="fsToggleTally" aria-label="Enter fullscreen" title="Fullscreen">
                             <svg class="ic" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true">
                                 <g class="fsIconPaths" fill="none" stroke="#00A8B5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>
                                 </g>
                             </svg>
+                            <span data-i="fullscreen" class="fsText">Fullscreen</span>
                         </button>
                     </div>
                     </div>
@@ -1024,7 +1026,7 @@ const webAppJsonLd = {
                 from: 'From', to: 'To', by: 'By', gap: 'Gap', play: 'Start Count', shapes: 'Shapes', game: 'Game', on: 'on', off: 'off',
                 setup: 'Count setup', sound: 'Sound settings',
                 step: 'Step', target: 'Target', undo: 'Undo', reset: 'Reset', say: 'Read aloud', voice: 'Voice', speed: 'Speed',
-                test: 'Test', exit: 'Exit', bgm: 'Background Music', bgmVol: 'BGM Vol', bgmPlay: 'Play', bgmStop: 'Stop', pause: 'Pause', stopBtn: 'Stop', lang: 'en-US'
+                test: 'Test', exit: 'Exit', fullscreen: 'Fullscreen', exitFs: 'Exit fullscreen', bgm: 'Background Music', bgmVol: 'BGM Vol', bgmPlay: 'Play', bgmStop: 'Stop', pause: 'Pause', stopBtn: 'Stop', lang: 'en-US'
             },
             ne: {
                 c: 'ने', sub: 'काउन्टर', auto: 'स्वत: गन्ती', tally: 'ट्याली', nums: 'अङ्क', alpha: 'वर्णमाला',
@@ -1032,7 +1034,7 @@ const webAppJsonLd = {
                 from: 'देखि', to: 'सम्म', by: 'अन्तर', gap: 'अन्तराल', play: 'गन्ती सुरु गर्नुहोस्', shapes: 'आकृति', game: 'खेल', on: 'खुला', off: 'बन्द',
                 setup: 'गन्ती सेटअप', sound: 'ध्वनि सेटिङ',
                 step: 'चरण', target: 'लक्ष्य', undo: 'फिर्ता', reset: 'रिसेट', say: 'ठूलो स्वरमा', voice: 'आवाज', speed: 'गति',
-                test: 'परीक्षण', exit: 'निस्कनुहोस्', bgm: 'पृष्ठभूमि सङ्गीत', bgmVol: 'सङ्गीत आवाज', bgmPlay: 'बजाउनुहोस्', bgmStop: 'रोक्नुहोस्', pause: 'पज गर्नुहोस्', stopBtn: 'रोक्नुहोस्', lang: 'ne-NP'
+                test: 'परीक्षण', exit: 'निस्कनुहोस्', fullscreen: 'पूर्ण स्क्रिन', exitFs: 'स्क्रिन छोड्नुहोस्', bgm: 'पृष्ठभूमि सङ्गीत', bgmVol: 'सङ्गीत आवाज', bgmPlay: 'बजाउनुहोस्', bgmStop: 'रोक्नुहोस्', pause: 'पज गर्नुहोस्', stopBtn: 'रोक्नुहोस्', lang: 'ne-NP'
             },
             pt: {
                 c: 'PT', sub: 'O Contador', auto: 'Auto-contar', tally: 'Contagem', nums: 'Números', alpha: 'Alfabeto',
@@ -1040,7 +1042,7 @@ const webAppJsonLd = {
                 from: 'De', to: 'Até', by: 'De', gap: 'Pausa', play: 'Iniciar contagem', shapes: 'Formas', game: 'Jogo', on: 'ligado', off: 'desligado',
                 setup: 'Configurar contagem', sound: 'Configurações de som',
                 step: 'Passo', target: 'Meta', undo: 'Desfazer', reset: 'Zerar', say: 'Ler em voz alta', voice: 'Voz', speed: 'Velocidade',
-                test: 'Testar', exit: 'Sair', bgm: 'Música de fundo', bgmVol: 'Vol. da música', bgmPlay: 'Tocar', bgmStop: 'Parar', pause: 'Pausar', stopBtn: 'Parar', lang: 'pt-BR'
+                test: 'Testar', exit: 'Sair', fullscreen: 'Tela cheia', exitFs: 'Sair da tela cheia', bgm: 'Música de fundo', bgmVol: 'Vol. da música', bgmPlay: 'Tocar', bgmStop: 'Parar', pause: 'Pausar', stopBtn: 'Parar', lang: 'pt-BR'
             }
         };
         var NE = '०१२३४५६७८९';
@@ -1683,6 +1685,10 @@ const webAppJsonLd = {
             document.querySelectorAll('.fsToggle').forEach(function (b) {
                 b.setAttribute('aria-label', active ? 'Exit fullscreen' : 'Enter fullscreen');
                 b.title = active ? 'Exit fullscreen' : 'Fullscreen';
+                var txt = b.querySelector('.fsText');
+                if (txt) {
+                    txt.textContent = active ? (T().exitFs || 'Exit fullscreen') : (T().fullscreen || 'Fullscreen');
+                }
             });
         }
         // Fullscreen is a view only: it happens solely via the toggle, and
