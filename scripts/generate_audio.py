@@ -66,7 +66,7 @@ GEMINI_VOICES = {
 GEMINI_LANG_NAME = {'ne': 'Nepali', 'pt': 'Brazilian Portuguese'}
 # 2.5 models are restricted to previously-active projects; newer projects fall
 # through to the 3.x TTS model automatically.
-GEMINI_MODELS = ["gemini-2.5-flash-preview-tts", "gemini-3.1-flash-tts-preview"]
+GEMINI_MODELS = ["gemini-2.5-flash-preview-tts", "gemini-3.1-flash-tts-preview", "gemini-3.8-flash-tts", "gemini-3.8-flash-lite-tts"]
 GEM_SEM = None  # set in main()
 
 LOCALE = {'en': 'en-US', 'ne': 'ne-NP', 'pt': 'pt-BR'}
@@ -123,12 +123,8 @@ GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_
 
 def gemini_pcm(text, lang, voice):
     """Blocking: synthesize via Gemini TTS, return raw 24kHz 16-bit mono PCM bytes."""
-    prompt = (
-        f"Read aloud in {GEMINI_LANG_NAME[lang]}, exactly as written, "
-        f"with no extra words. Clear, warm tone, natural pace: {text}"
-    )
     body = {
-        "contents": [{"parts": [{"text": prompt}]}],
+        "contents": [{"parts": [{"text": text}]}],
         "generationConfig": {
             "responseModalities": ["AUDIO"],
             "speechConfig": {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": voice}}},
@@ -143,22 +139,87 @@ def gemini_pcm(text, lang, voice):
             headers={"x-goog-api-key": GEMINI_API_KEY, "Content-Type": "application/json"},
         )
         try:
-            with urllib.request.urlopen(req, timeout=90) as r:
+            with urllib.request.urlopen(req, timeout=20) as r:
                 resp = json.loads(r.read())
             for part in resp["candidates"][0]["content"]["parts"]:
                 if "inlineData" in part:
                     return base64.b64decode(part["inlineData"]["data"])
             raise RuntimeError("no audio in response")
+        except urllib.error.HTTPError as e:
+            err_body = e.read().decode("utf-8", errors="replace")
+            last_err = f"{model} HTTP {e.code}: {err_body}"
         except Exception as e:
-            last_err = e
+            last_err = f"{model} error: {e}"
     raise RuntimeError(f"Gemini TTS failed: {last_err}")
 
 
-def pcm_to_mp3(pcm_bytes, out_path):
-    """24kHz 16-bit mono PCM -> MP3 (untrimmed; trim_silence runs after)."""
+def strip_eos_artifact(raw_bytes, sr=24000):
+    """Removes neural audio codec EOS burst artifact (high-frequency buzz at end of stream)."""
+    import numpy as np
+    samples = np.frombuffer(raw_bytes, dtype=np.int16).astype(np.float32)
+    total_len = len(samples)
+    if total_len == 0:
+        return raw_bytes
+
+    win = int(0.01 * sr)
+    hop = int(0.005 * sr)
+    rms = []
+    times = []
+    for i in range(0, total_len - win, hop):
+        w = samples[i:i+win]
+        r = np.sqrt(np.mean(w**2))
+        rms.append(r)
+        times.append(i)
+
+    rms = np.array(rms)
+    speech_mask = rms > 350
+    if not np.any(speech_mask):
+        return raw_bytes
+
+    speech_indices = np.where(speech_mask)[0]
+    bursts = []
+    cur_burst = [speech_indices[0]]
+    for idx in speech_indices[1:]:
+        if idx - cur_burst[-1] <= 24:  # gap <= 120ms belongs to same phrase
+            cur_burst.append(idx)
+        else:
+            bursts.append(cur_burst)
+            cur_burst = [idx]
+    bursts.append(cur_burst)
+
+    # Check if the final burst is an isolated end-of-stream artifact
+    if len(bursts) > 1:
+        last_b = bursts[-1]
+        prev_b = bursts[-2]
+        gap_samples = times[last_b[0]] - times[prev_b[-1]]
+        last_samples = samples[times[last_b[0]]:times[last_b[-1]]]
+        dur_ms = len(last_samples) / sr * 1000
+        gap_ms = gap_samples / sr * 1000
+
+        fft = np.abs(np.fft.rfft(last_samples))
+        freqs = np.fft.rfftfreq(len(last_samples), 1/sr)
+        dom_freq = freqs[np.argmax(fft)] if len(fft) > 0 else 0
+
+        if (dur_ms < 150 and gap_ms > 70 and dom_freq > 1300) or (dur_ms < 100 and gap_ms > 120):
+            bursts = bursts[:-1]
+
+    start_sample = max(0, times[bursts[0][0]] - int(0.035 * sr))
+    end_sample = min(total_len, times[bursts[-1][-1]] + int(0.040 * sr))
+
+    out_samples = samples[start_sample:end_sample].copy()
+    fade_len = int(0.02 * sr)
+    if len(out_samples) > 2 * fade_len:
+        out_samples[:fade_len] *= np.linspace(0, 1, fade_len)
+        out_samples[-fade_len:] *= np.linspace(1, 0, fade_len)
+
+    return out_samples.astype(np.int16).tobytes()
+
+
+def pcm_to_mp3(pcm_bytes, out_path, bitrate="128k"):
+    """24kHz 16-bit mono PCM -> studio MP3."""
     p = subprocess.Popen(
         ["ffmpeg", "-y", "-f", "s16le", "-ar", "24000", "-ac", "1", "-i", "pipe:0",
-         "-b:a", "32k", out_path],
+         "-b:a", bitrate, out_path],
         stdin=subprocess.PIPE, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
     )
     p.communicate(pcm_bytes)
@@ -171,22 +232,22 @@ def trim_silence(raw_path, final_path):
     cmd = [
         "ffmpeg", "-y", "-i", raw_path,
         "-af", "silenceremove=start_periods=1:start_duration=0.01:start_threshold=-38dB:detection=peak,areverse,silenceremove=start_periods=1:start_duration=0.01:start_threshold=-38dB:detection=peak,areverse",
-        "-b:a", "32k", final_path
+        "-b:a", "128k", final_path
     ]
     res = subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     if res.returncode != 0 or not os.path.exists(final_path) or os.path.getsize(final_path) == 0:
-        # Fallback to copy if trim filter fails
         os.replace(raw_path, final_path)
     else:
         if os.path.exists(raw_path):
             os.remove(raw_path)
 
-async def generate_file(text, lang, gender, out_path, sem, force, retries=3):
+
+async def generate_file(text, lang, gender, out_path, sem, force, engine='auto', retries=3):
     if not force and os.path.exists(out_path) and os.path.getsize(out_path) > 500:
         return 'skipped'
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     temp_path = out_path + ".raw.mp3"
-    use_gemini = lang in GEMINI_LANGS
+    use_gemini = (engine == 'gemini') or (engine == 'auto' and lang in GEMINI_LANGS)
     gate = GEM_SEM if use_gemini else sem
     async with gate:
         for attempt in range(retries):
@@ -194,15 +255,25 @@ async def generate_file(text, lang, gender, out_path, sem, force, retries=3):
                 if use_gemini:
                     gvoice = GEMINI_VOICES[(lang, gender)]
                     pcm = await asyncio.to_thread(gemini_pcm, text, lang, gvoice)
-                    await asyncio.to_thread(pcm_to_mp3, pcm, temp_path)
+                    clean_pcm = strip_eos_artifact(pcm)
+                    await asyncio.to_thread(pcm_to_mp3, clean_pcm, out_path, "128k")
+                    if os.path.exists(out_path) and os.path.getsize(out_path) > 300:
+                        print(f"Generated {lang}/{gender}: {os.path.basename(out_path)} ({text})", flush=True)
+                        await asyncio.sleep(1.5)  # gentle pacing to avoid RPM limit
+                        return 'ok'
                 else:
                     voice = VOICES[(lang, gender)]
                     comm = edge_tts.Communicate(text, voice, proxy=PROXY)
                     await comm.save(temp_path)
-                if os.path.exists(temp_path) and os.path.getsize(temp_path) > 300:
-                    trim_silence(temp_path, out_path)
-                    return 'ok'
+                    if os.path.exists(temp_path) and os.path.getsize(temp_path) > 300:
+                        trim_silence(temp_path, out_path)
+                        return 'ok'
             except Exception as e:
+                err_str = str(e)
+                if "GenerateRequestsPerDay" in err_str:
+                    print(f"\n[FATAL] Google Gemini daily free-tier quota exhausted (10 req/day).", file=sys.stderr)
+                    print(f"Details: {err_str}", file=sys.stderr)
+                    sys.exit(1)
                 if attempt == retries - 1:
                     print(f"Failed to generate {out_path}: {e}", file=sys.stderr)
                 # Gemini rate limits need longer backoff (15s) than edge-tts
@@ -219,6 +290,7 @@ async def main():
     parser.add_argument('--langs', default='en,ne,pt', help='comma-separated: en,ne,pt')
     parser.add_argument('--genders', default='female,male', help='comma-separated: female,male')
     parser.add_argument('--limit', type=int, default=0, help='only first N numbers (0 = all 500)')
+    parser.add_argument('--engine', choices=['auto', 'edge-tts', 'gemini'], default='auto', help='TTS engine')
     args = parser.parse_args()
 
     langs = [l.strip() for l in args.langs.split(',') if l.strip() in ('en', 'ne', 'pt')]
@@ -243,7 +315,7 @@ async def main():
             text = get_ne_word(n) if lang == 'ne' else str(n)
             for gender in genders:
                 p = os.path.join(BASE_DIR, lang, gender, f"{n}.mp3")
-                tasks.append(generate_file(text, lang, gender, p, sem, args.force))
+                tasks.append(generate_file(text, lang, gender, p, sem, args.force, args.engine))
 
         # Letters: en/pt use A-Z, ne uses the ka-kha set
         letters = EN_LETTERS if lang in ('en', 'pt') else NE_LETTERS
@@ -253,12 +325,12 @@ async def main():
             fname = f"alpha_{l}.mp3" if lang in ('en', 'pt') else f"alpha_{idx}.mp3"
             for gender in genders:
                 p = os.path.join(BASE_DIR, lang, gender, fname)
-                tasks.append(generate_file(l, lang, gender, p, sem, args.force))
+                tasks.append(generate_file(l, lang, gender, p, sem, args.force, args.engine))
 
     total = len(tasks)
     print(f"Starting generation of {total} trimmed natural audio files (langs={','.join(langs)}, force={args.force})...")
     done = 0
-    batch_size = 60
+    batch_size = 10
     for i in range(0, total, batch_size):
         batch = tasks[i:i + batch_size]
         await asyncio.gather(*batch)
