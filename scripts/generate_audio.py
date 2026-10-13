@@ -56,7 +56,7 @@ VOICES = {
 # Gemini TTS (free API tier) for Nepali + Portuguese — user-auditioned 2026-10-10,
 # all four test voices approved. Kore->female, Puck->male (Aoede/Charon are
 # tested-good one-line swaps).
-GEMINI_LANGS = ('ne', 'pt')
+GEMINI_LANGS = ('ne',)
 GEMINI_VOICES = {
     ('ne', 'female'): 'Kore',
     ('ne', 'male'):   'Puck',

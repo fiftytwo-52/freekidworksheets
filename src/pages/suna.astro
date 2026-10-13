@@ -1330,18 +1330,18 @@ const webAppJsonLd = {
             // 1. Studio Pre-Recorded MP3 Voices (guaranteed 100% on every phone, tablet, and computer)
             var optF = document.createElement('option');
             optF.value = 'mp3-female';
-            optF.textContent = (lang === 'ne') ? '👩 महिला आवाज (Studio Audio)' : '👩 Natural Female Voice (Studio British)';
+            optF.textContent = (lang === 'ne') ? '👩 महिला आवाज (Studio Audio)' : (lang === 'pt') ? '👩 Voz Feminina (Áudio IA)' : '👩 Natural Female Voice (Studio British)';
             voiceSel.appendChild(optF);
 
             var optM = document.createElement('option');
             optM.value = 'mp3-male';
-            optM.textContent = (lang === 'ne') ? '👨 पुरुष आवाज (Studio Audio)' : '👨 Natural Male Voice (Studio British)';
+            optM.textContent = (lang === 'ne') ? '👨 पुरुष आवाज (Studio Audio)' : (lang === 'pt') ? '👨 Voz Masculina (Áudio IA)' : '👨 Natural Male Voice (Studio British)';
             voiceSel.appendChild(optM);
 
             // 2. Default System Voice fallback
             var optSys = document.createElement('option');
             optSys.value = 'default';
-            optSys.textContent = (lang === 'ne') ? '📱 प्रणालीको आवाज (System TTS)' : '📱 System Default TTS';
+            optSys.textContent = (lang === 'ne') ? '📱 प्रणालीको आवाज (System TTS)' : (lang === 'pt') ? '📱 Padrão do Sistema (System TTS)' : '📱 System Default TTS';
             voiceSel.appendChild(optSys);
 
             // 3. Any additional device voices detected
@@ -1378,12 +1378,16 @@ const webAppJsonLd = {
             if (vNote) {
                 vNote.style.display = 'block';
                 if (voiceSel.value.indexOf('mp3') === 0) {
-                    vNote.textContent = (lang === 'ne')
-                        ? '✨ स्टुडियो अडियो सक्रिय छ (सबै मोबाइल र ट्याब्लेटमा १००% स्पष्ट बज्छ)।'
-                        : (lang === 'pt')
-                        ? '✨ Áudio de estúdio ativo (nítido em todos os celulares e tablets).'
-                        : '✨ Natural British Studio Audio active (100% crystal-clear on all phones and tablets).';
-                    vNote.style.color = '#14532d';
+                    if (lang === 'ne') {
+                        vNote.textContent = '✨ स्टुडियो अडियो सक्रिय छ (सबै मोबाइल र ट्याब्लेटमा १००% स्पष्ट बज्छ)।';
+                        vNote.style.color = '#14532d';
+                    } else if (lang === 'pt') {
+                        vNote.textContent = '⚠️ Aviso: Voz em português gerada por IA (pode haver pequenas variações ou divergências na pronúncia).';
+                        vNote.style.color = '#b45309';
+                    } else {
+                        vNote.textContent = '✨ Natural British Studio Audio active (100% crystal-clear on all phones and tablets).';
+                        vNote.style.color = '#14532d';
+                    }
                 } else if (lang === 'ne') {
                     if (hasNe) {
                         vNote.textContent = 'नेपाली प्रणाली आवाज सक्रिय छ।';
@@ -1395,6 +1399,9 @@ const webAppJsonLd = {
                         vNote.textContent = 'फोनको प्रणाली आवाज सक्रिय छ।';
                         vNote.style.color = '#9a3412';
                     }
+                } else if (lang === 'pt') {
+                    vNote.textContent = '⚠️ Aviso: Voz em português gerada por IA (pode haver pequenas variações na pronúncia).';
+                    vNote.style.color = '#b45309';
                 } else {
                     vNote.textContent = 'System device voice active.';
                     vNote.style.color = '#2b1d4a';
@@ -1454,17 +1461,17 @@ const webAppJsonLd = {
             }
             return '';
         }
-        // Known studio-MP3 coverage on disk: en has 1–500 + A–Z, ne female has
-        // 1–10 only, pt has 1–3 only (no letters, ne male has none). Anything
-        // outside coverage goes straight to TTS instead of paying a network
-        // 404 round-trip on every single count.
+        // Known studio-MP3 coverage on disk: en has 1–500 + A–Z, ne has 1–100,
+        // pt has 1–100 for both male and female. Anything outside coverage
+        // goes straight to TTS instead of paying a network 404 round-trip.
         function mp3Covered(langTag, gender, raw) {
             if (langTag === 'en') return mp3Src(langTag, gender, raw) !== '';
+            var isNum = (typeof raw === 'number' || /^\d+$/.test(raw));
             if (langTag === 'ne') {
-                return gender === 'female' && (typeof raw === 'number' || /^\d+$/.test(raw)) && +raw >= 1 && +raw <= 10;
+                return isNum && +raw >= 1 && +raw <= 100;
             }
             if (langTag === 'pt') {
-                return (typeof raw === 'number' || /^\d+$/.test(raw)) && +raw >= 1 && +raw <= 3;
+                return isNum && +raw >= 1 && +raw <= 100;
             }
             return false;
         }
