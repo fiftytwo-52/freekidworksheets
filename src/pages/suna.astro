@@ -539,6 +539,73 @@ const webAppJsonLd = {
         }
         .bar i { display: block; height: 100%; width: 0; background: var(--mint); transition: width .25s ease; }
 
+        /* Tally decrement / increment buttons */
+        .tally-tap-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: clamp(10px, 3vw, 24px);
+            margin: 10px auto 18px;
+        }
+        .tally-tap-row .big {
+            margin: 0;
+        }
+        .arrow-btn {
+            width: clamp(54px, 12vw, 70px);
+            height: clamp(54px, 12vw, 70px);
+            border-radius: 50%;
+            border: 4px solid var(--ink);
+            background: var(--card);
+            color: var(--ink);
+            cursor: pointer;
+            box-shadow: 0 5px 0 var(--ink);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform .1s ease, box-shadow .1s ease, background .15s ease;
+            flex-shrink: 0;
+        }
+        .arrow-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 var(--ink);
+        }
+        .arrow-btn.dec { background: #ffecd2; }
+        .arrow-btn.inc { background: #e2f8ec; }
+
+        /* Fullscreen tally navigation */
+        #fsTallyNav { display: none; }
+        body.fs.tally-mode #fsTallyNav { display: block; }
+        body.fs.tally-mode.hideui #fsTallyNav { display: none; }
+        .fs-arrow-btn {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 60;
+            width: clamp(58px, 9vw, 86px);
+            height: clamp(58px, 9vw, 86px);
+            border-radius: 50%;
+            border: 4px solid var(--ink);
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--ink);
+            box-shadow: 0 6px 0 var(--ink);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease;
+        }
+        .fs-arrow-btn:hover { background: #fff; }
+        .fs-arrow-btn:active {
+            transform: translateY(calc(-50% + 4px));
+            box-shadow: 0 2px 0 var(--ink);
+        }
+        .fs-arrow-left { left: clamp(14px, 3.5vw, 42px); background: #ffecd2; }
+        .fs-arrow-right { right: clamp(14px, 3.5vw, 42px); background: #e2f8ec; }
+
+        .fs-tally-bar-btn { display: none; }
+        body.tally-mode .fs-tally-bar-btn { display: inline-flex; }
+        body.tally-mode #fsbar .pauseBtn { display: none; }
+
         /* Fullscreen view */
         body.fs { overflow: hidden; }
         body.fs #app { position: fixed; inset: 0; z-index: 50; overflow: hidden; }
@@ -794,13 +861,25 @@ const webAppJsonLd = {
                 </div>
 
                 <div id="tallyCtl" hidden>
-                    <button type="button" class="big" id="tap">
-                        <svg class="ic" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <line x1="12" y1="5" x2="12" y2="19"></line>
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                        </svg>
-                        <span>1</span>
-                    </button>
+                    <div class="tally-tap-row">
+                        <button type="button" class="arrow-btn dec" id="tallyDec" aria-label="Subtract count" title="Previous / Subtract (-)">
+                            <svg class="ic" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <polyline points="15 18 9 12 15 6"></polyline>
+                            </svg>
+                        </button>
+                        <button type="button" class="big" id="tap" aria-label="Add count" title="Add (+)">
+                            <svg class="ic" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            <span>1</span>
+                        </button>
+                        <button type="button" class="arrow-btn inc" id="tallyInc" aria-label="Add count" title="Next / Add (+)">
+                            <svg class="ic" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </button>
+                    </div>
                     <div class="bar" aria-hidden="true"><i id="prog"></i></div>
                     <div class="ctl-group">
                     <div class="grid">
@@ -965,6 +1044,16 @@ const webAppJsonLd = {
 
         <!-- must live INSIDE #app, otherwise the browser hides them in fullscreen -->
         <div id="fsbar">
+            <button type="button" class="btn fs-tally-bar-btn" id="fsTallyDecBar" aria-label="Subtract count" title="Previous / Subtract (-)">
+                <svg class="ic" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
+            <button type="button" class="btn fs-tally-bar-btn" id="fsTallyIncBar" aria-label="Add count" title="Next / Add (+)">
+                <svg class="ic" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </button>
             <button type="button" class="btn pauseBtn" id="pauseBtn" aria-label="Pause">
                 <svg class="ic" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">
                     <rect x="6" y="4" width="4" height="16" rx="1"></rect>
@@ -998,6 +1087,18 @@ const webAppJsonLd = {
                     <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path>
                     <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path>
                     <line x1="2" y1="2" x2="22" y2="22"></line>
+                </svg>
+            </button>
+        </div>
+        <div id="fsTallyNav" aria-hidden="true">
+            <button type="button" class="fs-arrow-btn fs-arrow-left" id="fsArrowLeft" aria-label="Subtract count" title="Previous / Subtract (-)">
+                <svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
+            <button type="button" class="fs-arrow-btn fs-arrow-right" id="fsArrowRight" aria-label="Add count" title="Next / Add (+)">
+                <svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="9 18 15 12 9 6"></polyline>
                 </svg>
             </button>
         </div>
@@ -2144,8 +2245,19 @@ const webAppJsonLd = {
                 speak(count);
             }
         }
-        $('tap').onclick = function () { add(chipVal('step')); };
-        $('undo').onclick = function () { add(-chipVal('step')); };
+        function decStep() { add(-chipVal('step')); }
+        function incStep() { add(chipVal('step')); }
+        $('tap').onclick = incStep;
+        var tDec = $('tallyDec'), tInc = $('tallyInc');
+        if (tDec) tDec.onclick = decStep;
+        if (tInc) tInc.onclick = incStep;
+        var fsLeft = $('fsArrowLeft'), fsRight = $('fsArrowRight');
+        if (fsLeft) fsLeft.onclick = decStep;
+        if (fsRight) fsRight.onclick = incStep;
+        var fsDecBar = $('fsTallyDecBar'), fsIncBar = $('fsTallyIncBar');
+        if (fsDecBar) fsDecBar.onclick = decStep;
+        if (fsIncBar) fsIncBar.onclick = incStep;
+        $('undo').onclick = decStep;
         $('reset').onclick = function () { count = 0; tallyShow(); };
         $('say').onclick = function () {
             var curr = this.getAttribute('aria-pressed') === 'true';
@@ -2156,9 +2268,15 @@ const webAppJsonLd = {
         };
         $('target').oninput = tallyShow;
         document.addEventListener('keydown', function (e) {
-            if (mode === 'tally' && e.code === 'Space' && !/INPUT|SELECT|BUTTON/.test(e.target.tagName)) {
-                e.preventDefault();
-                add(chipVal('step'));
+            if (mode === 'tally') {
+                if (/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) return;
+                if (e.code === 'ArrowLeft' || e.code === 'ArrowDown') {
+                    e.preventDefault();
+                    decStep();
+                } else if (e.code === 'ArrowRight' || e.code === 'ArrowUp' || e.code === 'Space') {
+                    e.preventDefault();
+                    incStep();
+                }
             }
         });
 
@@ -2173,15 +2291,18 @@ const webAppJsonLd = {
                 $('tallyCtl').hidden = mode !== 'tally';
                 sky.innerHTML = '';
                 if (mode === 'tally') {
+                    document.body.classList.add('tally-mode');
                     tallyShow();
                     msg.textContent = '';
                 } else {
+                    document.body.classList.remove('tally-mode');
                     show('–');
                     msg.textContent = T().hint;
                 }
             };
         });
 
+        if (mode === 'tally') document.body.classList.add('tally-mode');
         applyLang();
         updateFsToggle();
     </script>
