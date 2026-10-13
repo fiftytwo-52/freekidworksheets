@@ -1574,7 +1574,9 @@ const webAppJsonLd = {
                 return isNum && +raw >= 1 && +raw <= 100;
             }
             if (langTag === 'pt') {
-                return isNum && +raw >= 1 && +raw <= 100;
+                if (isNum) return +raw >= 1 && +raw <= 100;
+                if (typeof raw === 'string' && /^[A-Za-z]$/.test(raw.trim())) return true;
+                return false;
             }
             return false;
         }
