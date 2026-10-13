@@ -2,7 +2,7 @@
 // Pagination.astro — windowed static pagination links (§9.2 / §11.2). Page 1
 // lives at the bare path; deeper pages at {basePath}/page/{n}. Uses
 // pageWindow() for the ellipsis window and marks the current page with
-// aria-current="page" (rendered as a span, not a self-link). Geist style:
+// aria-current="page" (rendered as a span, not a self-link). Suna style:
 // 6px-square numbered items + pill prev/next (DESIGN.md §3 "Buttons").
 import { pagePath, pageWindow } from '../lib/pagination';
 
@@ -15,11 +15,11 @@ const { basePath, page, totalPages } = Astro.props;
 const window = pageWindow(page, totalPages);
 
 const pageItem =
-    'inline-flex h-9 min-w-9 items-center justify-center rounded-md border px-2 text-sm font-medium transition-colors';
+    'inline-flex h-9 min-w-9 items-center justify-center rounded-xl border px-2 text-sm font-medium transition-colors';
 const idle =
     'border-hairline bg-elevated text-body hover:border-neutral-300 hover:text-ink dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400 dark:hover:border-neutral-700 dark:hover:text-neutral-100';
 const active =
-    'border-ink bg-ink text-white dark:border-neutral-100 dark:bg-neutral-100 dark:text-neutral-900';
+    'border-pink-500 bg-pink-500 text-white dark:border-pink-500 dark:bg-pink-500 dark:text-white';
 const ellipsis =
     'inline-flex h-9 min-w-8 items-center justify-center px-1 text-faint dark:text-neutral-600';
 const navItem =

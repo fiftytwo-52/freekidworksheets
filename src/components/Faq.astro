@@ -2,7 +2,7 @@
 // Faq.astro — FAQ section from src/data/site.ts FAQ sets (§13.2). Defaults to
 // the home FAQS; pages can pass their own set (e.g. NEPALI_FAQS) so the
 // visible section matches the FAQPage JSON-LD emitted on that page. Accessible
-// <details> accordion in the Geist hairline-card language (DESIGN.md §3).
+// <details> accordion in the Suna hairline-card language.
 import { FAQS } from '../data/site';
 
 interface Props {
@@ -30,7 +30,7 @@ const { faqs = FAQS, heading = 'Frequently asked questions' } = Astro.props;
     <div class="mx-auto mt-6 max-w-3xl space-y-2">
         {faqs.map((f) => (
             <details
-                class="group overflow-hidden rounded-lg border border-hairline bg-elevated transition-colors open:border-neutral-300 dark:border-neutral-800 dark:bg-neutral-900 dark:open:border-neutral-700"
+                class="group overflow-hidden rounded-2xl border border-hairline bg-elevated transition-colors open:border-pink-300 dark:border-neutral-800 dark:bg-neutral-900 dark:open:border-pink-800"
             >
                 <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-left text-[15px] font-medium text-ink dark:text-neutral-100">
                     <span>{f.question}</span>

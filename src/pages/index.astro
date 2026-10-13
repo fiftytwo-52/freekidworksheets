@@ -63,8 +63,8 @@ const PILL_PRIMARY =
     path="/"
     jsonLd={[...websiteJsonLd(), faqJsonLd()]}
 >
-    <!-- 1. Hero — Wide 2-column layout with soft low-opacity gradient background -->
-    <section class="border-b border-neutral-200/80 bg-gradient-to-br from-pink-200 via-purple-100 to-amber-100 dark:border-neutral-800 dark:from-pink-950/70 dark:via-purple-950/60 dark:to-neutral-900">
+    <!-- 1. Hero — Wide 2-column layout over the Suna hero mesh -->
+    <section class="hero-mesh border-b border-hairline dark:border-neutral-800">
         <div class="mx-auto w-full max-w-7xl px-4 py-5 sm:px-6 sm:py-14 lg:px-8">
             <div class="grid grid-cols-1 items-center gap-5 lg:grid-cols-12 lg:gap-12">
                 <!-- Left column: Headline, intro text, & primary actions -->
@@ -94,7 +94,7 @@ const PILL_PRIMARY =
 
                 <!-- Right column: Interactive search & quick popular topics card -->
                 <div class="lg:col-span-5">
-                    <div class="rounded-3xl border border-neutral-200/80 bg-white/90 p-3 shadow-sm backdrop-blur-sm sm:p-6 dark:border-neutral-800 dark:bg-neutral-900/90">
+                    <div class="rounded-3xl border border-hairline bg-elevated/90 p-3 shadow-sm backdrop-blur-sm sm:p-6 dark:border-neutral-800 dark:bg-neutral-900/90">
                         <h2 class="hidden items-center gap-2 text-sm font-bold text-neutral-900 sm:flex dark:text-neutral-100">
                             <Icon name="search" class="h-4 w-4 text-pink-500" />
                             Search Worksheets
@@ -104,7 +104,7 @@ const PILL_PRIMARY =
                         </p>
 
                         <!-- Hero Search Form -->
-                        <form action="/search" method="get" role="search" class="mt-3 flex items-center gap-2 rounded-full border border-neutral-300/90 bg-white p-1.5 shadow-2xs transition focus-within:border-pink-500 focus-within:ring-4 focus-within:ring-pink-500/10 dark:border-neutral-700 dark:bg-neutral-800">
+                        <form action="/search" method="get" role="search" class="mt-3 flex items-center gap-2 rounded-full border border-hairline bg-elevated p-1.5 shadow-2xs transition focus-within:border-pink-500 focus-within:ring-4 focus-within:ring-pink-500/10 dark:border-neutral-700 dark:bg-neutral-800">
                                                     <label for="hero-search" class="sr-only">Search worksheets</label>
                                                     <input type="hidden" name="lang" value="en" />
                                                     <input
@@ -132,7 +132,7 @@ const PILL_PRIMARY =
                                     <a
                                         href={`/search?q=${encodeURIComponent(topic.query)}&lang=en`}
                                         rel="nofollow"
-                                        class="rounded-full border border-neutral-200 bg-neutral-50/80 px-2.5 py-1 text-xs font-medium text-neutral-700 transition hover:border-pink-300 hover:bg-pink-50 hover:text-pink-600 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700 dark:hover:text-pink-300"
+                                        class="rounded-full border border-hairline bg-canvas/80 px-2.5 py-1 text-xs font-medium text-neutral-700 transition hover:border-pink-300 hover:bg-pink-50 hover:text-pink-600 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700 dark:hover:text-pink-300"
                                     >
                                         {topic.label}
                                     </a>

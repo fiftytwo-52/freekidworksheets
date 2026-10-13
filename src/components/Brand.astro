@@ -1,7 +1,8 @@
 ---
-// Brand.astro — the FreeKidWorksheets wordmark (DESIGN.md §2.1, on the
-// MASTER-INSTRUCTION §10.2 brand). Uses the custom app icon in assets
-// beside the "FreeKidWorksheets" wordmark in Geist 600.
+// Brand.astro — the FreeKidWorksheets logo lockup (v2, 2026-10-13).
+// Mark: smiling-worksheet icon (blue rounded square, /assets/icon-pink.svg).
+// Wordmark: Baloo 2, stacked two lines — "freekid" navy #1E3A8A over
+// "worksheets" orange #F97316, matching logo.svg.
 interface Props {
     /** Size tier: 'md' (header) or 'sm' (footer). */
     size?: 'md' | 'sm';
@@ -10,19 +11,20 @@ interface Props {
 }
 const { size = 'md', class: className = '' } = Astro.props;
 
-const mark = size === 'md' ? 'h-8 w-8' : 'h-7 w-7';
-const word = size === 'md' ? 'text-[17px]' : 'text-[15px]';
+const mark = size === 'md' ? 'h-10 w-10' : 'h-9 w-9';
+const line1 = size === 'md' ? 'text-[19px]' : 'text-[17px]';
+const line2 = size === 'md' ? 'text-[13px]' : 'text-[12px]';
 ---
 
 <a
     href="/"
-    class:list={['site-brand flex items-center gap-2.5', className]}
+    class:list={['site-brand flex items-center gap-2', className]}
     aria-label="Free Kid Worksheets — home"
 >
-    <!-- Mark: custom app icon from assets -->
+    <!-- Mark: v2 smiling-worksheet icon -->
     <span
         class:list={[
-            'grid shrink-0 place-items-center overflow-hidden rounded-lg transition-transform hover:scale-105',
+            'grid shrink-0 place-items-center overflow-hidden rounded-xl transition-transform hover:scale-105',
             mark,
         ]}
         aria-hidden="true"
@@ -30,21 +32,31 @@ const word = size === 'md' ? 'text-[17px]' : 'text-[15px]';
         <img
             src="/assets/icon-pink.svg"
             alt="Free Kid Worksheets logo"
-            width="32"
-            height="32"
+            width="40"
+            height="40"
             class="h-full w-full object-contain"
             loading="eager"
             decoding="async"
         />
     </span>
 
-    <!-- Wordmark: lowercase "freekidworksheets" -->
-    <span
-        class:list={[
-            'whitespace-nowrap font-bold lowercase leading-none tracking-tight',
-            word,
-        ]}
-    >
-        <span class="text-ink dark:text-neutral-100">freekid</span><span class="text-pink-500 dark:text-pink-400">worksheets</span>
+    <!-- Wordmark: stacked "freekid" / "worksheets" in Baloo 2 -->
+    <span class="flex flex-col leading-none">
+        <span
+            class:list={[
+                'font-logo font-extrabold lowercase tracking-tight text-brand-navy dark:text-[#fff4e0]',
+                line1,
+            ]}
+        >
+            freekid
+        </span>
+        <span
+            class:list={[
+                'font-logo font-bold lowercase tracking-wide text-brand-orange',
+                line2,
+            ]}
+        >
+            worksheets
+        </span>
     </span>
 </a>

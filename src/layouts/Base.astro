@@ -105,13 +105,13 @@ const adsenseScript = ADSENSE_PUBLISHER_ID
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/site.webmanifest" />
-        <meta name="theme-color" content="#ff416c" />
+        <meta name="theme-color" content="#2563EB" />
 
-        <!-- Google Fonts: Geist Sans + Geist Mono (DESIGN.md typography) -->
+        <!-- Google Fonts: Fredoka (display) + Nunito (body) + Baloo 2 (logo wordmark) -->
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
-            href="https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,400;0,700;1,400&family=Fredoka:wght@400..700&family=Geist+Mono:wght@400..700&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Fredoka:wght@500;600;700&family=Geist+Mono:wght@400..700&family=Nunito:wght@400;600;700;800;900&display=swap"
             rel="stylesheet"
         />
 
@@ -132,8 +132,8 @@ const adsenseScript = ADSENSE_PUBLISHER_ID
     <body
         class={
             bare
-                ? 'min-h-screen overflow-x-hidden bg-canvas text-ink dark:bg-[#0a0a0a] dark:text-neutral-100'
-                : 'flex min-h-screen flex-col bg-canvas text-ink dark:bg-[#0a0a0a] dark:text-neutral-100'
+                ? 'min-h-screen overflow-x-hidden bg-canvas text-ink dark:bg-[#1e1538] dark:text-neutral-100'
+                : 'flex min-h-screen flex-col bg-canvas text-ink dark:bg-[#1e1538] dark:text-neutral-100'
         }
     >
         {!bare && <SiteNav path={path} />}

@@ -1,8 +1,9 @@
 /* ============================================================================
    Free Kid Worksheets — global stylesheet
-   Tailwind v4 entry point + Geist design system (DESIGN.md) layered on the
-   MASTER-INSTRUCTION structure. Dark mode is driven by `data-theme` on <html>
-   (set pre-paint in Base.astro).
+   Tailwind v4 entry point. Suna design language layered on the
+   MASTER-INSTRUCTION structure: warm cream canvas, deep-purple ink,
+   pink/sun/mint/sky accents, Fredoka display + Nunito body.
+   Dark mode is driven by `data-theme` on <html> (set pre-paint in Base.astro).
    ========================================================================== */
 
 @import "tailwindcss";
@@ -11,29 +12,170 @@
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 @theme {
-    /* Geist Sans / Geist Mono loaded via Google Fonts in the <head> (DESIGN.md). */
-    --font-sans: "Fredoka", "Comic Neue", "Comic Sans MS", "Chalkboard SE", "Comic Sans", cursive, sans-serif;
+    /* Suna typography: Fredoka display, Nunito body, Baloo 2 logo wordmark. */
+    --font-sans: "Nunito", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+    --font-display: "Fredoka", "Nunito", "Trebuchet MS", sans-serif;
+    --font-logo: "Baloo 2", "Fredoka", "Nunito", sans-serif;
     --font-mono: "Geist Mono", "JetBrains Mono", ui-monospace, "SF Mono",
         Menlo, monospace;
-    --font-display: var(--font-sans);
 
-    /* Geist color tokens (DESIGN.md §2.1). */
-    --color-canvas: #fafafa;
-    /* near-white page background */
+    /* Suna canvas/ink tokens. */
+    --color-canvas: #fff4e0;
+    /* warm cream page background */
     --color-elevated: #ffffff;
     /* cards / surfaces */
-    --color-hairline: #ebebeb;
-    /* 1px borders */
-    --color-ink: #171717;
-    /* primary text / near-black */
-    --color-body: #4d4d4d;
+    --color-hairline: #efdfb8;
+    /* warm 1px borders */
+    --color-ink: #2b1d4a;
+    /* primary text / deep purple */
+    --color-body: #65577e;
     /* secondary text */
-    --color-mute: #8f8f8f;
+    --color-mute: #8a7ba3;
     /* tertiary / meta text */
-    --color-faint: #a1a1a1;
+    --color-faint: #a99bc0;
     /* weakest text / placeholders */
-    --color-accent: #0070f3;
-    /* link / "Free" accents */
+    --color-muted: #65577e;
+    /* alias so text-muted works */
+    --color-accent: #ff416c;
+    /* link / CTA accents (Suna pink) */
+
+    /* Brand (new v2 logo) + Suna accent tokens. */
+    --color-brand-blue: #2563eb;
+    --color-brand-navy: #1e3a8a;
+    --color-brand-orange: #f97316;
+    --color-brand-blush: #fda4af;
+    --color-brand-fold: #fde68a;
+    --color-suna-pink: #ff416c;
+    --color-sun: #ffc93c;
+    --color-mint: #2ec4a6;
+    --color-sky: #4cc9f0;
+    --color-suna-ink: #2b1d4a;
+    --color-suna-cream: #fff4e0;
+    --color-suna-dark: #1e1538;
+    --color-suna-card-dark: #2c2050;
+
+    /* Warm purple-tinted neutral ramp — serves light-mode text AND
+       dark-mode surfaces (neutral-900/950 are the Suna dark backgrounds). */
+    --color-neutral-50: #fffdf5;
+    --color-neutral-100: #fff4e0;
+    --color-neutral-200: #f5e8c8;
+    --color-neutral-300: #e5d5a8;
+    --color-neutral-400: #b8a67e;
+    --color-neutral-500: #8a7a5e;
+    --color-neutral-600: #6b5b42;
+    --color-neutral-700: #4a3d2e;
+    --color-neutral-800: #2c2050;
+    --color-neutral-900: #241a3f;
+    --color-neutral-950: #1e1538;
+
+    /* Suna pink ramp (base #ff416c). */
+    --color-pink-50: #fff0f4;
+    --color-pink-100: #ffd9e2;
+    --color-pink-200: #ffb3c2;
+    --color-pink-300: #ff8fab;
+    --color-pink-400: #ff5c85;
+    --color-pink-500: #ff416c;
+    --color-pink-600: #e02e58;
+    --color-pink-700: #b81f45;
+    --color-pink-800: #8f1636;
+    --color-pink-900: #661024;
+    --color-pink-950: #420a18;
+
+    /* Sun gold ramp (base #ffc93c) — used for yellow + amber. */
+    --color-yellow-50: #fffbe8;
+    --color-yellow-100: #fff3c4;
+    --color-yellow-200: #ffe98a;
+    --color-yellow-300: #ffd94d;
+    --color-yellow-400: #ffc93c;
+    --color-yellow-500: #f5b41a;
+    --color-yellow-600: #cf8f00;
+    --color-yellow-700: #8a5a00;
+    --color-yellow-800: #5c3d00;
+    --color-yellow-900: #3d2800;
+    --color-yellow-950: #241800;
+    --color-amber-50: #fffbe8;
+    --color-amber-100: #fff3c4;
+    --color-amber-200: #ffe98a;
+    --color-amber-300: #ffd94d;
+    --color-amber-400: #ffc93c;
+    --color-amber-500: #f5b41a;
+    --color-amber-600: #cf8f00;
+    --color-amber-700: #8a5a00;
+    --color-amber-800: #5c3d00;
+    --color-amber-900: #3d2800;
+    --color-amber-950: #241800;
+
+    /* Sky ramp (base #4cc9f0) — used for sky + cyan. */
+    --color-sky-50: #ecf9fe;
+    --color-sky-100: #d5f1fd;
+    --color-sky-200: #a5e2fa;
+    --color-sky-300: #75d0f5;
+    --color-sky-400: #4cc9f0;
+    --color-sky-500: #2fb3dd;
+    --color-sky-600: #1a8fb8;
+    --color-sky-700: #146f90;
+    --color-sky-800: #0f4f66;
+    --color-sky-900: #0a3242;
+    --color-sky-950: #06202b;
+    --color-cyan-50: #ecf9fe;
+    --color-cyan-100: #d5f1fd;
+    --color-cyan-200: #a5e2fa;
+    --color-cyan-300: #75d0f5;
+    --color-cyan-400: #4cc9f0;
+    --color-cyan-500: #2fb3dd;
+    --color-cyan-600: #1a8fb8;
+    --color-cyan-700: #146f90;
+    --color-cyan-800: #0f4f66;
+    --color-cyan-900: #0a3242;
+    --color-cyan-950: #06202b;
+
+    /* Mint ramp (base #2ec4a6) — used for emerald + teal. */
+    --color-emerald-50: #eafaf5;
+    --color-emerald-100: #d2f3ea;
+    --color-emerald-200: #a5e5d3;
+    --color-emerald-300: #6fd6bc;
+    --color-emerald-400: #2ec4a6;
+    --color-emerald-500: #1fae92;
+    --color-emerald-600: #178a74;
+    --color-emerald-700: #116a59;
+    --color-emerald-800: #0c4a3e;
+    --color-emerald-900: #082f27;
+    --color-emerald-950: #041d18;
+    --color-teal-50: #eafaf5;
+    --color-teal-100: #d2f3ea;
+    --color-teal-200: #a5e5d3;
+    --color-teal-300: #6fd6bc;
+    --color-teal-400: #2ec4a6;
+    --color-teal-500: #1fae92;
+    --color-teal-600: #178a74;
+    --color-teal-700: #116a59;
+    --color-teal-800: #0c4a3e;
+    --color-teal-900: #082f27;
+    --color-teal-950: #041d18;
+
+    /* Soft violet ramp for legacy purple/blue gradient stops. */
+    --color-purple-50: #f7f1fd;
+    --color-purple-100: #efe6f7;
+    --color-purple-200: #dcc9f0;
+    --color-purple-300: #c2a3e2;
+    --color-purple-400: #a577cc;
+    --color-purple-500: #8355ad;
+    --color-purple-600: #65408a;
+    --color-purple-700: #4c3069;
+    --color-purple-800: #352149;
+    --color-purple-900: #241a3f;
+    --color-purple-950: #1e1538;
+    --color-blue-50: #eef4ff;
+    --color-blue-100: #dce8ff;
+    --color-blue-200: #b9d0ff;
+    --color-blue-300: #8fb0f5;
+    --color-blue-400: #5b87e8;
+    --color-blue-500: #2563eb;
+    --color-blue-600: #1d4fc0;
+    --color-blue-700: #173d94;
+    --color-blue-800: #122c68;
+    --color-blue-900: #0d1e47;
+    --color-blue-950: #08122b;
 }
 
 /* ---------------------------------------------------------------------------
@@ -61,7 +203,7 @@ body {
 }
 
 html[data-theme="dark"] body {
-    background-color: #0a0a0a;
+    background-color: #1e1538;
     color: var(--color-neutral-100);
 }
 
@@ -76,30 +218,31 @@ html[data-theme="dark"] ::selection {
 }
 
 :focus-visible {
-    outline: 2px solid var(--color-ink);
+    outline: 2px solid var(--color-sky);
     outline-offset: 2px;
     border-radius: 4px;
 }
 
 html[data-theme="dark"] :focus-visible {
-    outline-color: #fff;
+    outline-color: var(--color-sky);
 }
 
-/* Geist headings: 600 weight with tight negative tracking (DESIGN.md §2.3). */
+/* Suna headings: Fredoka, 600 weight, relaxed tracking. */
 h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
-    font-family: var(--font-sans);
+    font-family: var(--font-display);
     font-weight: 600;
-    letter-spacing: -0.02em;
+    letter-spacing: 0.01em;
 }
 
 /* ---------------------------------------------------------------------------
-   Brand wordmark lockup — the FreeKidWorksheets anchor (DESIGN.md §2.1).
-   Mark is an ink tile with a white pencil glyph; wordmark is ink Geist text.
+   Brand wordmark lockup — the FreeKidWorksheets anchor.
+   Mark is the v2 smiling-worksheet icon; wordmark is Baloo 2 stacked
+   ("freekid" navy / "worksheets" orange). See components/Brand.astro.
    ------------------------------------------------------------------------- */
 .site-brand {
     display: inline-flex;
@@ -108,41 +251,40 @@ h6 {
 }
 
 /* ---------------------------------------------------------------------------
-   Hero mesh gradient — the ONLY decorative flourish (DESIGN.md §2.2), confined
-   to the home hero. Soft radial blobs over the canvas in the brand gradient
-   family. Toggle a dark variant for inverted heroes.
+   Hero mesh gradient — soft Suna-accent blobs over the canvas, confined
+   to the home + browse heroes. Toggle a dark variant for inverted heroes.
    ------------------------------------------------------------------------- */
 .hero-mesh {
     background-color: var(--color-canvas);
     background-image:
         radial-gradient(55% 55% at 12% 18%,
-            rgba(0, 124, 240, 0.16),
+            rgba(255, 65, 108, 0.18),
             transparent 70%),
         radial-gradient(50% 50% at 88% 10%,
-            rgba(0, 223, 216, 0.14),
+            rgba(255, 201, 60, 0.22),
             transparent 70%),
         radial-gradient(55% 55% at 18% 92%,
-            rgba(121, 40, 202, 0.12),
+            rgba(46, 196, 166, 0.16),
             transparent 70%),
         radial-gradient(50% 50% at 90% 88%,
-            rgba(255, 0, 128, 0.1),
+            rgba(76, 201, 240, 0.18),
             transparent 70%);
 }
 
 html[data-theme="dark"] .hero-mesh {
-    background-color: #0a0a0a;
+    background-color: #1e1538;
     background-image:
         radial-gradient(55% 55% at 12% 18%,
-            rgba(0, 124, 240, 0.28),
+            rgba(255, 65, 108, 0.28),
             transparent 70%),
         radial-gradient(50% 50% at 88% 10%,
-            rgba(0, 223, 216, 0.22),
+            rgba(255, 201, 60, 0.24),
             transparent 70%),
         radial-gradient(55% 55% at 18% 92%,
-            rgba(121, 40, 202, 0.22),
+            rgba(46, 196, 166, 0.24),
             transparent 70%),
         radial-gradient(50% 50% at 90% 88%,
-            rgba(255, 0, 128, 0.16),
+            rgba(76, 201, 240, 0.26),
             transparent 70%);
 }
 
@@ -274,10 +416,10 @@ html[data-theme="dark"] .ad-label {
     display: grid;
     place-items: center;
     background: repeating-linear-gradient(45deg,
-            rgba(23, 23, 23, 0.025),
-            rgba(23, 23, 23, 0.025) 8px,
-            rgba(23, 23, 23, 0) 8px,
-            rgba(23, 23, 23, 0) 16px);
+            rgba(43, 29, 74, 0.025),
+            rgba(43, 29, 74, 0.025) 8px,
+            rgba(43, 29, 74, 0) 8px,
+            rgba(43, 29, 74, 0) 16px);
 }
 
 html[data-theme="dark"] .ad-box {
@@ -296,14 +438,14 @@ html[data-theme="dark"] .ad-box {
     bottom: 0;
     z-index: 40;
     border-top: 1px solid var(--color-hairline);
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 244, 224, 0.95);
     -webkit-backdrop-filter: blur(6px);
     backdrop-filter: blur(6px);
 }
 
 html[data-theme="dark"] .ad-sticky {
     border-top-color: var(--color-neutral-800);
-    background: rgba(10, 10, 10, 0.95);
+    background: rgba(30, 21, 56, 0.95);
 }
 
 /* ---------------------------------------------------------------------------
@@ -316,7 +458,7 @@ html[data-theme="dark"] .ad-sticky {
     display: grid;
     place-items: center;
     padding: 1rem;
-    background: rgba(10, 10, 10, 0.65);
+    background: rgba(30, 21, 56, 0.65);
 }
 
 .popup-backdrop[hidden] {
@@ -341,8 +483,8 @@ html[data-theme="dark"] .ad-sticky {
 }
 
 /* ---------------------------------------------------------------------------
-   Worksheet cards / links (§11.2) — hairline first, whisper shadow on hover
-   (DESIGN.md §3 / "Do: hairline before shadow"; no heavy shadows).
+   Worksheet cards / links — soft Suna lift on hover: gentle rise + warm
+   purple-tinted shadow.
    ------------------------------------------------------------------------- */
 .card-lift {
     transition:
@@ -353,7 +495,7 @@ html[data-theme="dark"] .ad-sticky {
 
 .card-lift:hover {
     transform: translateY(-2px);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 12px 24px -16px rgba(0, 0, 0, 0.18);
+    box-shadow: 0 1px 2px rgba(43, 29, 74, 0.06), 0 12px 24px -16px rgba(43, 29, 74, 0.22);
 }
 
 html[data-theme="dark"] .card-lift:hover {

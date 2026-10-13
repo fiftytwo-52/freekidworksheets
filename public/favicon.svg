@@ -1,68 +1,12 @@
-<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <!-- Background Gradient -->
-    <linearGradient id="appBg" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#FF6584"/>
-      <stop offset="100%" stop-color="#FF416C"/>
-    </linearGradient>
-
-    <!-- Soft Drop Shadow -->
-    <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#3b0816" flood-opacity="0.32"/>
-    </filter>
-  </defs>
-
-  <!-- App Icon Background rounded square -->
-  <rect width="512" height="512" rx="116" fill="url(#appBg)"/>
-
-  <!-- Subtle star sparkles in background -->
-  <path d="M96 90 L102 106 L118 112 L102 118 L96 134 L90 118 L74 112 L90 106 Z" fill="#FFEAA7" opacity="0.85"/>
-  <path d="M424 380 L429 392 L441 397 L429 402 L424 414 L419 402 L407 397 L419 392 Z" fill="#FFEAA7" opacity="0.85"/>
-  <circle cx="418" cy="116" r="10" fill="#FFFFFF" opacity="0.6"/>
-  <circle cx="94" cy="406" r="12" fill="#FFFFFF" opacity="0.6"/>
-
-  <!-- Back Worksheet Layer (Yellow accent, tilted left) -->
-  <g transform="rotate(-7 256 268)" filter="url(#cardShadow)">
-    <rect x="136" y="100" width="240" height="312" rx="20" fill="#FFD93D"/>
-    <!-- Top banner on back sheet -->
-    <path d="M136 120 C136 108.954 144.954 100 156 100 L356 100 C367.046 100 376 108.954 376 120 L376 142 L136 142 Z" fill="#FFA502"/>
-  </g>
-
-  <!-- Front Worksheet Layer (Crisp White, tilted slightly right) -->
-  <g transform="rotate(3 256 268)" filter="url(#cardShadow)">
-    <rect x="138" y="96" width="240" height="320" rx="22" fill="#FFFFFF"/>
-    
-    <!-- Worksheet Header Banner -->
-    <path d="M138 118 C138 105.85 147.85 96 160 96 L356 96 C368.15 96 378 105.85 378 118 L378 144 L138 144 Z" fill="#2ED573"/>
-    
-    <!-- Mini Header check-lines / dots -->
-    <circle cx="166" cy="120" r="7" fill="#FFFFFF"/>
-    <rect x="186" y="115" width="70" height="10" rx="5" fill="#FFFFFF"/>
-    <rect x="328" y="115" width="30" height="10" rx="5" fill="#FFFFFF" opacity="0.75"/>
-
-    <!-- Alphabet Row -->
-    <text x="164" y="210" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="46" fill="#1E90FF">A</text>
-    <text x="234" y="210" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="46" fill="#FF4757">B</text>
-    <text x="304" y="210" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="46" fill="#FFA502">C</text>
-
-    <!-- Tracing Guideline 1 -->
-    <line x1="160" y1="236" x2="356" y2="236" stroke="#CED6E0" stroke-width="4" stroke-linecap="round" stroke-dasharray="2 10"/>
-
-    <!-- Numbers Row -->
-    <text x="168" y="302" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="40" fill="#9B59B6">1</text>
-    <text x="238" y="302" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="40" fill="#20BF6B">2</text>
-    <text x="308" y="302" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="40" fill="#FF6B81">3</text>
-
-    <!-- Tracing Guideline 2 -->
-    <line x1="160" y1="324" x2="356" y2="324" stroke="#CED6E0" stroke-width="4" stroke-linecap="round" stroke-dasharray="2 10"/>
-
-    <!-- Bottom Achievement Star Badge -->
-    <g transform="translate(326, 366)">
-      <path d="M0 -20 L6 -6 L20 -4 L9 6 L12 20 L0 12 L-12 20 L-9 6 L-20 -4 L-6 -6 Z" fill="#FFD32A" stroke="#FFA801" stroke-width="2.5" stroke-linejoin="round"/>
-    </g>
-
-    <!-- Worksheet footer doodle lines -->
-    <rect x="162" y="362" width="60" height="8" rx="4" fill="#E4E7EB"/>
-    <rect x="162" y="376" width="100" height="8" rx="4" fill="#E4E7EB"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#2563EB"/>
+  <path d="M20 8H38L52 22V50Q52 56 46 56H20Q14 56 14 50V14Q14 8 20 8Z" fill="#FFFFFF"/>
+  <path d="M38 8V18Q38 22 42 22H52Z" fill="#FDE68A"/>
+  <circle cx="20.5" cy="41" r="3" fill="#FDA4AF"/>
+  <circle cx="45.5" cy="41" r="3" fill="#FDA4AF"/>
+  <circle cx="26" cy="32" r="4" fill="#1E3A8A"/>
+  <circle cx="40" cy="32" r="4" fill="#1E3A8A"/>
+  <circle cx="27.2" cy="30.6" r="1.2" fill="#FFFFFF"/>
+  <circle cx="41.2" cy="30.6" r="1.2" fill="#FFFFFF"/>
+  <path d="M26 40H40A7 7 0 0 1 26 40Z" fill="#F97316"/>
 </svg>

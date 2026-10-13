@@ -5,7 +5,7 @@
 // toggled on mobile by scripts/theme.ts ([data-filter-toggle]). No-JS note:
 // the panel simply does nothing without the script (page still lists items).
 // All labels are localized via data/ui-strings (lang prop, default English).
-// Geist styling: hairline card, mono field eyebrows, 6px inputs (DESIGN.md).
+// Suna styling: hairline card, mono field eyebrows, rounded inputs.
 import Icon from './Icon.astro';
 import { UI_STRINGS } from '../data/ui-strings';
 
@@ -28,11 +28,11 @@ const s = UI_STRINGS[lang];
 const FIELD_LABEL =
     'mb-1 block font-mono text-[10px] font-medium uppercase tracking-widest text-mute dark:text-neutral-500';
 const FIELD_BOX =
-    'w-full rounded-md border border-hairline bg-elevated px-3 py-2 text-sm text-ink transition-colors focus:border-ink focus:outline-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:focus:border-neutral-500';
+    'w-full rounded-xl border border-hairline bg-elevated px-3 py-2 text-sm text-ink transition-colors focus:border-ink focus:outline-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:focus:border-neutral-500';
 ---
 
 <section
-    class="rounded-lg border border-hairline bg-elevated p-4 dark:border-neutral-800 dark:bg-neutral-900"
+    class="rounded-2xl border border-hairline bg-elevated p-4 dark:border-neutral-800 dark:bg-neutral-900"
     aria-label={s.filtersSort}
 >
     <!-- Mobile toggle (theme.ts toggles .filter-open on the panel) -->
@@ -41,7 +41,7 @@ const FIELD_BOX =
         data-filter-toggle
         aria-expanded="false"
         aria-controls="filter-panel"
-        class="flex w-full items-center justify-between rounded-md bg-neutral-100 px-4 py-2.5 text-sm font-medium text-ink md:hidden dark:bg-neutral-800 dark:text-neutral-100"
+        class="flex w-full items-center justify-between rounded-xl bg-neutral-100 px-4 py-2.5 text-sm font-medium text-ink md:hidden dark:bg-neutral-800 dark:text-neutral-100"
     >
         <span class="flex items-center gap-2">
             <Icon name="grid" class="h-4 w-4" />
@@ -106,7 +106,7 @@ const FIELD_BOX =
                 <button
                     type="button"
                     data-filter-reset
-                    class="inline-flex w-full items-center justify-center gap-2 rounded-md border border-hairline bg-transparent px-3 py-2 text-sm font-medium text-ink transition-colors hover:border-ink hover:bg-neutral-100 focus:outline-none focus:ring-2 focus:ring-ink/30 dark:border-neutral-700 dark:text-neutral-100 dark:hover:border-neutral-500 dark:hover:bg-neutral-800"
+                    class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-hairline bg-transparent px-3 py-2 text-sm font-medium text-ink transition-colors hover:border-ink hover:bg-neutral-100 focus:outline-none focus:ring-2 focus:ring-ink/30 dark:border-neutral-700 dark:text-neutral-100 dark:hover:border-neutral-500 dark:hover:bg-neutral-800"
                     aria-label={s.resetFilters}
                 >
                     <Icon name="rotate-ccw" class="h-4 w-4" aria-hidden="true" />
@@ -121,7 +121,7 @@ const FIELD_BOX =
         <p
             data-empty-state
             hidden
-            class="mt-2 rounded-md border border-dashed border-hairline px-3 py-2 text-sm text-body dark:border-neutral-700 dark:text-neutral-400"
+            class="mt-2 rounded-xl border border-dashed border-hairline px-3 py-2 text-sm text-body dark:border-neutral-700 dark:text-neutral-400"
         >
             {empty}
         </p>

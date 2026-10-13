@@ -1,7 +1,7 @@
 ---
 // ShareWorksheet.astro — Social sharing buttons for worksheet detail pages.
 // Supports Facebook, Twitter (X), Instagram, and WhatsApp.
-// Accessible, responsive, and styled to match the site's Geist / Tailwind design system.
+// Accessible, responsive, and styled to match the site's Suna / Tailwind design system.
 import Icon from './Icon.astro';
 
 interface Props {
@@ -29,7 +29,7 @@ const subtext =
         : 'Help parents, teachers, and friends find free learning activities.';
 ---
 
-<div class:list={['share-worksheet-section rounded-2xl border border-neutral-200/90 bg-white/80 p-5 shadow-2xs backdrop-blur-xs dark:border-neutral-800 dark:bg-neutral-900/80', className]}>
+<div class:list={['share-worksheet-section rounded-2xl border border-hairline bg-elevated/80 p-5 shadow-2xs backdrop-blur-xs dark:border-neutral-800 dark:bg-neutral-900/80', className]}>
     <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <h3 class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-neutral-600 dark:text-neutral-400">
