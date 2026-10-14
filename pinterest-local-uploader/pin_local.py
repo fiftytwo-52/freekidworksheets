@@ -190,14 +190,12 @@ def sync_all_external_tracking(hist: dict) -> None:
                         pin_id = item["pin_id"]
                         board_name = item["board_name"]
                         pin_date = item.get("pinned_at", "")[:10] or datetime.date.today().isoformat()
-                        subbed = re.sub(
-                            r"\|\s*Not pinned\s*\|\s*—\s*\|\s*—\s*\|\s*—\s*\|",
-                            f"| Pinned | {pin_id} | {board_name} | {pin_date} |",
-                            line,
-                        )
-                        if subbed != line:
-                            line = subbed
-                            updated = True
+                        parts[11] = "Pinned"
+                        parts[12] = str(pin_id)
+                        parts[13] = str(board_name)
+                        parts[14] = str(pin_date)
+                        line = "| " + " | ".join(parts[1:15]) + " |\n"
+                        updated = True
                     new_lines.append(line)
                 if updated:
                     with open(target, "w", encoding="utf-8") as fh:
@@ -258,11 +256,11 @@ def update_external_tracking(code: str, pin_id: str, board_name: str, pin_date: 
                 for line in lines:
                     parts = [p.strip() for p in line.split("|")]
                     if len(parts) >= 15 and parts[1] == str(code):
-                        line = re.sub(
-                            r"\|\s*Not pinned\s*\|\s*—\s*\|\s*—\s*\|\s*—\s*\|",
-                            f"| Pinned | {pin_id} | {board_name} | {pin_date} |",
-                            line,
-                        )
+                        parts[11] = "Pinned"
+                        parts[12] = str(pin_id)
+                        parts[13] = str(board_name)
+                        parts[14] = str(pin_date)
+                        line = "| " + " | ".join(parts[1:15]) + " |\n"
                         updated = True
                     new_lines.append(line)
                 if updated:
@@ -586,9 +584,10 @@ def get_base_url(args: argparse.Namespace) -> str:
         token = load_token()
         if token.get("is_sandbox"):
             return SANDBOX
+        return PROD
     except Exception:
         pass
-    return SANDBOX
+    return PROD
 
 def cmd_me(args: argparse.Namespace) -> int:
     base = get_base_url(args)
