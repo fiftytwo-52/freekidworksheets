@@ -871,36 +871,46 @@ def cmd_upload_all(args: argparse.Namespace) -> int:
     hist = load_history()
     sync_all_external_tracking(hist)
 
-    # 2. Read tracking ledger to find all unpinned sheets
-    tracking_candidates = [
-        "/home/fiftytwo/Desktop/GaNesh Khatiwada/Do not Delete/Code base/Newsheet-for-freekidworksheets/worksheet-upload-tracking.md",
-        os.path.abspath(os.path.join(HERE, "..", "..", "Newsheet-for-freekidworksheets", "worksheet-upload-tracking.md")),
-        os.path.abspath(os.path.join(HERE, "..", "worksheet-upload-tracking.md")),
-    ]
-    target_md = None
-    for cand in tracking_candidates:
-        if os.path.exists(cand):
-            target_md = cand
-            break
+    # 2. Identify target worksheets
+    sandboxed_only = getattr(args, "sandboxed_only", False)
+    if sandboxed_only:
+        unpinned_codes = [
+            code for code, item in hist.items()
+            if "sandbox" in (item.get("board_name") or "").lower() or item.get("board_id") == "1127096312935342580"
+        ]
+        unpinned_codes.sort(key=lambda x: int(x) if x.isdigit() else 999999)
+        print(f"Found {len(unpinned_codes)} sandboxed worksheets to publish to public boards.")
+    else:
+        tracking_candidates = [
+            "/home/fiftytwo/Desktop/GaNesh Khatiwada/Do not Delete/Code base/Newsheet-for-freekidworksheets/worksheet-upload-tracking.md",
+            os.path.abspath(os.path.join(HERE, "..", "..", "Newsheet-for-freekidworksheets", "worksheet-upload-tracking.md")),
+            os.path.abspath(os.path.join(HERE, "..", "worksheet-upload-tracking.md")),
+        ]
+        target_md = None
+        for cand in tracking_candidates:
+            if os.path.exists(cand):
+                target_md = cand
+                break
 
-    if not target_md:
-        raise PinError("worksheet-upload-tracking.md not found")
+        if not target_md:
+            raise PinError("worksheet-upload-tracking.md not found")
 
-    with open(target_md, "r", encoding="utf-8") as fh:
-        lines = fh.readlines()
+        with open(target_md, "r", encoding="utf-8") as fh:
+            lines = fh.readlines()
 
-    unpinned_codes = []
-    for line in lines:
-        parts = [p.strip() for p in line.split("|")]
-        if len(parts) >= 15 and parts[1].isdigit():
-            code = parts[1]
-            pin_status = parts[11]
-            if pin_status != "Pinned" and not is_pinned(code, hist=hist):
-                unpinned_codes.append(code)
+        unpinned_codes = []
+        for line in lines:
+            parts = [p.strip() for p in line.split("|")]
+            if len(parts) >= 15 and parts[1].isdigit():
+                code = parts[1]
+                pin_status = parts[11]
+                if pin_status != "Pinned" and not is_pinned(code, hist=hist):
+                    unpinned_codes.append(code)
 
-    print(f"Found {len(unpinned_codes)} unpinned worksheets in tracking ledger.")
+        print(f"Found {len(unpinned_codes)} unpinned worksheets in tracking ledger.")
+
     if not unpinned_codes:
-        print("All worksheets are already pinned! Nothing to do.")
+        print("All target worksheets are already pinned! Nothing to do.")
         return 0
 
     limit = getattr(args, "limit", None)
@@ -908,7 +918,7 @@ def cmd_upload_all(args: argparse.Namespace) -> int:
         unpinned_codes = unpinned_codes[:limit]
         print(f"Limiting to first {limit} worksheets.")
 
-    delay = getattr(args, "delay", 1.2)
+    delay = getattr(args, "delay", 2.5)
     default_board_id = "1127096312935342580" if base == SANDBOX else None
     default_board_name = "Sandbox Test Worksheets" if base == SANDBOX else None
 
@@ -917,6 +927,7 @@ def cmd_upload_all(args: argparse.Namespace) -> int:
 
     success = 0
     failed = 0
+    consecutive_failures = 0
 
     print(f"\nStarting batch upload of {len(unpinned_codes)} pins (delay: {delay}s)...")
     for idx, code in enumerate(unpinned_codes, start=1):
@@ -951,12 +962,17 @@ def cmd_upload_all(args: argparse.Namespace) -> int:
             record_pinned(ws["code"], ws["slug"], pin_id, board_id,
                           board_name, pin_data["title"], pin_data["link"])
             success += 1
-            print(f"[{idx}/{len(unpinned_codes)}] SUCCESS Code {code} ({ws['slug']}) -> Pin ID {pin_id}")
+            consecutive_failures = 0
+            print(f"[{idx}/{len(unpinned_codes)}] SUCCESS Code {code} ({ws['slug']}) -> {board_name} (Pin ID: {pin_id})")
             time.sleep(delay)
         except Exception as e:
             failed += 1
+            consecutive_failures += 1
             print(f"[{idx}/{len(unpinned_codes)}] FAILED Code {code}: {e}")
-            time.sleep(max(2.0, delay))
+            if consecutive_failures >= 3:
+                print("\n[STOP] Halting batch: 3 consecutive failures encountered (Rule 6).")
+                break
+            time.sleep(max(3.0, delay))
 
     print(f"\n=== Batch Upload Complete ===")
     print(f"Total processed: {len(unpinned_codes)}")
@@ -992,7 +1008,8 @@ def main() -> int:
 
     up_all_p = sub.add_parser("upload-all", help="batch upload all unpinned worksheets from tracking ledger")
     up_all_p.add_argument("--limit", type=int, help="max worksheets to upload")
-    up_all_p.add_argument("--delay", type=float, default=1.2, help="delay in seconds between uploads (default 1.2s)")
+    up_all_p.add_argument("--delay", type=float, default=2.5, help="delay in seconds between uploads (default 2.5s)")
+    up_all_p.add_argument("--sandboxed-only", action="store_true", help="publish all worksheets currently only pinned to sandbox")
     up_all_p.add_argument("--board", help="optional board ID override")
     up_all_p.add_argument("--dry-run", action="store_true", help="preview without posting")
 
