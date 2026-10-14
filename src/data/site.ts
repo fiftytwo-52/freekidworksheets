@@ -160,7 +160,13 @@ export const SITE_URL =
 
 export const ADSENSE_PUBLISHER_ID =
     (import.meta.env.ADSENSE_PUBLISHER_ID as string | undefined) || '';
-export const GA_ID = (import.meta.env.GA_ID as string | undefined) || '';
+// GA4 Measurement ID — hardcoded fallback so analytics survives builds even
+// when the GA_ID env var is not set in Cloudflare Pages (2026-10-14: the
+// live site was shipping with NO analytics tag at all because GA_ID was
+// unset, so pageviews and the worksheet_download/print events never fired).
+// A Measurement ID is public by design (visible in page source), not a secret.
+export const GA_ID =
+    (import.meta.env.GA_ID as string | undefined) || 'G-FMLYPZZFLQ';
 export const CONTACT_EMAIL =
     (import.meta.env.CONTACT_EMAIL as string | undefined) || 'gun-yes@proton.me';
 
