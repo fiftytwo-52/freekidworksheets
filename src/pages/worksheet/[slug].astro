@@ -137,6 +137,7 @@ const pageKeywords = Array.from(
             <a
                 href={image.src}
                 download={`${entry.slug}.png`}
+                onclick={`if(typeof gtag==='function'){gtag('event','worksheet_download',{worksheet_slug:${JSON.stringify(entry.slug)},worksheet_title:${JSON.stringify(title)},worksheet_category:${JSON.stringify(category)}});}`}
                 class="inline-flex items-center gap-2 rounded-full bg-pink-500 px-6 py-3 text-sm font-bold text-white shadow-md transition-all hover:scale-105 hover:bg-pink-600 active:scale-95"
             >
                 <Icon name="download" class="h-4 w-4" />
@@ -144,7 +145,7 @@ const pageKeywords = Array.from(
             </a>
             <button
                 type="button"
-                onclick="window.print()"
+                onclick={`if(typeof gtag==='function'){gtag('event','worksheet_print',{worksheet_slug:${JSON.stringify(entry.slug)},worksheet_title:${JSON.stringify(title)},worksheet_category:${JSON.stringify(category)}});}window.print();`}
                 class="inline-flex items-center gap-2 rounded-full border-2 border-yellow-400 bg-yellow-100 px-6 py-2.5 text-sm font-bold text-yellow-900 shadow-sm transition-all hover:scale-105 hover:bg-yellow-200 dark:bg-yellow-900/40 dark:text-yellow-200"
             >
                 <Icon name="print" class="h-4 w-4" />
