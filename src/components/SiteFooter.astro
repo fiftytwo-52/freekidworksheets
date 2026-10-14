@@ -5,7 +5,7 @@
 // §10.4 / §13). Column headings use mono eyebrows.
 import Brand from './Brand.astro';
 import SocialFollow from './SocialFollow.astro';
-import { CONTACT_EMAIL, FOOTER_EXPLORE, FOOTER_LEGAL, SITE_NAME, TAGLINE } from '../data/site';
+import { FEEDBACK_FORM_URL, FOOTER_EXPLORE, FOOTER_LEGAL, SITE_NAME, TAGLINE } from '../data/site';
 import { categoryPath } from '../data/site';
 import { TOPICS_BY_LANG } from '../data/ui-strings';
 const year = new Date().getFullYear();
@@ -91,7 +91,7 @@ const brand = 'freekidworksheets';
                 </p>
                 <p class="mt-3">
                     Worksheets are handmade, AI-generated, or downloaded and edited/altered. If any content
-                    matches your own work, please <a href={`mailto:${CONTACT_EMAIL}`} class="font-semibold text-accent underline underline-offset-4 transition-colors hover:text-ink dark:hover:text-neutral-100">email me directly</a> and I will remove
+                    matches your own work, please <a href={FEEDBACK_FORM_URL} target="_blank" rel="noopener noreferrer" class="font-semibold text-accent underline underline-offset-4 transition-colors hover:text-ink dark:hover:text-neutral-100">send feedback</a> and I will remove
                     it promptly.
                 </p>
             </div>
@@ -109,7 +109,7 @@ const brand = 'freekidworksheets';
                 <div>
                     <p class="text-sm font-bold text-neutral-900 dark:text-neutral-100">A small library, growing every week</p>
                     <p class="mt-1 max-w-3xl text-sm leading-relaxed text-body dark:text-neutral-300">
-                        I’m building this collection on my own, so new sheets take a little time. Have a topic in mind? Send your suggestion on WhatsApp to <a href="https://wa.me/?text=Hi%20%40getmysheet%2C%20I%27d%20like%20to%20suggest%20a%20worksheet%20topic." target="_blank" rel="noopener noreferrer" class="font-bold text-pink-600 underline decoration-pink-300 underline-offset-2 hover:text-pink-700 dark:text-pink-300 dark:hover:text-pink-200">@getmysheet</a> and I’ll do my best to make it.
+                        I’m building this collection on my own, so new sheets take a little time. Have a topic in mind? Send your suggestion through the <a href="/contact" class="font-bold text-pink-600 underline decoration-pink-300 underline-offset-2 hover:text-pink-700 dark:text-pink-300 dark:hover:text-pink-200">contact page</a> and I’ll do my best to make it.
                     </p>
                 </div>
             </div>

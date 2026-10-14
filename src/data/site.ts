@@ -167,8 +167,11 @@ export const ADSENSE_PUBLISHER_ID =
 // A Measurement ID is public by design (visible in page source), not a secret.
 export const GA_ID =
     (import.meta.env.GA_ID as string | undefined) || 'G-FMLYPZZFLQ';
-export const CONTACT_EMAIL =
-    (import.meta.env.CONTACT_EMAIL as string | undefined) || 'gun-yes@proton.me';
+// Feedback form — the only contact channel published on the site.
+// No personal email, phone, or WhatsApp is listed anywhere; visitors
+// reach me through this form instead.
+export const FEEDBACK_FORM_URL =
+    'https://docs.google.com/forms/d/e/1FAIpQLSehbSviYA1YufjTN5a1mojsvvrNACMGPhky3S7O6isq0c4VsQ/viewform';
 
 /** Home page FAQ — real Q&As, mirrored by FAQPage JSON-LD (§13.2). */
 export const FAQS = [

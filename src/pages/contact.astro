@@ -1,10 +1,10 @@
 ---
-// /contact — clean placeholder with a mailto link driven by CONTACT_EMAIL
-// (§11.5). Real contact details are filled in post-dev.
+// /contact — points visitors at the Feedback form (§11.5). No personal
+// email, phone, or WhatsApp is published on the site.
 import StaticPage from '../components/StaticPage.astro';
 import Icon from '../components/Icon.astro';
 import SocialFollow from '../components/SocialFollow.astro';
-import { CONTACT_EMAIL } from '../data/site';
+import { FEEDBACK_FORM_URL } from '../data/site';
 ---
 <StaticPage
     pageTitle="Contact"
@@ -15,28 +15,22 @@ import { CONTACT_EMAIL } from '../data/site';
     lede="Questions, feedback, or a worksheet topic you'd love to see? I'd love to hear from you."
 >
     <p>
-        The fastest way to reach me is by email. I read every message and
-        usually reply within a few days.
+        The fastest way to reach me is the Feedback form. I read every
+        message and usually reply within a few days.
     </p>
 
-    {CONTACT_EMAIL ? (
-        <p>
-            <!-- The address stays out of the visible page; the button opens the visitor's email app. -->
-            <a
-                href={`mailto:${CONTACT_EMAIL}`}
-                class="inline-flex items-center gap-2 rounded-full bg-pink-500 px-6 py-2.5 text-sm font-bold text-white shadow-sm transition-transform hover:scale-105 hover:bg-pink-600 active:scale-95 dark:bg-pink-600"
-                aria-label="Email me — opens your email app"
-            >
-                <Icon name="mail" class="h-4 w-4" />
-                Email me
-            </a>
-        </p>
-    ) : (
-        <p class="rounded-lg border border-dashed border-hairline p-4 text-sm text-mute dark:border-neutral-700 dark:text-neutral-500">
-            My contact email is being finalized — full contact details are
-            coming soon. In the meantime, thank you for your patience.
-        </p>
-    )}
+    <p>
+        <a
+            href={FEEDBACK_FORM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 rounded-full bg-pink-500 px-6 py-2.5 text-sm font-bold text-white shadow-sm transition-transform hover:scale-105 hover:bg-pink-600 active:scale-95 dark:bg-pink-600"
+            aria-label="Send feedback — opens the feedback form"
+        >
+            <Icon name="pencil" class="h-4 w-4" />
+            Send feedback
+        </a>
+    </p>
 
     <div class="my-8 rounded-2xl border border-hairline bg-elevated p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900/60">
         <h2 class="text-base font-bold text-ink dark:text-neutral-100">Follow on social media</h2>

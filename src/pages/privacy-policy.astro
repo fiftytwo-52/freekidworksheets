@@ -2,7 +2,7 @@
 // /privacy-policy — no accounts, no personal data collected; cookies only
 // for analytics when GA is enabled (§11.5). Kept accurate to this build.
 import StaticPage from '../components/StaticPage.astro';
-import { CONTACT_EMAIL, GA_ID, SITE_NAME } from '../data/site';
+import { GA_ID, SITE_NAME } from '../data/site';
 ---
 <StaticPage
     pageTitle="Privacy Policy"
@@ -64,16 +64,12 @@ import { CONTACT_EMAIL, GA_ID, SITE_NAME } from '../data/site';
     <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">Contact</h2>
     <p>
         Questions about this policy?
-        {CONTACT_EMAIL ? (
-            <a
-                href={`mailto:${CONTACT_EMAIL}`}
-                class="font-medium text-accent underline underline-offset-4 transition-colors hover:text-ink dark:hover:text-neutral-100"
-            >
-                Email me directly
-            </a>
-        ) : (
-            'Contact the address listed on my contact page (being finalized)'
-        )}
+        <a
+            href="/contact"
+            class="font-medium text-accent underline underline-offset-4 transition-colors hover:text-ink dark:hover:text-neutral-100"
+        >
+            Contact me
+        </a>
         with any questions.
     </p>
 </StaticPage>

@@ -5,7 +5,6 @@ interface ImportMetaEnv {
     readonly SITE_NAME?: string;
     readonly ADSENSE_PUBLISHER_ID?: string;
     readonly GA_ID?: string;
-    readonly CONTACT_EMAIL?: string;
 }
 
 interface ImportMeta {

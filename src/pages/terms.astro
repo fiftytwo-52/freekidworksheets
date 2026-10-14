@@ -2,7 +2,7 @@
 // /terms — free personal/classroom use, content disclaimer, IP removal
 // request path (§11.5).
 import StaticPage from '../components/StaticPage.astro';
-import { CONTACT_EMAIL, SITE_NAME } from '../data/site';
+import { SITE_NAME } from '../data/site';
 ---
 <StaticPage
     pageTitle="Terms of Service"
@@ -53,16 +53,12 @@ import { CONTACT_EMAIL, SITE_NAME } from '../data/site';
 
     <h2 class="text-xl font-semibold tracking-tight text-ink dark:text-neutral-100">Contact</h2>
     <p>
-        {CONTACT_EMAIL ? (
-            <a
-                href={`mailto:${CONTACT_EMAIL}`}
-                class="font-medium text-accent underline underline-offset-4 transition-colors hover:text-ink dark:hover:text-neutral-100"
-            >
-                Email me directly
-            </a>
-        ) : (
-            'My contact address is listed on the contact page (being finalized).'
-        )}
+        <a
+            href="/contact"
+            class="font-medium text-accent underline underline-offset-4 transition-colors hover:text-ink dark:hover:text-neutral-100"
+        >
+            Contact me
+        </a>
         with any concerns.
     </p>
 </StaticPage>
