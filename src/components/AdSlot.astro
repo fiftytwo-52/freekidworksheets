@@ -3,9 +3,10 @@
 //
 // - When ADSENSE_PUBLISHER_ID is configured (env), renders a real responsive
 //   AdSense unit and requests NON-PERSONALIZED ads (kids' content policy).
-// - Until then, renders INVISIBLE reserved space (same dimensions) so the
-//   layout never shifts when ads are switched on, and visitors see no
-//   empty boxes during the AdSense review period.
+// - Until then, renders NOTHING: an invisible reserved hole on the page
+//   looks broken to visitors (e.g. a big blank gap on the homepage), and
+//   the one-time layout shift when ads are eventually switched on is
+//   the better tradeoff.
 //
 // Placement rules (AdSense program policies + children's content):
 // - Only in informational/content areas: below articles, between sections,
@@ -22,15 +23,15 @@ interface Props {
     minHeight?: string;
 }
 
-const { name, minHeight = '90px' } = Astro.props;
+const { name } = Astro.props;
 const hasAds = ADSENSE_PUBLISHER_ID.trim().length > 0;
 ---
 
-<div
-    class="no-print mx-auto flex w-full max-w-3xl justify-center px-4 py-2"
-    data-ad-slot={name}
->
-    {hasAds ? (
+{hasAds && (
+    <div
+        class="no-print mx-auto flex w-full max-w-3xl justify-center px-4 py-2"
+        data-ad-slot={name}
+    >
         <div aria-label="Advertisement" class="w-full">
             <ins
                 class="adsbygoogle block w-full"
@@ -45,12 +46,5 @@ const hasAds = ADSENSE_PUBLISHER_ID.trim().length > 0;
                 window.adsbygoogle.push({});
             </script>
         </div>
-    ) : (
-        <div
-            class="invisible w-full"
-            style={`min-height:${minHeight}`}
-            aria-hidden="true"
-            data-ad-slot-placeholder={name}
-        />
-    )}
-</div>
+    </div>
+)}
