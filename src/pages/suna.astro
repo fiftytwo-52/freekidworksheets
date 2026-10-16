@@ -312,6 +312,7 @@ const webAppJsonLd = {
             gap: 8px;
         }
         .lm li button:hover, .lm li button[aria-current=true] { background: var(--sun); color: #2b1d4a; }
+        .lmFlag, #lmFlag { display: inline-flex; flex-shrink: 0; }
 
         .stage {
             max-width: 880px;
@@ -698,20 +699,16 @@ const webAppJsonLd = {
             <span class="sp"></span>
             <div class="lm">
                 <button type="button" class="pill" id="lmBtn" aria-haspopup="true" aria-expanded="false">
-                    <svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
-                        <path d="M2 12h20"></path>
-                    </svg>
+                    <span id="lmFlag"></span>
                     <span id="lmCur">EN</span>
                     <svg class="ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <path d="m6 9 6 6 6-6"></path>
                     </svg>
                 </button>
                 <ul id="lmList" hidden>
-                    <li><button type="button" data-l="en">English</button></li>
-                    <li><button type="button" data-l="ne">नेपाली</button></li>
-                    <li><button type="button" data-l="pt">Português (BR)</button></li>
+                    <li><button type="button" data-l="en"><span class="lmFlag" data-flag="en"></span>English</button></li>
+                    <li><button type="button" data-l="ne"><span class="lmFlag" data-flag="ne"></span>नेपाली</button></li>
+                    <li><button type="button" data-l="pt"><span class="lmFlag" data-flag="pt"></span>Português (BR)</button></li>
                 </ul>
             </div>
             <a class="pill ext-link" href="https://pairpaint.com" target="_blank" rel="noopener">
@@ -1403,9 +1400,20 @@ const webAppJsonLd = {
                 s.value = k ? letters().length - 1 : 0;
             });
         }
+        // Proper SVG flags for the language switcher (same artwork as the site Flag component).
+        var FLAGS = {
+            en: '<svg width="22" height="15" viewBox="0 0 24 16" aria-hidden="true" style="border-radius:3px;display:block"><rect width="24" height="16" fill="#b22234"/><path d="M0 2.46h24M0 4.92h24M0 7.38h24M0 9.84h24M0 12.3h24M0 14.76h24" stroke="#fff" stroke-width="1.23"/><rect width="9.6" height="8.6" fill="#3c3b6e"/><g fill="#fff"><circle cx="2.4" cy="2.1" r="0.6"/><circle cx="4.8" cy="2.1" r="0.6"/><circle cx="7.2" cy="2.1" r="0.6"/><circle cx="3.6" cy="4.3" r="0.6"/><circle cx="6" cy="4.3" r="0.6"/><circle cx="2.4" cy="6.5" r="0.6"/><circle cx="4.8" cy="6.5" r="0.6"/><circle cx="7.2" cy="6.5" r="0.6"/></g><rect width="24" height="16" fill="none" stroke="rgba(0,0,0,0.18)" stroke-width="0.8"/></svg>',
+            ne: '<svg width="22" height="15" viewBox="0 0 24 16" aria-hidden="true" style="border-radius:3px;display:block"><rect width="24" height="16" fill="#f8fafc"/><path d="M5 1.5 L17.5 7 L8.8 7 L17.5 14.5 L5 14.5 Z" fill="#DC143C" stroke="#003893" stroke-width="1.1" stroke-linejoin="round"/><circle cx="9.4" cy="5" r="1.5" fill="#fff"/><circle cx="9.4" cy="11.4" r="1.5" fill="#fff"/><circle cx="10" cy="11.1" r="1.1" fill="#DC143C"/><rect width="24" height="16" fill="none" stroke="rgba(0,0,0,0.18)" stroke-width="0.8"/></svg>',
+            pt: '<svg width="22" height="15" viewBox="0 0 24 16" aria-hidden="true" style="border-radius:3px;display:block"><rect width="24" height="16" fill="#009b3a"/><polygon points="12,2 22,8 12,14 2,8" fill="#fedf00"/><circle cx="12" cy="8" r="3.5" fill="#002776"/><path d="M8.8 8.8a3.5 3.5 0 0 1 6.2-1.2" stroke="#ffffff" stroke-width="0.7" fill="none"/><rect width="24" height="16" fill="none" stroke="rgba(0,0,0,0.18)" stroke-width="0.8"/></svg>'
+        };
+        document.querySelectorAll('#lmList [data-flag]').forEach(function (el) {
+            el.innerHTML = FLAGS[el.dataset.flag] || '';
+        });
         function applyLang() {
             document.documentElement.lang = lang === 'pt' ? 'pt-BR' : lang;
             $('lmCur').textContent = T().c;
+            var lmFlag = $('lmFlag');
+            if (lmFlag) lmFlag.innerHTML = FLAGS[lang] || FLAGS.en;
             document.querySelectorAll('[data-i]').forEach(function (e) {
                 var v = T()[e.dataset.i];
                 if (v) e.textContent = v;
