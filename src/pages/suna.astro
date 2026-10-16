@@ -282,8 +282,8 @@ const webAppJsonLd = {
         }
         .pill[aria-pressed=true] { background: var(--sun); color: #2b1d4a; }
         .pill:active { transform: translateY(1px); }
-        .lm { position: relative; }
-        .lm ul {
+        .lm, .cm { position: relative; }
+        .lm ul, .cm ul {
             position: absolute;
             right: 0;
             top: calc(100% + 6px);
@@ -297,7 +297,7 @@ const webAppJsonLd = {
             box-shadow: 0 5px 0 var(--ink);
             z-index: 5;
         }
-        .lm li button {
+        .lm li button, .cm li button {
             width: 100%;
             text-align: left;
             font: inherit;
@@ -312,8 +312,10 @@ const webAppJsonLd = {
             align-items: center;
             gap: 8px;
         }
-        .lm li button:hover, .lm li button[aria-current=true] { background: var(--sun); color: #2b1d4a; }
+        .lm li button:hover, .lm li button[aria-current=true],
+        .cm li button:hover, .cm li button[aria-current=true] { background: var(--sun); color: #2b1d4a; }
         .lmFlag, #lmFlag { display: inline-flex; flex-shrink: 0; }
+        .cDot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--ink); flex-shrink: 0; display: inline-block; }
 
         .stage {
             max-width: 880px;
@@ -377,12 +379,6 @@ const webAppJsonLd = {
             font-size: clamp(3.2rem, 16vmin, 10.5rem);
         }
         .display.pop { animation: pop .35s cubic-bezier(.3,1.6,.5,1); }
-        /* counter text color swatches */
-        .swatches { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-        .swatch { width: 34px; height: 34px; border-radius: 50%; border: 3px solid var(--ink); cursor: pointer; padding: 0; flex-shrink: 0; }
-        .swatch[aria-pressed="true"] { outline: 3px solid var(--ink); outline-offset: 2px; }
-        #countColorCustom { width: 34px; height: 34px; border-radius: 50%; border: 3px dashed var(--ink); padding: 0; background: none; cursor: pointer; flex-shrink: 0; }
-        #countColorCustom.picked { outline: 3px solid var(--ink); outline-offset: 2px; }
         .msg {
             text-align: center;
             margin: 0 0 14px;
@@ -877,6 +873,22 @@ const webAppJsonLd = {
                             </svg>
                             <span><span data-i="game">Game</span>: <span id="gameState">off</span></span>
                         </button>
+                        <div class="cm">
+                            <button type="button" class="pill" id="colorBtn" aria-haspopup="true" aria-expanded="false" aria-label="Counter color" title="Counter color">
+                                <svg class="ic" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.563-2.512 5.563-5.563C22 6.5 17.5 2 12 2Z"/></svg>
+                                <span id="colorCur" class="cDot" style="background:#ff416c"></span>
+                                <svg class="ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
+                            </button>
+                            <ul id="colorList" hidden>
+                                <li><button type="button" data-color="#ff416c" aria-current="true"><span class="cDot" style="background:#ff416c"></span><span data-i="cPink">Pink</span></button></li>
+                                <li><button type="button" data-color="#ff7a18" aria-current="false"><span class="cDot" style="background:#ff7a18"></span><span data-i="cOrange">Orange</span></button></li>
+                                <li><button type="button" data-color="#eab308" aria-current="false"><span class="cDot" style="background:#eab308"></span><span data-i="cYellow">Yellow</span></button></li>
+                                <li><button type="button" data-color="#22c55e" aria-current="false"><span class="cDot" style="background:#22c55e"></span><span data-i="cGreen">Green</span></button></li>
+                                <li><button type="button" data-color="#0ea5e9" aria-current="false"><span class="cDot" style="background:#0ea5e9"></span><span data-i="cBlue">Blue</span></button></li>
+                                <li><button type="button" data-color="#8b5cf6" aria-current="false"><span class="cDot" style="background:#8b5cf6"></span><span data-i="cPurple">Purple</span></button></li>
+                                <li><button type="button" id="customColorRow" aria-current="false"><span class="cDot" id="customColorDot" style="background:#ff416c"></span><span data-i="cCustom">Custom</span><input type="color" id="countColorCustom" value="#ff416c" hidden /></button></li>
+                            </ul>
+                        </div>
                     </div>
                     </div>
                 </div>
@@ -1030,27 +1042,6 @@ const webAppJsonLd = {
                     </label>
                 </div>
                 </div>
-
-                <div class="settings">
-                    <h3 class="sec-head" data-i="display">Display settings</h3>
-                    <div class="grid">
-                        <label>
-                            <span>
-                                <svg class="ic" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.563-2.512 5.563-5.563C22 6.5 17.5 2 12 2Z"/></svg>
-                                <span data-i="countColor">Counter color</span>
-                            </span>
-                            <div class="swatches" id="countColorSwatches">
-                                <button type="button" class="swatch" data-color="#ff416c" style="background:#ff416c" aria-label="Pink" aria-pressed="true"></button>
-                                <button type="button" class="swatch" data-color="#ff7a18" style="background:#ff7a18" aria-label="Orange" aria-pressed="false"></button>
-                                <button type="button" class="swatch" data-color="#eab308" style="background:#eab308" aria-label="Yellow" aria-pressed="false"></button>
-                                <button type="button" class="swatch" data-color="#22c55e" style="background:#22c55e" aria-label="Green" aria-pressed="false"></button>
-                                <button type="button" class="swatch" data-color="#0ea5e9" style="background:#0ea5e9" aria-label="Blue" aria-pressed="false"></button>
-                                <button type="button" class="swatch" data-color="#8b5cf6" style="background:#8b5cf6" aria-label="Purple" aria-pressed="false"></button>
-                                <input type="color" id="countColorCustom" value="#ff416c" aria-label="Custom color" title="Custom color" />
-                            </div>
-                        </label>
-                    </div>
-                </div>
             </section>
         </main>
 
@@ -1169,7 +1160,8 @@ const webAppJsonLd = {
                 c: 'EN', sub: 'The Counter', auto: 'Auto-count', tally: 'Tally', nums: 'Numbers', alpha: 'Alphabet',
                 hint: 'Set a range and press Start Count.', gn: 'Tap the matching number!', ga: 'Tap the matching letter!',
                 from: 'From', to: 'To', by: 'By', gap: 'Gap', play: 'Start Count', shapes: 'Shapes', game: 'Game', on: 'on', off: 'off',
-                setup: 'Count setup', sound: 'Sound settings', display: 'Display settings', countColor: 'Counter color',
+                setup: 'Count setup', sound: 'Sound settings', countColor: 'Counter color',
+                cPink: 'Pink', cOrange: 'Orange', cYellow: 'Yellow', cGreen: 'Green', cBlue: 'Blue', cPurple: 'Purple', cCustom: 'Custom',
                 toDark: 'Switch to dark mode', toLight: 'Switch to light mode',
                 step: 'Step', target: 'Target', undo: 'Undo', reset: 'Reset', say: 'Read aloud', voice: 'Voice', speed: 'Speed',
                 test: 'Test', exit: 'Exit', fullscreen: 'Fullscreen', exitFs: 'Exit fullscreen', bgm: 'Background Music', bgmVol: 'BGM Vol', bgmPlay: 'Play', bgmStop: 'Stop', pause: 'Pause', stopBtn: 'Stop', lang: 'en-US'
@@ -1178,7 +1170,8 @@ const webAppJsonLd = {
                 c: 'ने', sub: 'काउन्टर', auto: 'स्वत: गन्ती', tally: 'ट्याली', nums: 'अङ्क', alpha: 'वर्णमाला',
                 hint: 'दायरा छान्नुहोस् र “गन्ती सुरु गर्नुहोस्” थिच्नुहोस्।', gn: 'मिल्दो अङ्कमा थिच्नुहोस्!', ga: 'मिल्दो अक्षरमा थिच्नुहोस्!',
                 from: 'देखि', to: 'सम्म', by: 'अन्तर', gap: 'अन्तराल', play: 'गन्ती सुरु गर्नुहोस्', shapes: 'आकृति', game: 'खेल', on: 'खुला', off: 'बन्द',
-                setup: 'गन्ती सेटअप', sound: 'ध्वनि सेटिङ', display: 'प्रदर्शन सेटिङ', countColor: 'काउन्टर रङ',
+                setup: 'गन्ती सेटअप', sound: 'ध्वनि सेटिङ', countColor: 'काउन्टर रङ',
+                cPink: 'गुलाबी', cOrange: 'सुन्तला', cYellow: 'पहेंलो', cGreen: 'हरियो', cBlue: 'नीलो', cPurple: 'बैजनी', cCustom: 'आफ्नै रङ',
                 toDark: 'डार्क मोडमा जानुहोस्', toLight: 'लाइट मोडमा जानुहोस्',
                 step: 'चरण', target: 'लक्ष्य', undo: 'फिर्ता', reset: 'रिसेट', say: 'ठूलो स्वरमा', voice: 'आवाज', speed: 'गति',
                 test: 'परीक्षण', exit: 'निस्कनुहोस्', fullscreen: 'पूर्ण स्क्रिन', exitFs: 'स्क्रिन छोड्नुहोस्', bgm: 'पृष्ठभूमि सङ्गीत', bgmVol: 'सङ्गीत आवाज', bgmPlay: 'बजाउनुहोस्', bgmStop: 'रोक्नुहोस्', pause: 'पज गर्नुहोस्', stopBtn: 'रोक्नुहोस्', lang: 'ne-NP'
@@ -1187,7 +1180,8 @@ const webAppJsonLd = {
                 c: 'PT', sub: 'O Contador', auto: 'Auto-contar', tally: 'Contagem', nums: 'Números', alpha: 'Alfabeto',
                 hint: 'Defina um intervalo e toque em “Iniciar contagem”.', gn: 'Toque no mesmo número!', ga: 'Toque na letra correspondente!',
                 from: 'De', to: 'Até', by: 'De', gap: 'Pausa', play: 'Iniciar contagem', shapes: 'Formas', game: 'Jogo', on: 'ligado', off: 'desligado',
-                setup: 'Configurar contagem', sound: 'Configurações de som', display: 'Configurações de exibição', countColor: 'Cor do contador',
+                setup: 'Configurar contagem', sound: 'Configurações de som', countColor: 'Cor do contador',
+                cPink: 'Rosa', cOrange: 'Laranja', cYellow: 'Amarelo', cGreen: 'Verde', cBlue: 'Azul', cPurple: 'Roxo', cCustom: 'Personalizada',
                 toDark: 'Mudar para o modo escuro', toLight: 'Mudar para o modo claro',
                 step: 'Passo', target: 'Meta', undo: 'Desfazer', reset: 'Zerar', say: 'Ler em voz alta', voice: 'Voz', speed: 'Velocidade',
                 test: 'Testar', exit: 'Sair', fullscreen: 'Tela cheia', exitFs: 'Sair da tela cheia', bgm: 'Música de fundo', bgmVol: 'Vol. da música', bgmPlay: 'Tocar', bgmStop: 'Parar', pause: 'Pausar', stopBtn: 'Parar', lang: 'pt-BR'
@@ -1426,6 +1420,8 @@ const webAppJsonLd = {
         document.addEventListener('click', function () {
             $('lmList').hidden = true;
             $('lmBtn').setAttribute('aria-expanded', false);
+            $('colorList').hidden = true;
+            $('colorBtn').setAttribute('aria-expanded', false);
         });
         document.querySelectorAll('#lmList button').forEach(function (b) {
             b.onclick = function () {
@@ -1463,6 +1459,7 @@ const webAppJsonLd = {
             var lmFlag = $('lmFlag');
             if (lmFlag) lmFlag.innerHTML = FLAGS[lang] || FLAGS.en;
             refreshThemeBtn();
+            refreshColorBtn();
             document.querySelectorAll('[data-i]').forEach(function (e) {
                 var v = T()[e.dataset.i];
                 if (v) e.textContent = v;
@@ -1519,30 +1516,61 @@ const webAppJsonLd = {
             } catch (e) {}
         }
 
-        /* ---- counter text color ---- */
+        /* ---- counter text color (dropdown beside Game button) ---- */
         var COUNT_COLORS = ['#ff416c', '#ff7a18', '#eab308', '#22c55e', '#0ea5e9', '#8b5cf6'];
+        function refreshColorBtn() {
+            var btn = $('colorBtn');
+            if (btn) {
+                var label = T().countColor;
+                btn.setAttribute('aria-label', label);
+                btn.setAttribute('title', label);
+            }
+        }
         function setCountColor(color) {
             document.documentElement.style.setProperty('--count', color);
             try { localStorage.setItem('suna-count-color', color); } catch (e) {}
             var lower = String(color).toLowerCase();
-            document.querySelectorAll('#countColorSwatches .swatch').forEach(function (b) {
-                b.setAttribute('aria-pressed', String(b.dataset.color).toLowerCase() === lower);
+            var cur = $('colorCur');
+            if (cur) cur.style.background = color;
+            document.querySelectorAll('#colorList [data-color]').forEach(function (b) {
+                b.setAttribute('aria-current', String(b.dataset.color).toLowerCase() === lower);
             });
             var custom = $('countColorCustom');
-            if (custom) {
-                custom.value = color;
-                custom.classList.toggle('picked', COUNT_COLORS.indexOf(lower) < 0);
-            }
+            if (custom) custom.value = color;
+            var customDot = $('customColorDot');
+            if (customDot) customDot.style.background = color;
+            var customRow = $('customColorRow');
+            if (customRow) customRow.setAttribute('aria-current', COUNT_COLORS.indexOf(lower) < 0);
         }
-        document.querySelectorAll('#countColorSwatches .swatch').forEach(function (b) {
+        var colorBtn = $('colorBtn');
+        if (colorBtn) colorBtn.onclick = function (e) {
+            e.stopPropagation();
+            var h = $('colorList').hidden;
+            $('colorList').hidden = !h;
+            this.setAttribute('aria-expanded', h);
+        };
+        document.querySelectorAll('#colorList [data-color]').forEach(function (b) {
             b.onclick = function () { setCountColor(b.dataset.color); };
         });
+        var customColorRow = $('customColorRow');
+        if (customColorRow) customColorRow.onclick = function (e) {
+            e.stopPropagation();
+            var custom = $('countColorCustom');
+            if (custom) custom.click();
+        };
         var countColorCustom = $('countColorCustom');
-        if (countColorCustom) countColorCustom.addEventListener('input', function () { setCountColor(this.value); });
+        if (countColorCustom) {
+            countColorCustom.addEventListener('input', function () { setCountColor(this.value); });
+            countColorCustom.addEventListener('change', function () {
+                $('colorList').hidden = true;
+                $('colorBtn').setAttribute('aria-expanded', false);
+            });
+        }
         try {
             var savedColor = localStorage.getItem('suna-count-color');
             if (savedColor) setCountColor(savedColor);
         } catch (e) {}
+        refreshColorBtn();
 
         /* ---- voice loading & studio MP3 support ---- */
         function loadVoices() {
