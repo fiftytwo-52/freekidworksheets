@@ -6,6 +6,16 @@ This ledger and `worksheets-tracker.xlsx` are the twin tracking records for ever
 
 | Code | Description / title | Language | Type | Colour | Origin | Suggested age | Date uploaded | Original filename | Status | Pinterest | Pin ID | Board | Pin Date |
 |---:|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 50045 | Hands holding hands count and color | English | math / practice | black-and-white | Original | 4-5 | 2026-10-16 | hands holding hands - count and color - eng - bw - orig - 4-5-lkg.png | Uploaded | Not pinned | — | — | — |
+| 50044 | Dresses around the world matching | English | matching / puzzle | black-and-white | Original | 6-8 | 2026-10-16 | dresses around the world - matching - eng - bw - orig - 6-8-class 2.png | Uploaded | Not pinned | — | — | — |
+| 50043 | Foods around the world matching | English | matching / puzzle | black-and-white | Original | 5-7 | 2026-10-16 | foods around the world - matching - eng - bw - orig - 5-7-class 1.png | Uploaded | Not pinned | — | — | — |
+| 50042 | Flags of friends coloring | English | coloring / drawing | black-and-white | Original | 3-5 | 2026-10-16 | flags of friends - color - eng - bw - orig - 3-5-preschool.png | Uploaded | Not pinned | — | — | — |
+| 50041 | Hello around the world | English | tracing / writing | black-and-white | Original | 4-6 | 2026-10-16 | hello around the world - trace and write - eng - bw - orig - 4-6-ukg.png | Uploaded | Not pinned | — | — | — |
+| 50040 | Friendship pattern beads | English | math / practice | black-and-white | Original | 5-7 | 2026-10-16 | friendship pattern beads - complete the pattern - eng - bw - orig - 5-7-class 1.png | Uploaded | Not pinned | — | — | — |
+| 50039 | Match the greetings matching | English | matching / puzzle | black-and-white | Original | 3-5 | 2026-10-16 | match the greetings - matching - eng - bw - orig - 3-5-preschool.png | Uploaded | Not pinned | — | — | — |
+| 50038 | Find your friend maze | English | matching / puzzle | black-and-white | Original | 5-7 | 2026-10-16 | find your friend - maze - eng - bw - orig - 5-7-class 1.png | Uploaded | Not pinned | — | — | — |
+| 50037 | Share the toys count and write | English | math / practice | black-and-white | Original | 4-5 | 2026-10-16 | share the toys - count and write - eng - bw - orig - 4-5-lkg.png | Uploaded | Not pinned | — | — | — |
+| 50036 | Make a friend card draw and trace | English | tracing | black-and-white | Original | 4-6 | 2026-10-16 | make a friend card - draw and trace - eng - bw - orig - 4-6-ukg.png | Uploaded | Not pinned | — | — | — |
 | 50014 | Frosting Swirl Tracing Worksheet | English | tracing | black-and-white | Original | 3-4 | 2026-10-13 | 50014.png | Uploaded | Pinned | 1127096244305807423 | Line Tracing Activities for PreSchool and Nursery | 2026-10-14 |
 | 50013 | Count the Sprinkles Worksheet | English | math / practice | black-and-white | Original | 4-5 | 2026-10-13 | 50013.png | Uploaded | Pinned | 1127096244305807418 | Fun Worksheets For Kids | 2026-10-14 |
 | 50012 | Cupcake Coloring Party Worksheet | English | coloring / drawing | black-and-white | Original | 3-5 | 2026-10-13 | 50012.png | Uploaded | Pinned | 1127096244305807413 | Fun Worksheets For Kids | 2026-10-14 |
