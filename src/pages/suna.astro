@@ -1435,30 +1435,30 @@ const webAppJsonLd = {
             // 1. Studio Pre-Recorded MP3 Voices (guaranteed 100% on every phone, tablet, and computer)
             var optF = document.createElement('option');
             optF.value = 'mp3-female';
-            optF.textContent = (lang === 'ne') ? '👩 महिला आवाज (Studio Audio)' : (lang === 'pt') ? '👩 Voz Feminina (Áudio IA)' : '👩 Natural Female Voice (Studio British)';
+            optF.textContent = (lang === 'ne') ? 'महिला आवाज (Studio Audio)' : (lang === 'pt') ? 'Voz Feminina (Áudio IA)' : 'Natural Female Voice (Studio British)';
             voiceSel.appendChild(optF);
 
             var optM = document.createElement('option');
             optM.value = 'mp3-male';
-            optM.textContent = (lang === 'ne') ? '👨 पुरुष आवाज (Studio Audio)' : (lang === 'pt') ? '👨 Voz Masculina (Áudio IA)' : '👨 Natural Male Voice (Studio British)';
+            optM.textContent = (lang === 'ne') ? 'पुरुष आवाज (Studio Audio)' : (lang === 'pt') ? 'Voz Masculina (Áudio IA)' : 'Natural Male Voice (Studio British)';
             voiceSel.appendChild(optM);
 
             // 2. Default System Voice fallback (device voice, not a phone voice)
             var optSys = document.createElement('option');
             optSys.value = 'default';
-            optSys.textContent = (lang === 'ne') ? '🔊 डिभाइसको आवाज (System TTS)' : (lang === 'pt') ? '🔊 Voz do Dispositivo (System TTS)' : '🔊 Device Voice (System TTS)';
+            optSys.textContent = (lang === 'ne') ? 'डिभाइसको आवाज (System TTS)' : (lang === 'pt') ? 'Voz do Dispositivo (System TTS)' : 'Device Voice (System TTS)';
             voiceSel.appendChild(optSys);
 
             // 2b. Beep sound (a short beep on each count, no speech)
             var optBeep = document.createElement('option');
             optBeep.value = 'beep';
-            optBeep.textContent = (lang === 'ne') ? '🔔 बिप आवाज' : (lang === 'pt') ? '🔔 Som de Bipe' : '🔔 Beep Sound';
+            optBeep.textContent = (lang === 'ne') ? 'बिप आवाज' : (lang === 'pt') ? 'Som de Bipe' : 'Beep Sound';
             voiceSel.appendChild(optBeep);
 
             // 2c. No voice (silent counting)
             var optNone = document.createElement('option');
             optNone.value = 'none';
-            optNone.textContent = (lang === 'ne') ? '🔇 कुनै आवाज छैन (मौन)' : (lang === 'pt') ? '🔇 Sem Voz (Silencioso)' : '🔇 No Voice (Silent)';
+            optNone.textContent = (lang === 'ne') ? 'कुनै आवाज छैन (मौन)' : (lang === 'pt') ? 'Sem Voz (Silencioso)' : 'No Voice (Silent)';
             voiceSel.appendChild(optNone);
 
             // 3. Any additional device voices detected
@@ -1514,13 +1514,13 @@ const webAppJsonLd = {
                 vNote.style.color = '#2b1d4a';
             } else if (voiceSel.value.indexOf('mp3') === 0) {
                     if (lang === 'ne') {
-                        vNote.textContent = '✨ स्टुडियो अडियो सक्रिय छ (सबै मोबाइल र ट्याब्लेटमा १००% स्पष्ट बज्छ)।';
+                        vNote.textContent = 'स्टुडियो अडियो सक्रिय छ (सबै मोबाइल र ट्याब्लेटमा १००% स्पष्ट बज्छ)।';
                         vNote.style.color = '#14532d';
                     } else if (lang === 'pt') {
-                        vNote.textContent = '⚠️ Aviso: Voz em português gerada por IA (pode haver pequenas variações ou divergências na pronúncia).';
+                        vNote.textContent = 'Aviso: Voz em português gerada por IA (pode haver pequenas variações ou divergências na pronúncia).';
                         vNote.style.color = '#b45309';
                     } else {
-                        vNote.textContent = '✨ Natural British Studio Audio active (100% crystal-clear on all phones and tablets).';
+                        vNote.textContent = 'Natural British Studio Audio active (100% crystal-clear on all phones and tablets).';
                         vNote.style.color = '#14532d';
                     }
                 } else if (lang === 'ne') {
@@ -1535,7 +1535,7 @@ const webAppJsonLd = {
                         vNote.style.color = '#9a3412';
                     }
                 } else if (lang === 'pt') {
-                    vNote.textContent = '⚠️ Aviso: Voz em português gerada por IA (pode haver pequenas variações na pronúncia).';
+                    vNote.textContent = 'Aviso: Voz em português gerada por IA (pode haver pequenas variações na pronúncia).';
                     vNote.style.color = '#b45309';
                 } else {
                     vNote.textContent = 'System device voice active.';
