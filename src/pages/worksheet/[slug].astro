@@ -18,7 +18,9 @@ export async function getStaticPaths() {
     return entries.map((entry) => ({ params: { slug: entry.slug }, props: { entry } }));
 }
 const { entry } = Astro.props;
-const { title, category, ageGroup, code, description, image, tags = [], language } = entry.data;
+const { title, category, ageGroup, code, description, image, tags = [], language, colorType } = entry.data;
+const languageLabel = { en: 'English', ne: 'Nepali', es: 'Spanish', pt: 'Portuguese' }[language] ?? language;
+const printLabel = colorType === 'colorful' ? 'Colorful' : 'Black & white';
 const displayTitle = entry.data.shortTitle?.trim() || title;
 // Avoid "worksheet worksheet" when the title already contains the word.
 const titleLower = title.toLowerCase();
@@ -70,9 +72,10 @@ const pageKeywords = Array.from(
         breadcrumbJsonLd(absoluteUrl('/'), absoluteUrl('/worksheets'), category, categoryUrl, title),
     ]}
 >
-    <div
-        class="no-print mx-auto w-full max-w-4xl px-4 pt-8 sm:px-6 lg:px-8"
-    >
+    <div class="mx-auto w-full max-w-7xl px-4 pt-8 sm:px-6 lg:px-8">
+        <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
+            <div class="min-w-0">
+    <div class="no-print">
         <!-- Breadcrumb -->
         <nav
             aria-label="Breadcrumb"
@@ -165,7 +168,7 @@ const pageKeywords = Array.from(
     </div>
 
     <!-- Worksheet A4 Preview (Print target #print-worksheet) -->
-    <section class="mx-auto w-full max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
+    <section class="py-6">
         <div
             id="print-worksheet"
             class="overflow-hidden rounded-2xl border-2 border-hairline bg-white p-4 shadow-md dark:border-neutral-800 dark:bg-neutral-900 sm:p-8"
@@ -173,35 +176,72 @@ const pageKeywords = Array.from(
             <Image
                 src={image}
                 alt={altText}
-                class="mx-auto h-auto w-full max-w-2xl rounded-lg object-contain"
+                class="mx-auto h-auto w-full max-w-3xl rounded-lg object-contain"
                 loading="eager"
                 decoding="async"
                 fetchpriority="high"
                 widths={[640, 1024, 1400]}
-                sizes="(min-width: 1024px) 896px, 100vw"
+                sizes="(min-width: 1024px) 768px, 100vw"
             />
         </div>
     </section>
 
-    <!-- Description & Learning Context -->
-    <section class="no-print mx-auto w-full max-w-4xl px-4 py-4 sm:px-6 lg:px-8">
-        <div class="rounded-2xl border-2 border-amber-100 bg-amber-50/60 p-6 dark:border-neutral-800 dark:bg-neutral-900/60 sm:p-8">
-            <h2 class="text-xs font-extrabold uppercase tracking-wider text-amber-700 dark:text-amber-400">
-                About this worksheet
-            </h2>
-            <p class="mt-3 text-base font-medium leading-relaxed text-neutral-700 dark:text-neutral-300">
-                {aboutText}
-            </p>
-        </div>
+            </div>
+            <!-- Sidebar: about, quick facts, share (sticky on desktop) -->
+            <aside class="no-print min-w-0 lg:self-start">
+                <div class="space-y-4 lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:overflow-y-auto">
+                    <div class="rounded-2xl border-2 border-amber-100 bg-amber-50/60 p-6 dark:border-neutral-800 dark:bg-neutral-900/60">
+                        <h2 class="text-xs font-extrabold uppercase tracking-wider text-amber-700 dark:text-amber-400">
+                            About this worksheet
+                        </h2>
+                        <p class="mt-3 text-base font-medium leading-relaxed text-neutral-700 dark:text-neutral-300">
+                            {aboutText}
+                        </p>
+                    </div>
 
-        <!-- Share This Worksheet (Facebook, Twitter, Instagram, WhatsApp) -->
-        <ShareWorksheet
-            url={pageUrl}
-            title={displayTitle}
-            lang={language === 'ne' ? 'ne' : 'en'}
-            class="mt-4"
-        />
-    </section>
+                    <div class="rounded-2xl border border-hairline bg-elevated/80 p-5 shadow-2xs dark:border-neutral-800 dark:bg-neutral-900/80">
+                        <h2 class="text-xs font-extrabold uppercase tracking-wider text-neutral-600 dark:text-neutral-400">
+                            Worksheet details
+                        </h2>
+                        <dl class="mt-4 space-y-3 text-sm">
+                            <div class="flex items-center justify-between gap-3">
+                                <dt class="font-semibold text-neutral-500 dark:text-neutral-400">Category</dt>
+                                <dd class="text-right font-bold text-neutral-900 dark:text-neutral-100">
+                                    <a href={categoryUrl} class="hover:text-pink-500 hover:underline">{category}</a>
+                                </dd>
+                            </div>
+                            <div class="flex items-center justify-between gap-3">
+                                <dt class="font-semibold text-neutral-500 dark:text-neutral-400">Ages</dt>
+                                <dd class="text-right font-bold text-neutral-900 dark:text-neutral-100">{ageGroup}</dd>
+                            </div>
+                            {code && (
+                                <div class="flex items-center justify-between gap-3">
+                                    <dt class="font-semibold text-neutral-500 dark:text-neutral-400">Code</dt>
+                                    <dd class="text-right font-mono font-bold text-neutral-900 dark:text-neutral-100">#{code}</dd>
+                                </div>
+                            )}
+                            <div class="flex items-center justify-between gap-3">
+                                <dt class="font-semibold text-neutral-500 dark:text-neutral-400">Language</dt>
+                                <dd class="text-right font-bold text-neutral-900 dark:text-neutral-100">{languageLabel}</dd>
+                            </div>
+                            <div class="flex items-center justify-between gap-3">
+                                <dt class="font-semibold text-neutral-500 dark:text-neutral-400">Print</dt>
+                                <dd class="text-right font-bold text-neutral-900 dark:text-neutral-100">{printLabel}</dd>
+                            </div>
+                        </dl>
+                    </div>
+
+                    <!-- Share This Worksheet (Facebook, Twitter, Instagram, WhatsApp) -->
+                    <ShareWorksheet
+                        url={pageUrl}
+                        title={displayTitle}
+                        lang={language === 'ne' ? 'ne' : 'en'}
+                        stacked
+                    />
+                </div>
+            </aside>
+        </div>
+    </div>
 
     <!-- Policy-safe ad slot: below the worksheet content, above related items -->
     <AdSlot name="worksheet-below-content" />
