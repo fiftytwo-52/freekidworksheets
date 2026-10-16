@@ -1571,7 +1571,9 @@ const webAppJsonLd = {
             if (langTag === 'en') return mp3Src(langTag, gender, raw) !== '';
             var isNum = (typeof raw === 'number' || /^\d+$/.test(raw));
             if (langTag === 'ne') {
-                return isNum && +raw >= 1 && +raw <= 100;
+                if (isNum) return +raw >= 1 && +raw <= 100;
+                if (typeof raw === 'string' && NEL.indexOf(raw.trim()) >= 0) return true;
+                return false;
             }
             if (langTag === 'pt') {
                 if (isNum) return +raw >= 1 && +raw <= 100;
