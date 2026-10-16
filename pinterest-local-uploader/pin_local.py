@@ -132,8 +132,10 @@ def api(method: str, url: str, payload: dict | None = None, max_retries: int = 5
             except Exception:
                 detail = ""
             if exc.code == 429 or exc.code >= 500:
+                if "spam" in detail.lower() or "block" in detail.lower():
+                    raise PinError(f"Pinterest daily pin creation limit / spam block active: {detail.strip()}. Please wait before uploading more pins (usually resets in 24 hours).")
                 retry_after = exc.headers.get("Retry-After")
-                wait_sec = int(retry_after) if retry_after and retry_after.isdigit() else (15 * (attempt + 1))
+                wait_sec = int(retry_after) if retry_after and retry_after.isdigit() else (20 * (attempt + 1))
                 print(f"[RETRY] HTTP {exc.code}: {detail.strip()} - Waiting {wait_sec}s before retry ({attempt + 1}/{max_retries})...")
                 time.sleep(wait_sec)
                 continue
@@ -872,14 +874,18 @@ def cmd_upload_all(args: argparse.Namespace) -> int:
     sync_all_external_tracking(hist)
 
     # 2. Identify target worksheets
+    # Load all worksheets by code
+    all_ws = {ws["code"]: ws for ws in list_all_worksheets()}
+
     sandboxed_only = getattr(args, "sandboxed_only", False)
     if sandboxed_only:
         unpinned_codes = [
             code for code, item in hist.items()
-            if "sandbox" in (item.get("board_name") or "").lower() or item.get("board_id") == "1127096312935342580"
+            if ("sandbox" in (item.get("board_name") or "").lower() or item.get("board_id") == "1127096312935342580")
+            and code in all_ws
         ]
         unpinned_codes.sort(key=lambda x: int(x) if x.isdigit() else 999999)
-        print(f"Found {len(unpinned_codes)} sandboxed worksheets to publish to public boards.")
+        print(f"Found {len(unpinned_codes)} valid sandboxed worksheets to publish to public boards.")
     else:
         tracking_candidates = [
             "/home/fiftytwo/Desktop/GaNesh Khatiwada/Do not Delete/Code base/Newsheet-for-freekidworksheets/worksheet-upload-tracking.md",
@@ -921,9 +927,6 @@ def cmd_upload_all(args: argparse.Namespace) -> int:
     delay = getattr(args, "delay", 2.5)
     default_board_id = "1127096312935342580" if base == SANDBOX else None
     default_board_name = "Sandbox Test Worksheets" if base == SANDBOX else None
-
-    # Load all worksheets by code
-    all_ws = {ws["code"]: ws for ws in list_all_worksheets()}
 
     success = 0
     failed = 0
