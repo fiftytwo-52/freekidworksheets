@@ -683,6 +683,69 @@ const webAppJsonLd = {
             font-weight: 600;
         }
         footer a { color: inherit; }
+        /* Counter section fills exactly one screen; scrolling reveals the sections below. */
+        .stage {
+            display: flex;
+            flex-direction: column;
+            min-height: calc(100svh - 74px);
+            min-height: calc(100dvh - 74px);
+            padding-bottom: 16px;
+        }
+        .panel {
+            flex: 1 1 auto;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+        .display {
+            flex: 1 1 auto;
+            min-height: 0;
+            font-size: clamp(3.2rem, min(23vmin, 14vh), 12rem);
+        }
+        .display.long { font-size: clamp(2.6rem, min(16vmin, 11vh), 9rem); }
+        /* Fullscreen hides the header, so the stage takes the full viewport there. */
+        body.fs .stage { min-height: 100svh; min-height: 100dvh; }
+        @media (max-width: 640px) {
+            .stage {
+                min-height: calc(100svh - 62px);
+                min-height: calc(100dvh - 62px);
+            }
+        }
+        /* Medium-short screens: mild tightening (mainly the tall tally tap button). */
+        @media (max-height: 1100px) {
+            .panel { padding-top: 10px; padding-bottom: 10px; }
+            .display { font-size: clamp(3.2rem, min(23vmin, 12vh), 12rem); }
+            .display.long { font-size: clamp(2.6rem, min(16vmin, 10vh), 9rem); }
+            .tabs { margin: 2px 0 8px; }
+            .grid { margin: 10px 0; }
+            .ctl-group { margin-top: 10px; padding-top: 10px; }
+            .settings { margin-top: 10px; padding-top: 10px; }
+            .panel input, .panel select { padding: 6px 10px; }
+            .panel .btn { padding: 7px 20px; }
+            .panel .pill { padding: 5px 12px; }
+            .tally-tap-row { margin: 6px auto 10px; }
+            .tally-tap-row .big { width: min(56vw, 130px); }
+        }
+        /* Short screens (laptop / landscape): tighten spacing so the counter still fits. */
+        @media (max-height: 820px) {
+            .panel { padding-top: 6px; padding-bottom: 6px; }
+            .display { font-size: clamp(2.6rem, min(23vmin, 7vh), 8rem); }
+            .display.long { font-size: clamp(2.2rem, min(16vmin, 6vh), 6.5rem); }
+            .tabs { margin: 0 0 6px; }
+            .tabs button { padding: 6px 14px; }
+            .msg { margin: 0 0 6px; min-height: 1.2em; }
+            body:not(.game) .msg { display: none; }
+            .grid { margin: 6px 0; gap: 6px; }
+            .row { gap: 6px; }
+            .ctl-group { margin-top: 8px; padding-top: 8px; }
+            .settings { margin-top: 8px; padding-top: 8px; }
+            .sec-head { margin: 0 0 6px; }
+            .panel input, .panel select { padding: 5px 10px; }
+            .panel .btn { padding: 6px 20px; }
+            .panel .pill { padding: 5px 12px; }
+            .tally-tap-row { margin: 2px auto 6px; }
+            .tally-tap-row .big { width: min(56vw, 100px); }
+        }
     </style>
 
     <script is:inline>
