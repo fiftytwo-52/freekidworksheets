@@ -945,7 +945,8 @@ const webAppJsonLd = {
                             <select id="voice" style="flex: 1; min-width: 0;">
                                 <option value="mp3-female" selected>Female Voice (महिला आवाज — Studio MP3)</option>
                                 <option value="mp3-male">Male Voice (पुरुष आवाज — Studio MP3)</option>
-                                <option value="default">Device System Voice (सिस्टम आवाज)</option>
+                                <option value="default">Device Voice (System TTS)</option>
+                                <option value="none">No Voice (Silent)</option>
                             </select>
                             <button type="button" class="pill" id="testVoiceBtn" title="Test audio voice" style="min-height: 44px; padding: 6px 12px; font-size: 0.82rem; white-space: nowrap; flex-shrink: 0;">
                                 <svg class="ic" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
@@ -1441,11 +1442,17 @@ const webAppJsonLd = {
             optM.textContent = (lang === 'ne') ? '👨 पुरुष आवाज (Studio Audio)' : (lang === 'pt') ? '👨 Voz Masculina (Áudio IA)' : '👨 Natural Male Voice (Studio British)';
             voiceSel.appendChild(optM);
 
-            // 2. Default System Voice fallback
+            // 2. Default System Voice fallback (device voice, not a phone voice)
             var optSys = document.createElement('option');
             optSys.value = 'default';
-            optSys.textContent = (lang === 'ne') ? '📱 प्रणालीको आवाज (System TTS)' : (lang === 'pt') ? '📱 Padrão do Sistema (System TTS)' : '📱 System Default TTS';
+            optSys.textContent = (lang === 'ne') ? '🔊 डिभाइसको आवाज (System TTS)' : (lang === 'pt') ? '🔊 Voz do Dispositivo (System TTS)' : '🔊 Device Voice (System TTS)';
             voiceSel.appendChild(optSys);
+
+            // 2b. No voice (silent counting)
+            var optNone = document.createElement('option');
+            optNone.value = 'none';
+            optNone.textContent = (lang === 'ne') ? '🔇 कुनै आवाज छैन (मौन)' : (lang === 'pt') ? '🔇 Sem Voz (Silencioso)' : '🔇 No Voice (Silent)';
+            voiceSel.appendChild(optNone);
 
             // 3. Any additional device voices detected
             var pre = [];
@@ -1469,7 +1476,7 @@ const webAppJsonLd = {
             });
 
             // Restore selection or default to studio female voice
-            if (['mp3-female', 'mp3-male', 'default'].indexOf(prevVal) >= 0) {
+            if (['mp3-female', 'mp3-male', 'default', 'none'].indexOf(prevVal) >= 0) {
                 voiceSel.value = prevVal;
             } else if (+prevVal >= 0 && +prevVal < voices.length) {
                 voiceSel.value = prevVal;
@@ -1480,7 +1487,16 @@ const webAppJsonLd = {
             var vNote = $('voiceNote');
             if (vNote) {
                 vNote.style.display = 'block';
-                if (voiceSel.value.indexOf('mp3') === 0) {
+                if (voiceSel.value === 'none') {
+                if (lang === 'ne') {
+                    vNote.textContent = 'आवाज बन्द छ — काउन्टर चुपचाप चल्नेछ।';
+                } else if (lang === 'pt') {
+                    vNote.textContent = 'Voz desligada — o contador funcionará em silêncio.';
+                } else {
+                    vNote.textContent = 'Voice off — the counter will run silently.';
+                }
+                vNote.style.color = '#2b1d4a';
+            } else if (voiceSel.value.indexOf('mp3') === 0) {
                     if (lang === 'ne') {
                         vNote.textContent = '✨ स्टुडियो अडियो सक्रिय छ (सबै मोबाइल र ट्याब्लेटमा १००% स्पष्ट बज्छ)।';
                         vNote.style.color = '#14532d';
@@ -1496,10 +1512,10 @@ const webAppJsonLd = {
                         vNote.textContent = 'नेपाली प्रणाली आवाज सक्रिय छ।';
                         vNote.style.color = '#14532d';
                     } else if (hasHi) {
-                        vNote.textContent = 'फोनमा नेपाली आवाज नभेटिएकाले हिन्दी प्रणाली आवाज प्रयोग गरिएको छ।';
+                        vNote.textContent = 'डिभाइसमा नेपाली आवाज नभेटिएकाले हिन्दी प्रणाली आवाज प्रयोग गरिएको छ।';
                         vNote.style.color = '#2b1d4a';
                     } else {
-                        vNote.textContent = 'फोनको प्रणाली आवाज सक्रिय छ।';
+                        vNote.textContent = 'डिभाइसको प्रणाली आवाज सक्रिय छ।';
                         vNote.style.color = '#9a3412';
                     }
                 } else if (lang === 'pt') {
@@ -1635,6 +1651,7 @@ const webAppJsonLd = {
         window.__sunaUtterance = null;
         async function speak(raw) {
             var vChoice = voiceSel ? voiceSel.value : 'mp3-female';
+            if (vChoice === 'none') return; // no voice: count silently
             if (vChoice === 'mp3-female' || vChoice === 'mp3-male') {
                 var gender = vChoice === 'mp3-male' ? 'male' : 'female';
                 var langTag = lang === 'ne' ? 'ne' : lang === 'pt' ? 'pt' : 'en';
@@ -1690,6 +1707,10 @@ const webAppJsonLd = {
 
         $('testVoiceBtn').onclick = async function () {
             var vChoice = voiceSel ? voiceSel.value : 'mp3-female';
+            if (vChoice === 'none') {
+                alert(lang === 'ne' ? 'आवाज बन्द छ। काउन्टर चुपचाप चल्नेछ।' : (lang === 'pt' ? 'Voz desligada.' : 'Voice is off. The counter will run silently.'));
+                return;
+            }
             if (vChoice === 'mp3-female' || vChoice === 'mp3-male') {
                 var gender = vChoice === 'mp3-male' ? 'male' : 'female';
                 var langTag = lang === 'ne' ? 'ne' : lang === 'pt' ? 'pt' : 'en';
