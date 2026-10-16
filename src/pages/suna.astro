@@ -24,7 +24,7 @@ const SUNA_FAQS = [
     },
     {
         question: 'Can I use Suna as a classroom counting tool?',
-        answer: 'Yes. The default is 1 to 100 with a 1.5 second gap. Press Start Count and the counter runs in the normal view — tap the fullscreen button any time for the giant classroom display. Use Pause, Stop or Hide to control it.',
+        answer: 'Yes. The default is 1 to 100 with a 1 second gap. Press Start Count and the counter runs in the normal view — tap the fullscreen button any time for the giant classroom display. Use Pause, Stop or Hide to control it.',
     },
     {
         question: 'Does the tally counter save my count?',
@@ -791,8 +791,8 @@ const webAppJsonLd = {
                             <select id="gap">
                                 <option value="0">0s</option>
                                 <option value="500">0.5s</option>
-                                <option value="1000">1s</option>
-                                <option value="1500" selected>1.5s</option>
+                                <option value="1000" selected>1s</option>
+                                <option value="1500">1.5s</option>
                                 <option value="2000">2s</option>
                                 <option value="3000">3s</option>
                                 <option value="5000">5s</option>
@@ -807,8 +807,8 @@ const webAppJsonLd = {
                             <select id="aGap">
                                 <option value="0">0s</option>
                                 <option value="500">0.5s</option>
-                                <option value="1000">1s</option>
-                                <option value="1500" selected>1.5s</option>
+                                <option value="1000" selected>1s</option>
+                                <option value="1500">1.5s</option>
                                 <option value="2000">2s</option>
                                 <option value="3000">3s</option>
                                 <option value="5000">5s</option>
@@ -946,6 +946,7 @@ const webAppJsonLd = {
                                 <option value="mp3-female" selected>Female Voice (महिला आवाज — Studio MP3)</option>
                                 <option value="mp3-male">Male Voice (पुरुष आवाज — Studio MP3)</option>
                                 <option value="default">Device Voice (System TTS)</option>
+                                <option value="beep">Beep Sound</option>
                                 <option value="none">No Voice (Silent)</option>
                             </select>
                             <button type="button" class="pill" id="testVoiceBtn" title="Test audio voice" style="min-height: 44px; padding: 6px 12px; font-size: 0.82rem; white-space: nowrap; flex-shrink: 0;">
@@ -1448,7 +1449,13 @@ const webAppJsonLd = {
             optSys.textContent = (lang === 'ne') ? '🔊 डिभाइसको आवाज (System TTS)' : (lang === 'pt') ? '🔊 Voz do Dispositivo (System TTS)' : '🔊 Device Voice (System TTS)';
             voiceSel.appendChild(optSys);
 
-            // 2b. No voice (silent counting)
+            // 2b. Beep sound (a short beep on each count, no speech)
+            var optBeep = document.createElement('option');
+            optBeep.value = 'beep';
+            optBeep.textContent = (lang === 'ne') ? '🔔 बिप आवाज' : (lang === 'pt') ? '🔔 Som de Bipe' : '🔔 Beep Sound';
+            voiceSel.appendChild(optBeep);
+
+            // 2c. No voice (silent counting)
             var optNone = document.createElement('option');
             optNone.value = 'none';
             optNone.textContent = (lang === 'ne') ? '🔇 कुनै आवाज छैन (मौन)' : (lang === 'pt') ? '🔇 Sem Voz (Silencioso)' : '🔇 No Voice (Silent)';
@@ -1476,7 +1483,7 @@ const webAppJsonLd = {
             });
 
             // Restore selection or default to studio female voice
-            if (['mp3-female', 'mp3-male', 'default', 'none'].indexOf(prevVal) >= 0) {
+            if (['mp3-female', 'mp3-male', 'default', 'beep', 'none'].indexOf(prevVal) >= 0) {
                 voiceSel.value = prevVal;
             } else if (+prevVal >= 0 && +prevVal < voices.length) {
                 voiceSel.value = prevVal;
@@ -1487,7 +1494,16 @@ const webAppJsonLd = {
             var vNote = $('voiceNote');
             if (vNote) {
                 vNote.style.display = 'block';
-                if (voiceSel.value === 'none') {
+                if (voiceSel.value === 'beep') {
+                if (lang === 'ne') {
+                    vNote.textContent = 'बिप आवाज सक्रिय छ — हरेक गिन्तीमा बिप बज्नेछ।';
+                } else if (lang === 'pt') {
+                    vNote.textContent = 'Som de bipe ativo — um bipe toca a cada contagem.';
+                } else {
+                    vNote.textContent = 'Beep sound active — a beep plays on each count.';
+                }
+                vNote.style.color = '#2b1d4a';
+            } else if (voiceSel.value === 'none') {
                 if (lang === 'ne') {
                     vNote.textContent = 'आवाज बन्द छ — काउन्टर चुपचाप चल्नेछ।';
                 } else if (lang === 'pt') {
@@ -1649,9 +1665,30 @@ const webAppJsonLd = {
         }
 
         window.__sunaUtterance = null;
+        // Short beep via WebAudio (no file needed) — one soft 880Hz blip per count.
+        var beepCtx = null;
+        function playBeep() {
+            try {
+                if (!beepCtx) beepCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (beepCtx.state === 'suspended') beepCtx.resume();
+                var t = beepCtx.currentTime;
+                var o = beepCtx.createOscillator();
+                var g = beepCtx.createGain();
+                o.type = 'sine';
+                o.frequency.setValueAtTime(880, t);
+                g.gain.setValueAtTime(0.0001, t);
+                g.gain.exponentialRampToValueAtTime(0.25, t + 0.01);
+                g.gain.exponentialRampToValueAtTime(0.0001, t + 0.18);
+                o.connect(g);
+                g.connect(beepCtx.destination);
+                o.start(t);
+                o.stop(t + 0.2);
+            } catch (e) {}
+        }
         async function speak(raw) {
             var vChoice = voiceSel ? voiceSel.value : 'mp3-female';
             if (vChoice === 'none') return; // no voice: count silently
+            if (vChoice === 'beep') { playBeep(); return; } // beep: no speech
             if (vChoice === 'mp3-female' || vChoice === 'mp3-male') {
                 var gender = vChoice === 'mp3-male' ? 'male' : 'female';
                 var langTag = lang === 'ne' ? 'ne' : lang === 'pt' ? 'pt' : 'en';
@@ -1711,6 +1748,7 @@ const webAppJsonLd = {
                 alert(lang === 'ne' ? 'आवाज बन्द छ। काउन्टर चुपचाप चल्नेछ।' : (lang === 'pt' ? 'Voz desligada.' : 'Voice is off. The counter will run silently.'));
                 return;
             }
+            if (vChoice === 'beep') { playBeep(); return; }
             if (vChoice === 'mp3-female' || vChoice === 'mp3-male') {
                 var gender = vChoice === 'mp3-male' ? 'male' : 'female';
                 var langTag = lang === 'ne' ? 'ne' : lang === 'pt' ? 'pt' : 'en';
@@ -1760,8 +1798,8 @@ const webAppJsonLd = {
         function getGapMs() {
             var g = (kind === 'abc') ? $('aGap') : $('gap');
             if (!g) g = $('gap') || $('aGap');
-            var v = g ? parseFloat(g.value) : 1500;
-            return isNaN(v) ? 1500 : v;
+            var v = g ? parseFloat(g.value) : 1000;
+            return isNaN(v) ? 1000 : v;
         }
         function setGapMs(val) {
             var str = String(val);
@@ -2215,6 +2253,9 @@ const webAppJsonLd = {
                 }
             } catch (e) {}
             for (var i = 0; i < items.length && run === id; i++) {
+                // Fixed cadence: measure each count from its start, so the
+                // rhythm stays steady no matter how long the voice takes.
+                var countStart = Date.now();
                 var it = items[i];
                 show(kind === 'abc' ? it : num(it));
                 lastV = it;
@@ -2234,7 +2275,10 @@ const webAppJsonLd = {
                 var waitMs = getGapMs();
                 if (waitMs <= 0 && gameOn) waitMs = 800; // minimum game reaction time
 
-                var elapsed = 0;
+                // The gap is measured from the start of this count: the voice
+                // time already spent counts toward it, so the beat never drifts.
+                // (Pause does not advance elapsed — the wait freezes while paused.)
+                var elapsed = Date.now() - countStart;
                 while (elapsed < waitMs && run === id) {
                     while (paused && run === id) await wait(100);
                     await wait(100);
