@@ -4,6 +4,10 @@
 /sitemap.xml /sitemap-index.xml 301
 
 # TASK-13: category URLs moved to lowercase hyphenated slugs.
+# Tracing is part of the Alphabet & Tracing category — send the bare
+# /category/tracing URL to that hub instead of a 404.
+/category/tracing /category/alphabet-tracing 301
+/category/tracing/* /category/alphabet-tracing/:splat 301
 # Percent-encoded forms are decoded by Pages before matching, so these rules
 # catch both raw and encoded old links.
 /category/Alphabet%20&%20Tracing /category/alphabet-tracing 301
